@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  start_date: 2024-08-09
+  end_date: 2024-08-09
+  track: 
+  note: MyText
+  image1: MyString
+  image2: MyString
+  image3: MyString
+  image4: MyString
+  image5: MyString
+  user: one
+
+two:
+  title: MyString
+  start_date: 2024-08-09
+  end_date: 2024-08-09
+  track: 
+  note: MyText
+  image1: MyString
+  image2: MyString
+  image3: MyString
+  image4: MyString
+  image5: MyString
+  user: two

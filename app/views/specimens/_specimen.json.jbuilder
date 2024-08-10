@@ -1,0 +1,2 @@
+json.extract! specimen, :id, :date_last_modified, :collection_code, :identified_by, :date_identified, :collecter, :year, :month, :day, :sex, :preparation_type, :disposition, :sampling_protocol, :sampling_effort, :lifestage, :establishment_means, :rights, :note, :image1, :image2, :image3, :image4, :image5, :collect_point_info_id, :collection_settings_info_id, :custom_taxon_info_id, :default_taxon_info_id, :tour_id, :user_id, :allow_kojin_shuzo, :published_kojin_shuzo, :created_at, :updated_at
+json.url specimen_url(specimen, format: :json)

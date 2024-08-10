@@ -1,0 +1,2 @@
+json.extract! collect_point, :id, :contient, :island_group, :island, :country, :state_provice, :county, :municipality, :verbatim_locality, :japanese_place_name, :japanese_place_name_detail, :coordinate_precision, :location, :minimum_elevation, :maximum_elevation, :minimum_depth, :maximum_depth, :note, :image1, :image2, :image3, :image4, :image5, :user_id, :created_at, :updated_at
+json.url collect_point_url(collect_point, format: :json)

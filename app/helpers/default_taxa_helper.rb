@@ -1,0 +1,2 @@
+module DefaultTaxaHelper
+end

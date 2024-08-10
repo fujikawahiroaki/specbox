@@ -1,0 +1,51 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contient: MyString
+  island_group: MyString
+  island: MyString
+  country: MyString
+  state_provice: MyString
+  county: MyString
+  municipality: MyString
+  verbatim_locality: MyText
+  japanese_place_name: MyString
+  japanese_place_name_detail: MyString
+  coordinate_precision: 1.5
+  location: 
+  minimum_elevation: 1.5
+  maximum_elevation: 1.5
+  minimum_depth: 1.5
+  maximum_depth: 1.5
+  note: MyText
+  image1: MyString
+  image2: MyString
+  image3: MyString
+  image4: MyString
+  image5: MyString
+  user: one
+
+two:
+  contient: MyString
+  island_group: MyString
+  island: MyString
+  country: MyString
+  state_provice: MyString
+  county: MyString
+  municipality: MyString
+  verbatim_locality: MyText
+  japanese_place_name: MyString
+  japanese_place_name_detail: MyString
+  coordinate_precision: 1.5
+  location: 
+  minimum_elevation: 1.5
+  maximum_elevation: 1.5
+  minimum_depth: 1.5
+  maximum_depth: 1.5
+  note: MyText
+  image1: MyString
+  image2: MyString
+  image3: MyString
+  image4: MyString
+  image5: MyString
+  user: two

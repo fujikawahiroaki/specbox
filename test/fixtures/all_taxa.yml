@@ -1,0 +1,59 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  kingdom: MyString
+  phylum: MyString
+  class_name: MyString
+  order: MyString
+  suborder: MyString
+  family: MyString
+  subfamily: MyString
+  tribe: MyString
+  subtribe: MyString
+  genus: MyString
+  subgenus: MyString
+  species: MyString
+  subspecies: MyString
+  scientific_name_author: MyString
+  name_publishedin_year: 1
+  japanese_name: MyString
+  distribution: MyString
+  note: MyText
+  image1: MyString
+  image2: MyString
+  image3: MyString
+  image4: MyString
+  image5: MyString
+  change_genus_brackets: false
+  unknown_author_brackets: false
+  unknown_name_publishedin_year_brackets: false
+  actual_dist_year: 1
+
+two:
+  kingdom: MyString
+  phylum: MyString
+  class_name: MyString
+  order: MyString
+  suborder: MyString
+  family: MyString
+  subfamily: MyString
+  tribe: MyString
+  subtribe: MyString
+  genus: MyString
+  subgenus: MyString
+  species: MyString
+  subspecies: MyString
+  scientific_name_author: MyString
+  name_publishedin_year: 1
+  japanese_name: MyString
+  distribution: MyString
+  note: MyText
+  image1: MyString
+  image2: MyString
+  image3: MyString
+  image4: MyString
+  image5: MyString
+  change_genus_brackets: false
+  unknown_author_brackets: false
+  unknown_name_publishedin_year_brackets: false
+  actual_dist_year: 1

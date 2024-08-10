@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  collection_name: MyString
+  institution_code: MyString
+  latest_collection_code: 1
+  note: MyText
+  user: one
+
+two:
+  collection_name: MyString
+  institution_code: MyString
+  latest_collection_code: 1
+  note: MyText
+  user: two

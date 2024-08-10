@@ -1,0 +1,65 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date_last_modified: 
+  collection_code: 1
+  identified_by: MyString
+  date_identified: 2024-08-09
+  collecter: MyString
+  year: 1
+  month: 1
+  day: 1
+  sex: MyString
+  preparation_type: MyString
+  disposition: MyString
+  sampling_protocol: MyString
+  sampling_effort: MyText
+  lifestage: MyString
+  establishment_means: MyString
+  rights: MyString
+  note: MyText
+  image1: MyString
+  image2: MyString
+  image3: MyString
+  image4: MyString
+  image5: MyString
+  collect_point_info: one
+  collection_settings_info: one
+  custom_taxon_info: one
+  default_taxon_info: one
+  tour: one
+  user: one
+  allow_kojin_shuzo: false
+  published_kojin_shuzo: false
+
+two:
+  date_last_modified: 
+  collection_code: 1
+  identified_by: MyString
+  date_identified: 2024-08-09
+  collecter: MyString
+  year: 1
+  month: 1
+  day: 1
+  sex: MyString
+  preparation_type: MyString
+  disposition: MyString
+  sampling_protocol: MyString
+  sampling_effort: MyText
+  lifestage: MyString
+  establishment_means: MyString
+  rights: MyString
+  note: MyText
+  image1: MyString
+  image2: MyString
+  image3: MyString
+  image4: MyString
+  image5: MyString
+  collect_point_info: two
+  collection_settings_info: two
+  custom_taxon_info: two
+  default_taxon_info: two
+  tour: two
+  user: two
+  allow_kojin_shuzo: false
+  published_kojin_shuzo: false

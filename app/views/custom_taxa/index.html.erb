@@ -1,0 +1,21 @@
+<div class="w-full">
+  <% if notice.present? %>
+    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+  <% end %>
+
+  <% content_for :title, "Custom taxa" %>
+
+  <div class="flex justify-between items-center">
+    <h1 class="font-bold text-4xl">Custom taxa</h1>
+    <%= link_to "New custom taxon", new_custom_taxon_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
+  </div>
+
+  <div id="custom_taxa" class="min-w-full">
+    <% @custom_taxa.each do |custom_taxon| %>
+      <%= render custom_taxon %>
+      <p>
+        <%= link_to "Show this custom taxon", custom_taxon, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+      </p>
+    <% end %>
+  </div>
+</div>
