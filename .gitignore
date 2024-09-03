@@ -31,6 +31,10 @@
 
 /public/assets
 
+!public/media/
+public/media/*
+!public/media/.gitkeep
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
