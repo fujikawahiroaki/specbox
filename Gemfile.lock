@@ -215,7 +215,7 @@ GEM
     parser (3.3.4.2)
       ast (~> 2.4.1)
       racc
-    pg (1.5.7)
+    pg (1.5.9)
     prism (0.30.0)
     psych (5.1.2)
       stringio
@@ -391,7 +391,7 @@ DEPENDENCIES
   jwt
   omniauth-auth0
   omniauth-rails_csrf_protection
-  pg (~> 1.1)
+  pg (~> 1.5)
   puma (>= 5.0)
   rails (~> 7.2.0.rc1)
   repost
