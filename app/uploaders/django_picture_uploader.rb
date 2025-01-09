@@ -13,6 +13,17 @@ class DjangoPictureUploader < CarrierWave::Uploader::Base
     "media/image-#{model.id}"
   end
 
+  def filename
+    if original_filename.present?
+      @filename_uuid ||= SecureRandom.uuid
+      "#{@filename_uuid}.#{file.extension}"
+    end
+  end
+
+  def full_filename(for_file)
+    "#{File.basename(for_file)}"
+  end
+
   def content_type_allowlist
     /image\//
   end

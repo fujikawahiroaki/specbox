@@ -33,17 +33,6 @@ class ToursController < ApplicationController
 
     respond_to do |format|
       if @tour.save
-        if params[:tour][:image1].present?
-          uploaded_file = params[:tour][:image1]
-          image1_id = SecureRandom.uuid.to_s
-          image1_path = "image-#{@tour.id}/#{image1_id}#{File.extname(uploaded_file)}"
-          image_file_path = Rails.root.join("public", "media", image1_path)
-          FileUtils.mkdir_p(File.dirname(image_file_path))
-          File.open(file_path, "wb") do |file|
-            file.write(uploaded_file.read)
-          end
-          @tour.update(image1: image1_path)
-        end
         format.html { redirect_to tour_url(@tour), notice: "Tour was successfully created." }
         format.json { render :show, status: :created, location: @tour }
       else

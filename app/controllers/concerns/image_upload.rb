@@ -9,7 +9,7 @@ module ImageUpload
         image_path = "image-#{model.id}/#{image_id}#{File.extname(uploaded_file)}"
         image_file_path = Rails.root.join("public", "media", image_path)
         FileUtils.mkdir_p(File.dirname(image_file_path))
-        File.open(file_path, "wb") do |file|
+        File.open(image_file_path, "wb") do |file|
           file.write(uploaded_file.read)
         end
         model.update(image1: image_path)
