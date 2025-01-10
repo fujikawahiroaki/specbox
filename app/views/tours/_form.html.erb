@@ -31,48 +31,7 @@
     <%= form.text_area :note, rows: 4, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
-  <% (1..5).each do |i| %>
-    <div class="my-10">
-      <%= form.label "画像#{i}" %>
-      <div class="border border-gray-500 rounded-lg p-4">
-        <div>
-          <%= form.file_field "image#{i}", data: { controller: "preview", action: "change->preview#preview", index: i } %>
-        </div>
-        <div data-container="preview">
-          <div class="my-2">
-            <button type="button"
-                    id="cancel_button<%= i %>"
-                    data-controller="preview"
-                    data-action="click->preview#cancel"
-                    data-index="<%= i %>"
-                    class="hidden inline-block px-4 py-2 bg-gray-200 text-black rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
-              アップロードを取り消し
-            </button>
-          </div>
-        </div>
-        <% if tour.send("image#{i}").present? %>
-          <div>
-            <%= form.check_box "remove_image#{i}" %>
-            <%= form.label "remove_image#{i}", "削除" %>
-          </div>
-          <div class="img-container">
-            <img
-              id="preview_image<%= i %>"
-              src="<%= tour.send("image#{i}").url %>"
-              alt="画像#{i}"
-              class="img-limited"
-              data-original-src="<%= tour.send("image#{i}").url %>">
-          </div>
-        <% else %>
-          <img
-            id="preview_image<%= i %>"
-            src=""
-            alt="画像#{i}"
-            class="img-limited hidden">
-        <% end %>
-      </div>
-    </div>
-  <% end %>
+  <%= render "shared/image_upload", form: form, model: @tour %>
 
   <div class="inline">
     <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
