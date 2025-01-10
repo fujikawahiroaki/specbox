@@ -11,3 +11,9 @@
 }
 
 */
+
+.img-limited {
+  max-height: 200px;
+  display: block;
+  margin-top: 10px;
+}
