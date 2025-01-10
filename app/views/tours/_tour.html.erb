@@ -24,28 +24,6 @@
     <%= tour.note %>
   </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Image1:</strong>
-    <%= image_tag tour.image1.url if tour.image1? %>
-  </p>
+  <%= render partial: "shared/image_modal", locals: {model: tour} %> 
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Image2:</strong>
-    <%= image_tag tour.image2.url if tour.image2? %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Image3:</strong>
-    <%= image_tag tour.image3.url if tour.image3? %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Image4:</strong>
-    <%= image_tag tour.image4.url if tour.image4? %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Image5:</strong>
-    <%= image_tag tour.image5.url if tour.image5? %>
-  </p>
 </div>

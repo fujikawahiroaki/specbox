@@ -21,3 +21,16 @@
 .hidden {
   display: none;
 }
+
+/* サムネイル画像のスタイル */
+.thumbnail {
+  max-width: 300px;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+/* 拡大画像の制限 */
+img.max-w-screen-md {
+  max-width: 90%;
+  max-height: 90%;
+}

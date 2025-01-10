@@ -1,0 +1,12 @@
+<div class="my-10">
+  <% (1..5).each do |i| %>
+    <% if model.send("image#{i}").present? %>
+      <div class="mb-4">
+        <strong class="block font-medium mb-1">画像<%= i %>: 画像クリックで拡大</strong>
+        <%= image_tag model.send("image#{i}").url, alt: "画像#{i}", class: "thumbnail cursor-pointer shadow-md hover:shadow-lg", data: { controller: "lightbox", action: "click->lightbox#open", src: model.send("image#{i}").url } %>
+      </div>
+    <% else %>
+      <strong class="block font-medium mb-1">画像<%= i %>: なし</strong>
+    <% end %>
+  <% end %>
+</div>
