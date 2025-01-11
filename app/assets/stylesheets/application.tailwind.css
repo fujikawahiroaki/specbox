@@ -34,3 +34,12 @@ img.max-w-screen-md {
   max-width: 90%;
   max-height: 90%;
 }
+
+.disabled {
+  background-color: #e5e7eb; /* グレー */
+  cursor: not-allowed;
+}
+
+.text-red-500 {
+  color: #f87171; /* 赤 */
+}

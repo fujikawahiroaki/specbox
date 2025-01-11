@@ -1,4 +1,4 @@
-<%= form_with(model: tour, class: "contents") do |form| %>
+<%= form_with(model: tour, class: "contents", data: {controller: "validation"}) do |form| %>
   <% if tour.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(tour.errors.count, "error") %> prohibited this tour from being saved:</h2>
@@ -13,27 +13,62 @@
 
   <div class="my-5">
     <%= form.label 'タイトル' %>
-    <%= form.text_field :title, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.text_field :title,
+      class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full",
+      data: {validation_target: "input",
+             name: "title",
+             validation_required: "true",
+             validation_message_required: "タイトルは必須です",
+             validation_max_length: "30",
+             validation_message_length: "タイトルは30文字以下にしてください"
+      }
+    %>
+    <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
   </div>
 
   <div class="my-5">
     <%= form.label '開始日' %>
-    <%= form.date_field :start_date, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.date_field :start_date,
+      class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full",
+      data: {validation_target: "input",
+             name: "start_date",
+             validation_required: "true",
+             validation_message_required: "開始日は必須です"
+      }
+    %>
+    <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
   </div>
 
   <div class="my-5">
     <%= form.label '終了日' %>
-    <%= form.date_field :end_date, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.date_field :end_date,
+      class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full",
+      data: {validation_target: "input",
+             name: "end_date",
+             validation_required: "true",
+             validation_message_required: "終了日は必須です"
+      }
+    %>
+    <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
   </div>
 
   <div class="my-5">
     <%= form.label '備考' %>
-    <%= form.text_area :note, rows: 4, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.text_area :note,
+      rows: 4,
+      class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full",
+      data: {validation_target: "input",
+             name: "note",
+             validation_max_length: "200",
+             validation_message_length: "備考は200文字以下にしてください"
+      }
+    %>
+    <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
   </div>
 
   <%= render "shared/image_upload", form: form, model: @tour %>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer btn btn-primary", data: {validation_target: "submit"} %>
   </div>
 <% end %>
