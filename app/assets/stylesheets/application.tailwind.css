@@ -43,3 +43,7 @@ img.max-w-screen-md {
 .text-red-500 {
   color: #f87171; /* 赤 */
 }
+
+.denger {
+  @apply bg-red-600 text-white
+}

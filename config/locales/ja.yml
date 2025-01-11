@@ -1,5 +1,9 @@
 ---
 ja:
+  notice:
+    create: 作成に成功しました
+    update: 編集に成功しました
+    destroy: 削除に成功しました
   activerecord:
     errors:
       messages:

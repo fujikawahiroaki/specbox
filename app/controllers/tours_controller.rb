@@ -24,16 +24,13 @@ class ToursController < ApplicationController
   # POST /tours or /tours.json
   def create
     tour_params[:user_id] = current_user_id
-    logger.debug("tour_params!!!!!!!!!!!!!!!!")
-    logger.debug(tour_params)
     tour_params_with_user = tour_params
     tour_params_with_user[:user_id] = current_user_id
-    logger.debug(tour_params_with_user)
     @tour = Tour.new(tour_params_with_user)
 
     respond_to do |format|
       if @tour.save
-        format.html { redirect_to tour_url(@tour), notice: "Tour was successfully created." }
+        format.html { redirect_to tour_url(@tour), notice: t("notice.create") }
         format.json { render :show, status: :created, location: @tour }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -46,7 +43,7 @@ class ToursController < ApplicationController
   def update
     respond_to do |format|
       if @tour.update(tour_params)
-        format.html { redirect_to tour_url(@tour), notice: "Tour was successfully updated." }
+        format.html { redirect_to tour_url(@tour), notice: t("notice.update") }
         format.json { render :show, status: :ok, location: @tour }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -60,7 +57,7 @@ class ToursController < ApplicationController
     @tour.destroy!
 
     respond_to do |format|
-      format.html { redirect_to tours_url, notice: "Tour was successfully destroyed." }
+      format.html { redirect_to tours_url, notice: t("notice.destroy") }
       format.json { head :no_content }
     end
   end

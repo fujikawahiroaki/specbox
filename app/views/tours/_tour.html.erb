@@ -1,27 +1,22 @@
 <div id="<%= dom_id tour %>">
   <p class="my-5">
-    <strong class="block font-medium mb-1">Title:</strong>
+    <strong class="block font-medium mb-1">タイトル:</strong>
     <%= tour.title %>
   </p>
 
   <p class="my-5">
-    <strong class="block font-medium mb-1">Start date:</strong>
+    <strong class="block font-medium mb-1">開始日:</strong>
     <%= tour.start_date %>
   </p>
 
   <p class="my-5">
-    <strong class="block font-medium mb-1">End date:</strong>
+    <strong class="block font-medium mb-1">終了日:</strong>
     <%= tour.end_date %>
   </p>
 
   <p class="my-5">
-    <strong class="block font-medium mb-1">Track:</strong>
-    <%= tour.track %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Note:</strong>
-    <%= tour.note %>
+    <strong class="block font-medium mb-1">備考:</strong>
+    <%= simple_format(tour.note) %>
   </p>
 
   <%= render partial: "shared/image_modal", locals: {model: tour} %> 
