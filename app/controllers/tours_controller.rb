@@ -30,7 +30,7 @@ class ToursController < ApplicationController
 
     respond_to do |format|
       if @tour.save
-        format.html { redirect_to tour_url(@tour), notice: t("notice.create") }
+        format.html { redirect_to tours_url, notice: t("notice.create") }
         format.json { render :show, status: :created, location: @tour }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -43,7 +43,7 @@ class ToursController < ApplicationController
   def update
     respond_to do |format|
       if @tour.update(tour_params)
-        format.html { redirect_to tour_url(@tour), notice: t("notice.update") }
+        format.html { redirect_to tours_url, notice: t("notice.update") }
         format.json { render :show, status: :ok, location: @tour }
       else
         format.html { render :edit, status: :unprocessable_entity }
