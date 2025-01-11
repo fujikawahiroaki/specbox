@@ -15,9 +15,11 @@
   <div id="tours" class="min-w-full">
     <% @tours.each do |tour| %>
       <%= render tour %>
-      <p>
-        <%= link_to "詳細", tour, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-      </p>
+      <div class="flex gap-3 mt-2">
+        <%= link_to "詳細", tour, class: "rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+        <%= link_to "編集", edit_tour_path(tour), class: "rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+        <%= link_to "削除", tour_path(tour), method: :delete, class: "rounded-lg py-3 px-5 bg-red-500 text-white font-medium", data: {turbo_confirm: "本当に削除しますか?", turbo_method: :delete} %>
+      </div>
     <% end %>
   </div>
 </div>
