@@ -42,6 +42,12 @@
     </div>
   <% end %>
 
+  <div class="my-4">
+    <%= sort_link(@search, :title, "タイトル") %>
+    <%= sort_link(@search, :start_date, "開始日") %>
+    <%= sort_link(@search, :end_date, "終了日") %>
+  </div>
+
   <div id="tours" class="min-w-full">
     <% @tours.each do |tour| %>
       <%= render tour %>
