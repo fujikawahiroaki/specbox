@@ -1,5 +1,10 @@
 <div id="<%= dom_id tour %>">
   <p class="my-5">
+    <strong class="block font-medium mb-1">ID:</strong>
+    <%= tour.id %>
+  </p>
+
+  <p class="my-5">
     <strong class="block font-medium mb-1">タイトル:</strong>
     <%= tour.title %>
   </p>
@@ -21,4 +26,8 @@
 
   <%= render partial: "shared/image_modal", locals: {model: tour} %> 
 
+  <p class="my-5">
+    <strong class="block font-medium mb-1">作成日時:</strong>
+    <%= tour.created_at %>
+  </p>
 </div>
