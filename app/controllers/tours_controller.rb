@@ -4,7 +4,9 @@ class ToursController < ApplicationController
 
   # GET /tours or /tours.json
   def index
-    @tours = Tour.page(params[:page])
+    @search = Tour.ransack(params[:q])
+    @search.sorts = 'created_at desc' if @search.sorts.empty?
+    @tours = @search.result.page(params[:page])
   end
 
   # GET /tours/1 or /tours/1.json

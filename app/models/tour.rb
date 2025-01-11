@@ -21,4 +21,12 @@ class Tour < ApplicationRecord
   attribute :image3, :string, default: ""
   attribute :image4, :string, default: ""
   attribute :image5, :string, default: ""
+
+  def self.ransackable_attributes(auth_object = nil)
+    [ "created_at", "end_date", "id", "image1", "image2", "image3", "image4", "image5", "note", "start_date", "title", "track" ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
 end
