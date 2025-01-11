@@ -47,3 +47,11 @@ img.max-w-screen-md {
 .denger {
   @apply bg-red-600 text-white
 }
+
+#flash-message {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  transition: opacity 0.3s ease;
+}
