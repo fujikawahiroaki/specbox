@@ -16,6 +16,7 @@
     <%= form.text_field :title,
       class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full",
       data: {validation_target: "input",
+             validation_type: "string",
              name: "title",
              validation_required: "true",
              validation_message_required: "タイトルは必須です",
@@ -31,9 +32,11 @@
     <%= form.date_field :start_date,
       class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full",
       data: {validation_target: "input",
+             validation_type: "date",
              name: "start_date",
              validation_required: "true",
-             validation_message_required: "開始日は必須です"
+             validation_message_required: "開始日は必須です",
+             validation_message_invalid: "無効な日付です"
       }
     %>
     <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
@@ -44,9 +47,11 @@
     <%= form.date_field :end_date,
       class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full",
       data: {validation_target: "input",
+             validation_type: "date",
              name: "end_date",
              validation_required: "true",
-             validation_message_required: "終了日は必須です"
+             validation_message_required: "終了日は必須です",
+             validation_message_invalid: "無効な日付です"
       }
     %>
     <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
@@ -58,6 +63,7 @@
       rows: 4,
       class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full",
       data: {validation_target: "input",
+             validation_type: "string",
              name: "note",
              validation_max_length: "200",
              validation_message_length: "備考は200文字以下にしてください"
