@@ -4,7 +4,7 @@ class ToursController < ApplicationController
 
   # GET /tours or /tours.json
   def index
-    @tours = Tour.where(user_id: current_user_id).all
+    @tours = Tour.page(params[:page])
   end
 
   # GET /tours/1 or /tours/1.json
