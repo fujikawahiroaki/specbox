@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <title><%= content_for(:title) || "Specbox" %></title>
+    <title>WebSpecimanager</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta http-equiv="content-language" content="ja">
@@ -27,7 +27,9 @@
         <%= link_to root_path, class: "flex items-center space-x-2 relative",
           data: {
             controller: "tooltip",
-            action: "mouseover->tooltip#show mouseout->tooltip#hide"
+            action: "mouseover->tooltip#show mouseout->tooltip#hide",
+            turbo_frame: "content-zone",
+            turbo_action: "advance"
           } do %>
           <span class="emoji text-white text-3xl">🏠</span>
           <span class="text-link">ダッシュボード</span>
@@ -43,7 +45,9 @@
         <%= link_to tours_path, class: "flex items-center space-x-2 relative",
           data: {
             controller: "tooltip",
-            action: "mouseover->tooltip#show mouseout->tooltip#hide"
+            action: "mouseover->tooltip#show mouseout->tooltip#hide",
+            turbo_frame: "content-zone",
+            turbo_action: "advance"
           } do %>
           <span class="emoji text-white text-3xl">🚗</span>
           <span class="text-link">採集行</span>
@@ -63,15 +67,7 @@
         <button data-action="click->sidebar#toggle" class="text-white">☰</button>
         <div class="text-xl">
           WebSpecimanager
-          <% if current_page?(root_path) %>
-            ダッシュボード
-          <% elsif current_page?(tours_path) %>
-            採集行
-          <% else %>
-            管理画面
-          <% end %>
         </div>
-
         <div>
           <% unless session['credentials'] %>
             <%= button_to 'ログイン', '/auth/auth0', params: {prompt: 'login'}, data: {turbo: "false"} %>
@@ -83,7 +79,9 @@
 
       <!-- コンテンツゾーン -->
       <div class="flex-1 p-6 mt-16" id="main-content">
-        <%= yield %>
+        <%= turbo_frame_tag "content-zone" do %>
+          <%= yield %>
+        <% end %>
       </div>
     </div>
   </body>

@@ -5,13 +5,22 @@ class ToursController < ApplicationController
   # GET /tours or /tours.json
   def index
     @search = Tour.ransack(params[:q])
-    @search.sorts = 'created_at desc' if @search.sorts.empty?
-    @tours = @search.result.page(params[:page])
+    @search.sorts = "created_at desc" if @search.sorts.empty?
+
+    if params[:sort].present? && params[:direction].present?
+      @tours = Tour.order("#{params[:sort]} #{params[:direction]}").page(params[:page])
+    else
+      @tours = @search.result.page(params[:page])
+    end
   end
 
   # GET /tours/1 or /tours/1.json
   def show
     Tour.where(user_id: current_user_id).find(params[:id])
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   # GET /tours/new
@@ -57,10 +66,19 @@ class ToursController < ApplicationController
   # DELETE /tours/1 or /tours/1.json
   def destroy
     @tour.destroy!
+    # 削除前にリファラーを確認して分岐
+    was_on_show = request.referer&.include?("/tours/#{@tour.id}")
 
     respond_to do |format|
       format.html { redirect_to tours_url, notice: t("notice.destroy") }
       format.json { head :no_content }
+      format.turbo_stream do
+        if was_on_show
+          redirect_to tours_path, notice: t("notice.destroy")
+        else
+          render turbo_stream: turbo_stream.remove(@tour)
+        end
+      end
     end
   end
 

@@ -34,4 +34,12 @@ class ApplicationController < ActionController::Base
   def decoded_id_token
     JWT.decode(session[:credentials][:id_token], nil, false)[0].deep_symbolize_keys
   end
+
+  def toggle_direction(column)
+    if params[:sort] == column && params[:direction] == "asc"
+      "desc"
+    else
+      "asc"
+    end
+  end
 end

@@ -1,0 +1,28 @@
+<% @tours.each do |tour| %>
+  <tr id="tour_<%= tour.id %>" class="hover:bg-gray-100" >
+    <!-- turbo_stream_from で削除対象の行を監視 -->
+    <%= turbo_stream_from "tour_#{tour.id}" %>
+
+    <td class="px-4 py-2 border border-gray-300"><%= tour.id %></td>
+    <td class="px-4 py-2 border border-gray-300"><%= tour.title %></td>
+    <td class="px-4 py-2 border border-gray-300"><%= tour.start_date %></td>
+    <td class="px-4 py-2 border border-gray-300"><%= tour.end_date %></td>
+    <td class="px-4 py-2 border border-gray-300"><%= tour.created_at %></td> <!-- 作成日 -->
+    <td class="px-4 py-2 border border-gray-300">
+      <div class="flex gap-3 mt-2 flex-col sm:flex-row">
+        <!-- 詳細リンク (ページ遷移) -->
+        <%= link_to "詳細", tour, class: "rounded-lg py-1 px-3 bg-gray-100 text-sm font-medium",
+          data: { turbo_frame: "content-zone", turbo_action: "advance" }
+        %>
+
+        <!-- 編集リンク (ページ遷移) -->
+        <%= link_to "編集", edit_tour_path(tour), class: "rounded-lg py-1 px-3 bg-gray-100 text-sm font-medium",
+          data: { turbo_frame: "content-zone", turbo_action: "advance" }
+        %>
+
+        <!-- 削除リンク (Turbo Stream で削除) -->
+        <%= link_to "削除", tour_path(tour), method: :delete, class: "rounded-lg py-1 px-3 bg-red-500 text-white text-sm font-medium", data: { turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_stream: "tour_#{tour.id}" } %>
+      </div>
+    </td>
+  </tr>
+<% end %>
