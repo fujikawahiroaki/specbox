@@ -55,3 +55,50 @@ img.max-w-screen-md {
   width: 100%;
   transition: opacity 0.3s ease;
 }
+
+@layer components {
+  /* サイドバーの開閉 */
+  #sidebar {
+    @apply overflow-hidden;
+  }
+
+  /* サイドバーが閉じている時 */
+  .sidebar-closed {
+    @apply w-12; /* 幅を小さくして絵文字を表示 (48px) */
+  }
+
+  /* サイドバーが開いている時 */
+  .sidebar-open {
+    @apply w-56; /* 幅を広げてコンテンツを表示 (224px) */
+  }
+
+  /* 絵文字の表示調整 */
+  .emoji {
+    @apply block text-center m-0;
+    @apply cursor-pointer;
+    position: relative;
+  }
+
+  /* サイドバーが開いている時のテキスト表示 */
+  .sidebar-open .text-link {
+    @apply block;
+  }
+
+  .sidebar-closed .text-link {
+    @apply hidden;
+  }
+
+  /* メインコンテンツの調整 */
+  #main-content {
+    @apply ml-12;
+  }
+
+  .sidebar-open + #main-content {
+    @apply ml-56;
+  }
+}
+
+.tooltip {
+  white-space: nowrap;
+  pointer-events: none;
+}

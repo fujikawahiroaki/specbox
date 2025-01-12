@@ -19,9 +19,72 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
-      <%= yield %>
-    </main>
+  <body class="flex h-screen" data-controller="sidebar">
+    <!-- サイドバー -->
+    <div id="sidebar" class="bg-gray-800 text-white w-50 space-y-6 py-7 px-2 sidebar-open fixed top-12 left-0 bottom-0 transition-transform ease-in-out duration-300 z-40" data-sidebar-target="sidebar">
+
+      <div class="relative">
+        <%= link_to root_path, class: "flex items-center space-x-2 relative",
+          data: {
+            controller: "tooltip",
+            action: "mouseover->tooltip#show mouseout->tooltip#hide"
+          } do %>
+          <span class="emoji text-white text-3xl">🏠</span>
+          <span class="text-link">ダッシュボード</span>
+          <!-- ツールチップ -->
+          <span data-tooltip-target="tooltip"
+                class="absolute hidden bg-gray-800 text-white text-xs rounded p-1 z-50 pointer-events-none">
+            ダッシュボード
+          </span>
+        <% end %>
+      </div>
+
+      <div class="relative">
+        <%= link_to tours_path, class: "flex items-center space-x-2 relative",
+          data: {
+            controller: "tooltip",
+            action: "mouseover->tooltip#show mouseout->tooltip#hide"
+          } do %>
+          <span class="emoji text-white text-3xl">🚗</span>
+          <span class="text-link">採集行</span>
+          <!-- ツールチップ -->
+          <span data-tooltip-target="tooltip"
+                class="absolute hidden bg-gray-800 text-white text-xs rounded p-1 z-50 pointer-events-none">
+            採集行
+          </span>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div class="content flex-1 flex flex-col transition-all duration-300 ml-12 p-4" id="main-content">
+      <!-- トップバー -->
+      <div class="bg-gray-900 text-white flex justify-between items-center px-4 py-3 fixed top-0 left-0 w-full z-50">
+        <button data-action="click->sidebar#toggle" class="text-white">☰</button>
+        <div class="text-xl">
+          WebSpecimanager
+          <% if current_page?(root_path) %>
+            ダッシュボード
+          <% elsif current_page?(tours_path) %>
+            採集行
+          <% else %>
+            管理画面
+          <% end %>
+        </div>
+
+        <div>
+          <% unless session['credentials'] %>
+            <%= button_to 'ログイン', '/auth/auth0', params: {prompt: 'login'}, data: {turbo: "false"} %>
+          <% else %>
+            <%= button_to 'ログアウト', '/auth/logout', method: :get, data: { turbo: false } %>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- コンテンツゾーン -->
+      <div class="flex-1 p-6 mt-16" id="main-content">
+        <%= yield %>
+      </div>
+    </div>
   </body>
 </html>

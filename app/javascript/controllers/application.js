@@ -3,6 +3,8 @@ import PreviewController from "./preview_controller";
 import LightBoxController from "./lightbox_controller";
 import ValidationController from "./validation_controller";
 import FlashController from "./flash_controller";
+import SideBarController from "./sidebar_controller";
+import TooltipController from "./tooltip_controller";
 
 const application = Application.start();
 
@@ -14,5 +16,7 @@ application.register("preview", PreviewController);
 application.register("lightbox", LightBoxController);
 application.register("validation", ValidationController);
 application.register("flash", FlashController);
+application.register("sidebar", SideBarController);
+application.register("tooltip", TooltipController);
 
 export { application };
