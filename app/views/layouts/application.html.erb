@@ -11,9 +11,8 @@
     <%= yield :head %>
 
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="icon" href="<%= asset_path('favicon.ico') %>" type="image/x-icon">
+    <link rel="apple-touch-icon" href="<%= asset_path('favicon.ico') %>">
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -21,7 +20,7 @@
 
   <body class="flex h-screen" data-controller="sidebar">
     <!-- サイドバー -->
-    <div id="sidebar" class="bg-gray-800 text-white w-50 space-y-6 py-7 px-2 sidebar-open fixed top-12 left-0 bottom-0 transition-transform ease-in-out duration-300 z-40" data-sidebar-target="sidebar">
+    <div id="sidebar" class="bg-white shadow-2xl text-black w-50 space-y-6 py-7 px-2 sidebar-open fixed top-12 left-0 bottom-0 transition-transform ease-in-out duration-300 z-40" data-sidebar-target="sidebar">
 
       <div class="relative">
         <%= link_to root_path, class: "flex items-center space-x-2 relative",
@@ -31,7 +30,7 @@
             turbo_frame: "content-zone",
             turbo_action: "advance"
           } do %>
-          <span class="emoji text-white text-3xl">🏠</span>
+          <span class="emoji text-white text-3xl">🖥️</span>
           <span class="text-link">ダッシュボード</span>
           <!-- ツールチップ -->
           <span data-tooltip-target="tooltip"
@@ -63,12 +62,14 @@
     <!-- メインコンテンツ -->
     <div class="content flex-1 flex flex-col transition-all duration-300 ml-12 p-4" id="main-content">
       <!-- トップバー -->
-      <div class="bg-gray-900 text-white flex justify-between items-center px-4 py-3 fixed top-0 left-0 w-full z-50">
-        <button data-action="click->sidebar#toggle" class="text-white">☰</button>
-        <div class="text-xl">
+      <div class="bg-gray-100 shadow-xl text-black flex justify-between items-center px-4 py-3 fixed top-0 left-0 w-full z-50">
+        <button data-action="click->sidebar#toggle" class="text-black font-black">☰</button>
+        <div class="flex items-center text-2xl font-black">
+          <!-- アイコン -->
+          <img src="<%= asset_path('logo192.png') %>" alt="アイコン" class="h-10 w-10 mr-2">
           WebSpecimanager
         </div>
-        <div>
+        <div class="text-sm">
           <% unless session['credentials'] %>
             <%= button_to 'ログイン', '/auth/auth0', params: {prompt: 'login'}, data: {turbo: "false"} %>
           <% else %>

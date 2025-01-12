@@ -47,11 +47,11 @@
     <% end %>
 
     <div class="my-4">
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto shadow-lg rounded bg-white">
         <%= turbo_frame_tag "tour_table" do %>
           <table class="text-sm min-w-full table-auto border-collapse">
             <thead>
-              <tr class="bg-gray-200">
+              <tr class="bg-gray-100">
                 <th class="px-4 py-2 border border-gray-300 text-left">
                   <%= link_to tours_path(sort: 'id', direction: toggle_direction('id')), class: "font-bold text-blue-600 flex items-center" do %>
                     ID
