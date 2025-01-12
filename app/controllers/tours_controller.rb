@@ -4,6 +4,9 @@ class ToursController < ApplicationController
 
   # GET /tours or /tours.json
   def index
+    session[:visible_columns] ||= %w[title start_date end_date created_at]
+    @visible_columns = session[:visible_columns]
+
     @search = Tour.ransack(params[:q])
     @search.sorts = "created_at desc" if @search.sorts.empty?
 
@@ -78,6 +81,17 @@ class ToursController < ApplicationController
         else
           render turbo_stream: turbo_stream.remove(@tour)
         end
+      end
+    end
+  end
+
+  def update_columns
+    session[:visible_columns] = params[:columns] || []
+    @visible_columns = session[:visible_columns] # 更新後のカラムを再設定
+    @tours = Tour.ransack(params[:q]).result.page(params[:page]) # 必要に応じて検索結果を更新
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update("tour_table", partial: "tours/table", locals: { tours: @tours, visible_columns: @visible_columns })
       end
     end
   end
