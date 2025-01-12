@@ -9,17 +9,17 @@
     <% content_for :title, "Tours" %>
 
     <div class="flex justify-between items-center mb-4">
-      <h1 class="font-bold text-4xl">採集行</h1>
+      <h1 class="font-bold text-2xl">採集行</h1>
       <%= link_to "作成", new_tour_path,
-        class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium",
+        class: "text-sm rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium",
         data: { turbo_frame: "content-zone", turbo_action: "advance" }
       %>
     </div>
 
     <%= search_form_for @search do |form| %>
       <div class="my-2">
-      <%= form.submit class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
-      <%= link_to "クリア", tours_path, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
+      <%= form.submit class: "text-sm rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
+      <%= link_to "クリア", tours_path, class: "text-sm rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
       </div>
 
       <div class="flex flex-wrap gap-4">
@@ -49,7 +49,7 @@
     <div class="my-4">
       <div class="overflow-x-auto">
         <%= turbo_frame_tag "tour_table" do %>
-          <table class="min-w-full table-auto border-collapse">
+          <table class="text-sm min-w-full table-auto border-collapse">
             <thead>
               <tr class="bg-gray-200">
                 <th class="px-4 py-2 border border-gray-300 text-left">
