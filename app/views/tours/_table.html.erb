@@ -4,7 +4,7 @@
       <% visible_columns.each do |col| %>
         <th class="px-4 py-2 border border-gray-300 text-left">
           <%= link_to tours_path(sort: col, direction: toggle_direction(col)), class: "font-bold text-blue-600 flex items-center" do %>
-            <%= { "id" => "ID", "title" => "タイトル", "start_date" => "開始日", "end_date" => "終了日", "created_at" => "更新日", "note" => "備考" }[col] %>
+            <%= { "id" => "ID", "title" => "タイトル", "start_date" => "開始日", "end_date" => "終了日", "formatted_created_at" => "更新日時", "note" => "備考" }[col] %>
             <%= sort_icon(col) %>
           <% end %>
         </th>

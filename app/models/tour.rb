@@ -22,11 +22,19 @@ class Tour < ApplicationRecord
   attribute :image4, :string, default: ""
   attribute :image5, :string, default: ""
 
+  ransacker :created_at_date do
+    Arel.sql("DATE(created_at)")
+  end
+
   def self.ransackable_attributes(auth_object = nil)
-    [ "created_at", "end_date", "id", "image1", "image2", "image3", "image4", "image5", "note", "start_date", "title", "track" ]
+    [ "created_at", "end_date", "id", "image1", "image2", "image3", "image4", "image5", "note", "start_date", "title", "track", "created_at_date" ]
   end
 
   def self.ransackable_associations(auth_object = nil)
     []
+  end
+
+  def formatted_created_at
+    created_at.strftime("%Y-%m-%d %H:%M:%S") if created_at
   end
 end

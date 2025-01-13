@@ -43,6 +43,10 @@
           <%= form.label '終了日(完全一致)', class: "block" %>
           <%= form.date_field :end_date_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
         </div>
+        <div class="w-[150px]">
+          <%= form.label '更新日時(日付一致)', class: "block" %>
+          <%= form.date_field :created_at_date_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+        </div>
       </div>
     <% end %>
 
@@ -57,7 +61,7 @@
            data-table-column-target="dropdown" 
            data-action="click->table-column#keepDropdownOpen">
         <form method="post" action="<%= update_columns_tours_path %>" data-action="submit->table-column#closeDropdown" data-turbo="true">
-          <% columns = { id: 'ID', title: 'タイトル', start_date: '開始日', end_date: '終了日', created_at: '更新日', note: '備考' } %>
+          <% columns = { id: 'ID', title: 'タイトル', start_date: '開始日', end_date: '終了日', formatted_created_at: '更新日時', note: '備考' } %>
           <% columns.each do |col, name| %>
             <div>
               <label>
