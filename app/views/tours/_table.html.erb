@@ -2,10 +2,22 @@
   <thead>
     <tr class="bg-gray-100">
       <% visible_columns.each do |col| %>
+        <% sort_col = col == "formatted_created_at" ? "created_at" : col %>
         <th class="px-4 py-2 border border-gray-300 text-left">
-          <%= link_to tours_path(sort: col, direction: toggle_direction(col)), class: "font-bold text-blue-600 flex items-center" do %>
-            <%= { "id" => "ID", "title" => "タイトル", "start_date" => "開始日", "end_date" => "終了日", "formatted_created_at" => "更新日時", "note" => "備考" }[col] %>
-            <%= sort_icon(col) %>
+          <%= link_to tours_path(sort: sort_col, direction: toggle_direction(sort_col)),
+            data: {
+              controller: "tooltip",
+              action: "mouseover->tooltip#show mouseout->tooltip#hide",
+              turbo_frame: "content-zone",
+            }, 
+            class: "font-bold text-blue-600 flex items-center" do %>
+            <%= { "title" => "タイトル", "start_date" => "開始日", "end_date" => "終了日", "formatted_created_at" => "更新日時", "note" => "備考" }[col] %>
+            <%= sort_icon(sort_col) %>
+            <!-- ツールチップ -->
+            <span data-tooltip-target="tooltip"
+                  class="absolute hidden bg-gray-800 text-white text-xs rounded p-1 z-50 pointer-events-none">
+              列クリックで並べ替え
+            </span>
           <% end %>
         </th>
       <% end %>

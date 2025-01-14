@@ -16,67 +16,66 @@
       %>
     </div>
 
-    <%= search_form_for @search do |form| %>
-      <div class="my-2">
-        <%= form.submit class: "text-sm rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
-        <%= link_to "クリア", tours_path, class: "text-sm rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
-      </div>
 
-      <div class="flex flex-wrap gap-4">
-        <div class="w-[400px]">
-          <%= form.label :id, 'ID', class: "block" %>
-          <%= form.search_field :id_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+    <div class="border border-gray-500 rounded-lg p-4">
+      <%= search_form_for @search do |form| %>
+        <div class="my-2">
+          <%= form.submit class: "text-sm rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
+          <%= link_to "クリア", tours_path, class: "text-sm rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
         </div>
-        <div class="w-[300px]">
-          <%= form.label 'タイトル(あいまい)', class: "block" %>
-          <%= form.search_field :title_cont, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-        </div>
-        <div class="w-[300px]">
-          <%= form.label 'タイトル(完全一致)', class: "block" %>
-          <%= form.search_field :title_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-        </div>
-        <div class="w-[150px]">
-          <%= form.label '開始日(完全一致)', class: "block" %>
-          <%= form.date_field :start_date_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-        </div>
-        <div class="w-[150px]">
-          <%= form.label '終了日(完全一致)', class: "block" %>
-          <%= form.date_field :end_date_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-        </div>
-        <div class="w-[150px]">
-          <%= form.label '更新日時(日付一致)', class: "block" %>
-          <%= form.date_field :created_at_date_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-        </div>
-      </div>
-    <% end %>
 
-    <div class="my-4 relative inline-block" data-controller="table-column">
-      <!-- ボタンをクリックでドロップダウンをトグル -->
-      <button class="bg-gray-100 px-4 py-2 rounded-md" data-action="click->table-column#toggleDropdown">
-        表示項目を選択
-      </button>
-
-      <!-- ドロップダウンメニュー -->
-      <div class="absolute top-full left-0 bg-white shadow-lg border mt-2 p-4 hidden" 
-           data-table-column-target="dropdown" 
-           data-action="click->table-column#keepDropdownOpen">
-        <form method="post" action="<%= update_columns_tours_path %>" data-action="submit->table-column#closeDropdown" data-turbo="true">
-          <% columns = { id: 'ID', title: 'タイトル', start_date: '開始日', end_date: '終了日', formatted_created_at: '更新日時', note: '備考' } %>
-          <% columns.each do |col, name| %>
-            <div>
-              <label>
-                <input type="checkbox" name="columns[]" value="<%= col %>" <%= @visible_columns.include?(col.to_s) ? 'checked' : '' %>>
-                <%= name %>
-              </label>
-            </div>
-          <% end %>
-          <button type="submit" class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">更新</button>
-        </form>
-      </div>
+        <div class="flex flex-wrap gap-4">
+          <div class="w-[300px]">
+            <%= form.label 'タイトル(あいまい)', class: "block" %>
+            <%= form.search_field :title_cont, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+          </div>
+          <div class="w-[300px]">
+            <%= form.label 'タイトル(完全一致)', class: "block" %>
+            <%= form.search_field :title_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+          </div>
+          <div class="w-[150px]">
+            <%= form.label '開始日(完全一致)', class: "block" %>
+            <%= form.date_field :start_date_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+          </div>
+          <div class="w-[150px]">
+            <%= form.label '終了日(完全一致)', class: "block" %>
+            <%= form.date_field :end_date_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+          </div>
+          <div class="w-[150px]">
+            <%= form.label '更新日時(日付一致)', class: "block" %>
+            <%= form.date_field :created_at_date_eq, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+          </div>
+        </div>
+      <% end %>
     </div>
 
     <div class="my-4">
       <div class="overflow-x-auto shadow-lg rounded bg-white">
+        <div class="relative inline-block" data-controller="table-column">
+          <!-- ボタンをクリックでドロップダウンをトグル -->
+          <button class="bg-gray-100 px-4 py-2 rounded-md" data-action="click->table-column#toggleDropdown">
+            表示項目を選択 ▼
+          </button>
+
+          <!-- ドロップダウンメニュー -->
+          <div class="absolute top-full left-0 bg-white shadow-lg border mt-2 p-4 hidden" 
+               data-table-column-target="dropdown" 
+               data-action="click->table-column#keepDropdownOpen">
+            <form method="post" action="<%= update_columns_tours_path %>" data-action="submit->table-column#closeDropdown" data-turbo="true">
+              <% columns = { title: 'タイトル', start_date: '開始日', end_date: '終了日', formatted_created_at: '更新日時', note: '備考' } %>
+              <% columns.each do |col, name| %>
+                <div>
+                  <label>
+                    <input type="checkbox" name="columns[]" value="<%= col %>" <%= @visible_columns.include?(col.to_s) ? 'checked' : '' %>>
+                    <%= name %>
+                  </label>
+                </div>
+              <% end %>
+              <button type="submit" class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">更新</button>
+            </form>
+          </div>
+        </div>
+
         <%= turbo_frame_tag "tour_table" do %>
           <%= render "tours/table", tours: @tours, visible_columns: @visible_columns %>
         <% end %>
