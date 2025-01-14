@@ -13,7 +13,7 @@ export default class extends Controller {
       preview = document.createElement("img");
       preview.id = `preview_image${index}`;
       preview.classList.add("img-limited");
-      input.parentElement.insertAdjacentElement("beforebegin", preview); // ファイル入力フィールドの前に挿入
+      input.parentElement.insertAdjacentElement("afterend", preview); // ファイル入力フィールドの後に挿入
     }
 
     const file = input.files[0]; // 選択されたファイルを取得
