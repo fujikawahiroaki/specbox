@@ -21,7 +21,7 @@
       <%= search_form_for @search do |form| %>
         <div class="my-2">
           <%= form.submit class: "text-sm rounded-lg py-2 px-2 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
-          <%= link_to "クリア", tours_path, class: "text-sm rounded-lg py-2 px-2 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
+          <%= clear_filter title: "クリア", class: "text-sm rounded-lg py-2 px-2 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
         </div>
 
         <div class="flex flex-wrap gap-4">
