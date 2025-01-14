@@ -4,7 +4,7 @@ class ToursController < ApplicationController
 
   # GET /tours or /tours.json
   def list
-    session[:visible_columns] ||= %w[title start_date end_date formatted_created_at]
+    session[:visible_columns] ||= default_visible_columns
     @visible_columns = session[:visible_columns]
 
     @search = Tour.ransack(params[:q])
@@ -87,6 +87,10 @@ class ToursController < ApplicationController
         end
       end
     end
+  end
+
+  def default_visible_columns
+    %w[title start_date end_date]
   end
 
   def update_columns
