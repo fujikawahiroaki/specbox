@@ -82,9 +82,11 @@
 
       <!-- コンテンツゾーン -->
       <div class="flex-1 pr-4 mt-24" id="main-content">
-        <%= turbo_frame_tag "content-zone" do %>
-          <%= yield %>
-        <% end %>
+        <div class="mb-8">
+          <%= turbo_frame_tag "content-zone" do %>
+            <%= yield %>
+          <% end %>
+        </div?
       </div>
     </div>
   </body>
