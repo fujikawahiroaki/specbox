@@ -20,7 +20,7 @@
 
   <body class="flex h-screen" data-controller="sidebar">
     <!-- サイドバー -->
-    <div id="sidebar" class="bg-white shadow-2xl text-black w-50 space-y-2 py-7 px-2 sidebar-open fixed top-12 left-0 bottom-0 transition-transform ease-in-out duration-300 z-40" data-sidebar-target="sidebar">
+    <div id="sidebar" class="bg-white shadow-xl text-black w-50 space-y-2 py-7 px-2 sidebar-open fixed top-12 left-0 bottom-0 transition-transform ease-in-out duration-300 z-40" data-sidebar-target="sidebar">
 
       <div class="relative">
         <%= link_to root_path, class: "flex items-center space-x-2 relative",
@@ -62,9 +62,9 @@
     </div>
 
     <!-- メインコンテンツ -->
-    <div class="content flex-1 flex flex-col transition-all duration-300 ml-12 p-4" id="main-content">
+    <div class="content flex-1 flex flex-col transition-all duration-300" id="main-content">
       <!-- トップバー -->
-      <div class="bg-gray-100 shadow-xl text-black flex justify-between items-center px-4 py-3 fixed top-0 left-0 w-full z-50">
+      <div class="bg-gray-100 shadow-lg text-black flex justify-between items-center px-4 py-3 fixed top-0 left-0 w-full z-50">
         <button data-action="click->sidebar#toggle" class="text-black font-black">☰</button>
         <div class="flex items-center text-2xl font-black">
           <!-- アイコン -->
@@ -81,7 +81,7 @@
       </div>
 
       <!-- コンテンツゾーン -->
-      <div class="flex-1 p-6 mt-16" id="main-content">
+      <div class="flex-1 pr-4 mt-24" id="main-content">
         <%= turbo_frame_tag "content-zone" do %>
           <%= yield %>
         <% end %>
