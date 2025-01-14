@@ -1,7 +1,7 @@
 <% (1..5).each do |i| %>
   <div class="my-10">
     <%= form.label "画像#{i}" %>
-    <div class="border border-gray-500 rounded-lg p-4">
+    <div class="border border-gray-500 rounded-lg p-4 w-auto">
       <div>
         <%= form.file_field "image#{i}", data: { controller: "preview", action: "change->preview#preview", index: i } %>
       </div>
@@ -27,7 +27,7 @@
             id="preview_image<%= i %>"
             src="<%= model.send("image#{i}").url %>"
             alt="画像#{i}"
-            class="img-limited"
+            class="thumbnail"
             data-original-src="<%= model.send("image#{i}").url %>">
         </div>
       <% else %>
@@ -35,7 +35,7 @@
           id="preview_image<%= i %>"
           src=""
           alt="画像#{i}"
-          class="img-limited hidden">
+          class="thumbnail hidden">
       <% end %>
     </div>
   </div>

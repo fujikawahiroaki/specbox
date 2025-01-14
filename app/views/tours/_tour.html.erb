@@ -1,28 +1,32 @@
-<div id="<%= dom_id tour %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">タイトル:</strong>
-    <%= tour.title %>
-  </p>
+<div id="<%= dom_id tour %>" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">タイトル:</strong>
+      <%= tour.title %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">開始日:</strong>
-    <%= tour.start_date %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">開始日:</strong>
+      <%= tour.start_date %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">終了日:</strong>
-    <%= tour.end_date %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">終了日:</strong>
+      <%= tour.end_date %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">備考:</strong>
-    <%= simple_format(tour.note) %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">備考:</strong>
+      <%= simple_format(tour.note) %>
+    </p>
 
-  <%= render partial: "shared/image_modal", locals: {model: tour} %> 
+    <p class="my-5">
+      <strong class="block font-medium mb-1">作成日時:</strong>
+      <%= tour.formatted_created_at %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">作成日時:</strong>
-    <%= tour.formatted_created_at %>
-  </p>
+  <div>
+    <%= render partial: "shared/image_modal", locals: {model: tour} %> 
+  </div>
 </div>

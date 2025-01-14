@@ -1,6 +1,11 @@
+<% if tours.empty? %>
+  <div class="m-12">
+    データが見つかりませんでした
+  </div>
+<% else %>
 <table class="text-sm min-w-full table-auto border-collapse">
   <thead>
-    <tr class="bg-gray-100">
+    <tr class="column-names">
       <% visible_columns.each do |col| %>
         <% sort_col = col == "formatted_created_at" ? "created_at" : col %>
         <th class="px-4 py-2 border border-gray-300 text-left">
@@ -10,7 +15,7 @@
               action: "mouseover->tooltip#show mouseout->tooltip#hide",
               turbo_frame: "content-zone",
             }, 
-            class: "font-bold text-blue-600 flex items-center" do %>
+            class: "font-bold flex items-center" do %>
             <%= { "title" => "タイトル", "start_date" => "開始日", "end_date" => "終了日", "formatted_created_at" => "更新日時", "note" => "備考" }[col] %>
             <%= sort_icon(sort_col) %>
             <!-- ツールチップ -->
@@ -26,7 +31,7 @@
   </thead>
   <tbody>
     <% tours.each do |tour| %>
-      <tr id="tour_<%= tour.id %>" class="hover:bg-gray-100">
+      <tr id="tour_<%= tour.id %>" class="row-hover">
         <!-- turbo_stream_from で削除対象の行を監視 -->
         <%= turbo_stream_from "tour_#{tour.id}" %>
 
@@ -34,17 +39,17 @@
           <td class="px-4 py-2 border border-gray-300"><%= tour.send(col) %></td>
         <% end %>
         <td class="px-4 py-2 border border-gray-300">
-          <div class="flex gap-3 mt-2 flex-col sm:flex-row">
+          <div class="flex gap-3 flex-col sm:flex-row">
             <!-- 詳細リンク (ページ遷移) -->
-            <%= link_to "詳細", tour, class: "rounded-lg py-1 px-3 bg-gray-100 text-sm font-medium",
+            <%= link_to "詳細", tour, class: "rounded-lg py-1 px-3 text-sm font-medium normal-button",
               data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
 
             <!-- 編集リンク (ページ遷移) -->
-            <%= link_to "編集", edit_tour_path(tour), class: "rounded-lg py-1 px-3 bg-gray-100 text-sm font-medium",
+            <%= link_to "編集", edit_tour_path(tour), class: "rounded-lg py-1 px-3 text-sm font-medium normal-button",
               data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
 
             <!-- 削除リンク (Turbo Stream で削除) -->
-            <%= link_to "削除", tour_path(tour), method: :delete, class: "rounded-lg py-1 px-3 bg-red-500 text-white text-sm font-medium",
+            <%= link_to "削除", tour_path(tour), method: :delete, class: "rounded-lg py-1 px-3 denger text-white text-sm font-medium",
               data: { turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_stream: "tour_#{tour.id}" } %>
           </div>
         </td>
@@ -52,3 +57,4 @@
     <% end %>
   </tbody>
 </table>
+<% end %>

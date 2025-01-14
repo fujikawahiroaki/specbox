@@ -20,7 +20,7 @@
 
   <body class="flex h-screen" data-controller="sidebar">
     <!-- サイドバー -->
-    <div id="sidebar" class="bg-white shadow-xl text-black w-50 space-y-2 py-7 px-2 sidebar-open fixed top-12 left-0 bottom-0 transition-transform ease-in-out duration-300 z-40" data-sidebar-target="sidebar">
+    <div id="sidebar" class="shadow-xl text-black w-50 space-y-2 py-7 px-2 sidebar-open fixed top-12 left-0 bottom-0 transition-transform ease-in-out duration-300 z-40" data-sidebar-target="sidebar">
 
       <div class="relative">
         <%= link_to root_path, class: "flex items-center space-x-2 relative",
@@ -64,14 +64,14 @@
     <!-- メインコンテンツ -->
     <div class="content flex-1 flex flex-col transition-all duration-300" id="main-content">
       <!-- トップバー -->
-      <div class="bg-gray-100 shadow-lg text-black flex justify-between items-center px-4 py-3 fixed top-0 left-0 w-full z-50">
+      <div class="bg-[#f8fafb] shadow-lg text-black flex justify-between items-center px-4 py-3 fixed top-0 left-0 w-full z-50">
         <button data-action="click->sidebar#toggle" class="text-black font-black">☰</button>
-        <div class="flex items-center text-2xl font-black">
+        <div class="flex items-center text-xl font-black">
           <!-- アイコン -->
           <img src="<%= asset_path('logo192.png') %>" alt="アイコン" class="h-10 w-10 mr-2">
           WebSpecimanager
         </div>
-        <div class="text-sm">
+        <div class="text-xs normal-button">
           <% unless session['credentials'] %>
             <%= button_to 'ログイン', '/auth/auth0', params: {prompt: 'login'}, data: {turbo: "false"} %>
           <% else %>

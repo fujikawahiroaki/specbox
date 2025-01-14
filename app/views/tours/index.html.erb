@@ -11,17 +11,17 @@
     <div class="flex justify-between items-center mb-4">
       <h1 class="font-bold text-2xl">採集行</h1>
       <%= link_to "作成", new_tour_path,
-        class: "text-sm rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium",
+        class: "text-sm rounded-lg py-3 px-5 submit-button text-white block font-medium",
         data: { turbo_frame: "content-zone", turbo_action: "advance" }
       %>
     </div>
 
 
-    <div class="border border-gray-300 rounded-lg mb-8 p-4 text-sm overflow-x-auto shadow-lg rounded-lg bg-white">
+    <div class="border border-gray-300 rounded-lg mb-8 p-4 text-sm overflow-x-auto shadow-lg rounded-lg">
       <%= search_form_for @search do |form| %>
         <div class="my-2">
-          <%= form.submit class: "text-sm rounded-lg py-2 px-2 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
-          <%= clear_filter title: "クリア", class: "text-sm rounded-lg py-2 px-2 bg-gray-100 inline-block font-medium cursor-pointer btn btn-primary" %>
+          <%= form.submit class: "text-sm rounded-lg py-2 px-2 normal-button inline-block font-medium cursor-pointer btn btn-primary" %>
+          <%= clear_filter title: "クリア", class: "text-sm rounded-lg py-2 px-2 normal-button inline-block font-medium cursor-pointer btn btn-primary" %>
         </div>
 
         <div class="flex flex-wrap gap-4">
@@ -52,12 +52,12 @@
     <div class="my-4">
       <div class="relative inline-block" data-controller="table-column">
         <!-- ボタンをクリックでドロップダウンをトグル -->
-        <button class="bg-gray-100 px-4 py-2 rounded-md" data-action="click->table-column#toggleDropdown">
+        <button class="normal-button text-sm px-4 py-2 rounded-md border border-gray" data-action="click->table-column#toggleDropdown">
           表示項目を選択 ▼
         </button>
 
         <!-- ドロップダウンメニュー -->
-        <div class="absolute top-full left-0 bg-white shadow-lg border mt-2 p-4 hidden" 
+        <div class="absolute top-full left-0 normal-button shadow-lg border p-4 hidden bg-[#E9F5F8]" 
              data-table-column-target="dropdown" 
              data-action="click->table-column#keepDropdownOpen">
           <form method="post" action="<%= update_columns_tours_path %>" data-action="submit->table-column#closeDropdown" data-turbo="true">
@@ -65,17 +65,21 @@
             <% columns.each do |col, name| %>
               <div>
                 <label>
-                  <input type="checkbox" name="columns[]" value="<%= col %>" <%= @visible_columns.include?(col.to_s) ? 'checked' : '' %>>
+                  <input
+                    type="checkbox"
+                    name="columns[]"
+                    value="<%= col %>" <%= @visible_columns.include?(col.to_s) ? 'checked' : '' 
+                  %>>
                   <%= name %>
                 </label>
               </div>
             <% end %>
-            <button type="submit" class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">更新</button>
+            <button type="submit" class="mt-2 submit-button text-white px-3 py-1 rounded">更新</button>
           </form>
         </div>
       </div>
 
-      <div class="overflow-x-auto shadow-lg rounded-lg bg-white">
+      <div class="overflow-x-auto shadow-lg rounded-lg">
         <%= turbo_frame_tag "tour_table" do %>
           <%= render "tours/table", tours: @tours, visible_columns: @visible_columns %>
         <% end %>
