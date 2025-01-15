@@ -1,6 +1,6 @@
 <%= turbo_frame_tag "content-zone" do %>
   <div>
-    <h1 class="font-bold text-2xl">ダッシュボード</h1>
+    <h1 class="font-bold text-xl">ダッシュボード</h1>
     <% unless session['credentials'] %>
       <!-- Place a login button anywhere on your application -->
       <%= button_to 'Log In', '/auth/auth0', params: {prompt: 'login'}, data: {turbo: "false"} %>
