@@ -62,7 +62,9 @@ export default class extends Controller {
 
   toggleColumns(visibleColumns) {
     // IDを基にフィールドを表示/非表示
-    const allColumns = document.querySelectorAll("[data-table-column-visible-columns]");
+    const allColumns = document.querySelectorAll(
+      "[data-table-column-visible-columns]"
+    );
     allColumns.forEach((col) => {
       if (visibleColumns.includes(col.id)) {
         col.classList.remove("hidden");

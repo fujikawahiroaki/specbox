@@ -10,7 +10,9 @@ export default class extends Controller {
       : [];
 
     // セッションストレージから表示状態を取得
-    let filterChoices = JSON.parse(sessionStorage.getItem("filterChoices") || "[]");
+    let filterChoices = JSON.parse(
+      sessionStorage.getItem("filterChoices") || "[]"
+    );
 
     // セッションが空の場合、デフォルト値で初期化
     if (!sessionStorage.getItem("filterChoices")) {
@@ -32,7 +34,9 @@ export default class extends Controller {
 
     // ドロップダウンが開かれた場合、現在の状態をチェックボックスに反映
     if (!dropdown.classList.contains("hidden")) {
-      const filterChoices = JSON.parse(sessionStorage.getItem("filterChoices") || "[]");
+      const filterChoices = JSON.parse(
+        sessionStorage.getItem("filterChoices") || "[]"
+      );
       this.updateCheckboxes(filterChoices);
     }
   }
@@ -58,7 +62,7 @@ export default class extends Controller {
 
   toggleFields(filterChoices) {
     // IDを基にフィールドを表示/非表示
-    const allFields = document.querySelectorAll('[data-filter-choice-field]');
+    const allFields = document.querySelectorAll("[data-filter-choice-field]");
     allFields.forEach((field) => {
       if (filterChoices.includes(field.id)) {
         field.classList.remove("hidden");

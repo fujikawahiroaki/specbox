@@ -31,7 +31,7 @@
           <div class="absolute top-full left-0 normal-button shadow-lg border p-4 hidden bg-[#E9F5F8] z-50 whitespace-nowrap"
                data-filter-choice-target="dropdown"
                data-action="click->filter-choice#keepDropdownOpen">
-              <% columns = { title_cont: 'タイトル(部分一致)', title_eq: 'タイトル(完全一致)', start_date_eq: '開始日(完全一致)', end_date_eq: '終了日(完全一致)', created_at_date_eq: '更新日時(日付一致)', note_cont: '備考(部分一致)' } %>
+              <% columns = { title_cont: 'タイトル(部分一致)', title_eq: 'タイトル(完全一致)', start_date_eq: '開始日(完全一致)', end_date_eq: '終了日(完全一致)', created_at_date_eq: '作成日時(日付一致)', note_cont: '備考(部分一致)' } %>
               <% columns.each do |col, name| %>
                 <div>
                   <label>
@@ -74,7 +74,7 @@
                 <%= form.date_field :end_date_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
               </div>
               <div class="w-[150px] hidden" data-filter-choice-field id="created_at_date_eq">
-                <%= form.label '更新日時(日付一致)', class: "block" %>
+                <%= form.label '作成日時(日付一致)', class: "block" %>
                 <%= form.date_field :created_at_date_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
               </div>
               <div class="w-[200px] hidden" data-filter-choice-field id="note_cont">
@@ -103,7 +103,7 @@
           <div class="absolute top-full left-0 normal-button shadow-lg border p-4 hidden bg-[#E9F5F8] z-50 whitespace-nowrap"
                data-table-column-target="dropdown"
                data-action="click->table-column#keepDropdownOpen">
-              <% columns = { title: 'タイトル', start_date: '開始日', end_date: '終了日', created_at: '更新日時', note: '備考' } %>
+              <% columns = { title: 'タイトル', start_date: '開始日', end_date: '終了日', created_at: '作成日時', note: '備考' } %>
               <% columns.each do |col, name| %>
                 <div>
                   <label>
@@ -150,7 +150,7 @@
                 </th>
                 <th class="px-4 py-2 border border-gray-300 text-left hidden" data-table-column-visible-columns id="created_at">
                   <%= link_to tours_path(sort: 'created_at', direction: toggle_direction('created_at')), class: "font-bold  flex items-center" do %>
-                    更新日時
+                    作成日時
                     <%= sort_icon('created_at') %>
                   <% end %>
                 </th>
