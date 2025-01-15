@@ -21,7 +21,7 @@
       <div class="inline-block ml-2">
         <%= link_to "削除", tour_path(@tour.id), method: :delete,
           class: "mt-2 rounded-lg py-3 px-5 font-medium denger",
-          data: {turbo_confirm: "本当に削除しますか?", turbo_method: :delete}
+          data: {turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_action: "advance"}
         %>
       </div>
     </div>

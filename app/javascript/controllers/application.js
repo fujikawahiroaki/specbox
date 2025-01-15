@@ -6,6 +6,7 @@ import FlashController from "./flash_controller";
 import SideBarController from "./sidebar_controller";
 import TooltipController from "./tooltip_controller";
 import TableColumnController from "./table_column_controller";
+import FilterChoiceController from "./filter_choice_controller";
 
 const application = Application.start();
 
@@ -20,5 +21,6 @@ application.register("flash", FlashController);
 application.register("sidebar", SideBarController);
 application.register("tooltip", TooltipController);
 application.register("table-column", TableColumnController);
+application.register("filter-choice", FilterChoiceController);
 
 export { application };
