@@ -3,10 +3,7 @@ class ToursController < ApplicationController
   before_action :require_login
 
   # GET /tours or /tours.json
-  def list
-    session[:visible_columns] ||= default_visible_columns
-    @visible_columns = session[:visible_columns]
-
+  def index
     @search = Tour.ransack(params[:q])
     @search.sorts = "created_at desc" if @search.sorts.empty?
 
@@ -15,10 +12,6 @@ class ToursController < ApplicationController
     else
       @tours = @search.result.page(params[:page])
     end
-  end
-
-  def index
-    list
   end
 
   # GET /tours/1 or /tours/1.json
@@ -87,25 +80,6 @@ class ToursController < ApplicationController
         end
       end
     end
-  end
-
-  def default_visible_columns
-    %w[title start_date end_date]
-  end
-
-  def update_columns
-    session[:visible_columns] = params[:columns] || []
-    @visible_columns = session[:visible_columns] # 更新後のカラムを再設定
-    list
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.update("tour_table", partial: "tours/table", locals: { tours: @tours, visible_columns: @visible_columns })
-      end
-    end
-  end
-
-  def set_session_key_identifier
-    "tours_index_html" if action_name == "update_columns"
   end
 
   private

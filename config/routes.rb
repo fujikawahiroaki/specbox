@@ -1,10 +1,6 @@
 Rails.application.routes.draw do
   root "dashboard#index"
-  resources :tours do
-    collection do
-      post :update_columns
-    end
-  end
+  resources :tours
   resources :specimens
   resources :specimen_labels
   resources :custom_taxa

@@ -39,8 +39,8 @@
                       type="checkbox"
                       name="columns[]"
                       data-action="change->filter-choice#updateFilter"
-                      value="<%= col %>" <%= @visible_columns.include?(col.to_s) ? 'checked' : ''
-                    %>>
+                      value="<%= col %>"
+                    >
                     <%= name %>
                   </label>
                 </div>
@@ -111,8 +111,8 @@
                       type="checkbox"
                       name="columns[]"
                       data-action="change->table-column#updateColumn"
-                      value="<%= col %>" <%= @visible_columns.include?(col.to_s) ? 'checked' : ''
-                    %>>
+                      value="<%= col %>"
+                    >
                     <%= name %>
                   </label>
                 </div>

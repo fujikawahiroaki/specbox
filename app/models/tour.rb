@@ -33,8 +33,4 @@ class Tour < ApplicationRecord
   def self.ransackable_associations(auth_object = nil)
     []
   end
-
-  def formatted_created_at
-    created_at.strftime("%Y-%m-%d %H:%M:%S") if created_at
-  end
 end
