@@ -2,7 +2,7 @@
   <div class="mx-auto md:w-2/3 w-full flex">
     <div class="mx-auto">
       <% if notice.present? %>
-        <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+        <p class="py-1 px-3 bg-green-50 mb-5 text-green-500  rounded-lg inline-block" id="notice"><%= notice %></p>
       <% end %>
 
 
@@ -11,16 +11,16 @@
       <%= render @tour %>
 
       <%= link_to "編集", edit_tour_path(@tour),
-        class: "mt-2 rounded-lg py-3 px-5 inline-block font-medium normal-button",
+        class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
         data: { turbo_frame: "content-zone", turbo_action: "advance" }
       %>
       <%= link_to "一覧に戻る", tours_path,
-        class: "ml-2 rounded-lg py-3 px-5 inline-block font-medium normal-button",
+        class: "ml-2 rounded-lg py-1 px-2 inline-block normal-button",
         data: { turbo_frame: "content-zone", turbo_action: "advance" }
       %>
       <div class="inline-block ml-2">
         <%= link_to "削除", tour_path(@tour.id), method: :delete,
-          class: "mt-2 rounded-lg py-3 px-5 font-medium denger",
+          class: "mt-2 rounded-lg py-1 px-2 inline-block denger",
           data: {turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_action: "advance"}
         %>
       </div>

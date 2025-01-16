@@ -1,10 +1,10 @@
 <% (1..5).each do |i| %>
-  <div class="my-5">
+  <div class="my-2">
     <%= form.label "画像#{i}" %>
-    <div class="border border-gray-500 rounded-lg p-4 w-auto">
-      <div class="my-4">
+    <div class="border border-gray-500 rounded-lg px-4 py-2 w-auto">
+      <div class="my-2">
         <%= form.file_field "image#{i}", data: { controller: "preview", action: "change->preview#preview", index: i }, class: "hidden", id: "file_input#{i}" %>
-        <label for=<%= "file_input#{i}" %> class="cursor-pointer normal-button">
+        <label for=<%= "file_input#{i}" %> class="cursor-pointer normal-button px-2 py-1">
           ファイルを選択
         </label>
       </div>
@@ -35,7 +35,7 @@
                   data-controller="preview"
                   data-action="click->preview#cancel"
                   data-index="<%= i %>"
-                  class="hidden inline-block px-4 py-2 normal-button">
+                  class="hidden inline-block px-2 py-1 normal-button">
             アップロードを取り消し
           </button>
         </div>

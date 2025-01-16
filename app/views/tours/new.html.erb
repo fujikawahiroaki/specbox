@@ -1,10 +1,10 @@
 <%= turbo_frame_tag "content-zone" do %>
   <div class="mx-auto md:w-2/3 w-full">
-    <h1 class="font-bold text-4xl">採集行の作成</h1>
+    <h1 class="font-bold text-lg">採集行の作成</h1>
 
     <%= render "form", tour: @tour %>
 
-    <%= link_to "一覧に戻る", tours_path, class: "ml-2 normal-button inline-block font-medium", data: { turbo_frame: "content-zone", turbo_action: "advance" }
+    <%= link_to "一覧に戻る", tours_path, class: "ml-2 normal-button px-2 py-1 inline-block", data: { turbo_frame: "content-zone", turbo_action: "advance" }
     %>
   </div>
 <% end %>

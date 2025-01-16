@@ -54,18 +54,18 @@ img.max-w-screen-md {
 }
 
 .denger {
-  @apply bg-[#a22041] text-white py-2 px-4 border border-gray-400 rounded shadow
+  @apply bg-[#a22041] text-white border border-gray-400 rounded shadow
 }
 
 .column-names {
 }
 
 .normal-button {
-  @apply py-2 px-4 border border-gray-400 rounded shadow
+  @apply border border-gray-400 rounded shadow
 }
 
 .submit-button {
-  @apply bg-[#164a84] py-2 px-4 border border-gray-400 rounded shadow
+  @apply bg-[#164a84] border border-gray-400 rounded shadow
 }
 
 #flash-message {
@@ -89,7 +89,7 @@ img.max-w-screen-md {
 
   /* サイドバーが開いている時 */
   .sidebar-open {
-    @apply w-56; /* 幅を広げてコンテンツを表示 (224px) */
+    @apply w-40;
   }
 
   /* 絵文字の表示調整 */
@@ -110,11 +110,11 @@ img.max-w-screen-md {
 
   /* メインコンテンツの調整 */
   #main-content {
-    @apply ml-12;
+    @apply ml-8;
   }
 
   .sidebar-open + #main-content {
-    @apply ml-56;
+    @apply ml-40;
   }
 }
 
