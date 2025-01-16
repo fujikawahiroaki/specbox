@@ -7,6 +7,7 @@ import SideBarController from "./sidebar_controller";
 import TooltipController from "./tooltip_controller";
 import TableColumnController from "./table_column_controller";
 import FilterChoiceController from "./filter_choice_controller";
+import IncrementalSearchController from "./incremental_search_controller";
 
 const application = Application.start();
 
@@ -22,5 +23,6 @@ application.register("sidebar", SideBarController);
 application.register("tooltip", TooltipController);
 application.register("table-column", TableColumnController);
 application.register("filter-choice", FilterChoiceController);
+application.register("incremental-search", IncrementalSearchController);
 
 export { application };

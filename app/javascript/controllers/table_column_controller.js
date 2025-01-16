@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["dropdown"];
+  static targets = ["dropdown", "tableBody", "tableHead"];
 
   connect() {
     // デフォルトで表示するフィールドのIDをERBから取得
@@ -18,13 +18,39 @@ export default class extends Controller {
     if (!sessionStorage.getItem("visibleColumns")) {
       visibleColumns = defaultVisibleColumns;
       sessionStorage.setItem("visibleColumns", JSON.stringify(visibleColumns));
-    }
+    } 
 
     // フィールドの表示・非表示を切り替え
     this.toggleColumns(visibleColumns);
 
     // チェックボックスの状態を更新
     this.updateCheckboxes(visibleColumns);
+
+    // Turboフレームの更新時に表示状態を再適用
+    document.addEventListener("turbo:frame-load", this.applyFilters.bind(this));
+  }
+
+  applyFilters() {
+    // セッションストレージから表示状態を取得
+    const visibleColumns = JSON.parse(
+      sessionStorage.getItem("visibleColumns") || "[]"
+    );
+
+    // フィールドの表示・非表示を切り替え
+    this.toggleColumns(visibleColumns);
+
+    // チェックボックスの状態を更新
+    this.updateCheckboxes(visibleColumns);
+  }
+  
+  showTableBody() {
+    // 表示が完了したタイミングで <tbody> を表示
+    this.tableBodyTarget.style.display = "table-row-group";
+  }
+
+  showTableHead() {
+    // 表示が完了したタイミングで <thead> を表示
+    this.tableHeadTarget.style.display = "table-row-group";
   }
 
   toggleDropdown() {
@@ -72,6 +98,9 @@ export default class extends Controller {
         col.classList.add("hidden");
       }
     });
+
+    this.showTableHead()
+    this.showTableBody()
   }
 
   updateCheckboxes(visibleColumns) {
