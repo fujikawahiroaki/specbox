@@ -8,8 +8,7 @@ class ApplicationController < ActionController::Base
   def require_login
     return if current_user
 
-    redirect_post("/auth/auth0", params: { prompt: "login" },
-                                 options: { method: :post, authenticity_token: "auto" })
+    redirect_to root_url
   end
 
   def current_user
