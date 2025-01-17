@@ -22,6 +22,11 @@ class Tour < ApplicationRecord
   attribute :image4, :string, default: ""
   attribute :image5, :string, default: ""
 
+  validates :title, length: { minimum: 0, maximum: 30 }, exclusion: { in: [ nil ] }
+  validates :start_date, exclusion: { in: [ nil ] }
+  validates :end_date, exclusion: { in: [ nil ] }
+  validates :note, length: { minimum: 0, maximum: 200 }, exclusion: { in: [ nil ] }
+
   ransacker :created_at_date do
     Arel.sql("DATE(created_at)")
   end
