@@ -148,10 +148,12 @@ export default class extends Controller {
 
     if (invalidFields.length > 0) {
       this.submitTarget.disabled = true;
-      this.submitTarget.classList.add("bg-gray-400", "cursor-not-allowed"); // 無効時のスタイル
+      this.submitTarget.classList.remove("submit-button");
+      this.submitTarget.classList.add("submit-button-disabled");
     } else {
       this.submitTarget.disabled = false;
-      this.submitTarget.classList.remove("bg-gray-400", "cursor-not-allowed"); // 有効時のスタイル
+      this.submitTarget.classList.remove("submit-button-disabled");
+      this.submitTarget.classList.add("submit-button");
     }
   }
 

@@ -68,6 +68,10 @@ img.max-w-screen-md {
   @apply bg-[#164a84] border border-gray-400 rounded shadow
 }
 
+.submit-button-disabled {
+  @apply bg-gray-400 border border-gray-400 rounded shadow cursor-not-allowed
+}
+
 #flash-message {
   position: absolute;
   top: 0;
