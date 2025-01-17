@@ -1,9 +1,12 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["dropdown", "tableBody", "tableHead"];
+  static targets = ["dropdown", "toggleButton", "tableBody", "tableHead"];
 
   connect() {
+    // ドロップダウン外部クリックをリスン
+    document.addEventListener("click", this.closeDropdownOutside.bind(this));
+
     // デフォルトで表示するフィールドのIDをERBから取得
     const defaultVisibleColumns = this.element.dataset.defaultVisibleColumns
       ? JSON.parse(this.element.dataset.defaultVisibleColumns)
@@ -30,6 +33,21 @@ export default class extends Controller {
     document.addEventListener("turbo:frame-load", this.applyFilters.bind(this));
   }
 
+  disconnect() {
+    // コントローラが切り離された際にイベントリスナーを削除
+    document.removeEventListener("click", this.closeDropdownOutside.bind(this));
+  }
+
+  closeDropdownOutside(event) {
+    // ドロップダウン外をクリックしたら閉じる
+    if (
+      !this.dropdownTarget.contains(event.target) &&
+      !this.toggleButtonTarget.contains(event.target)
+    ) {
+      this.dropdownTarget.classList.add("hidden");
+    }
+  }
+
   applyFilters() {
     // セッションストレージから表示状態を取得
     const visibleColumns = JSON.parse(
@@ -54,6 +72,7 @@ export default class extends Controller {
   }
 
   toggleDropdown() {
+    event.stopPropagation();
     // ドロップダウンをトグル
     const dropdown = this.dropdownTarget;
     dropdown.classList.toggle("hidden");

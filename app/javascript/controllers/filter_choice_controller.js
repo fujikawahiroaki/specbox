@@ -1,9 +1,12 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["dropdown"];
+  static targets = ["dropdown", "toggleButton"];
 
   connect() {
+    // ドロップダウン外部クリックをリスン
+    document.addEventListener("click", this.closeDropdownOutside.bind(this));
+
     // デフォルトで表示するフィールドのIDをERBから取得
     const defaultVisibleFields = this.element.dataset.defaultVisibleFields
       ? JSON.parse(this.element.dataset.defaultVisibleFields)
@@ -27,7 +30,23 @@ export default class extends Controller {
     this.updateCheckboxes(filterChoices);
   }
 
+  disconnect() {
+    // コントローラが切り離された際にイベントリスナーを削除
+    document.removeEventListener("click", this.closeDropdownOutside.bind(this));
+  }
+
+  closeDropdownOutside(event) {
+    // ドロップダウン外をクリックしたら閉じる
+    if (
+      !this.dropdownTarget.contains(event.target) &&
+      !this.toggleButtonTarget.contains(event.target)
+    ) {
+      this.dropdownTarget.classList.add("hidden");
+    }
+  }
+
   toggleDropdown() {
+    event.stopPropagation();
     // ドロップダウンをトグル
     const dropdown = this.dropdownTarget;
     dropdown.classList.toggle("hidden");
