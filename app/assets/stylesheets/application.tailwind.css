@@ -88,7 +88,7 @@ img.max-w-screen-md {
 
   /* サイドバーが閉じている時 */
   .sidebar-closed {
-    @apply w-12; /* 幅を小さくして絵文字を表示 (48px) */
+    @apply hidden sm:block;
   }
 
   /* サイドバーが開いている時 */
@@ -119,6 +119,10 @@ img.max-w-screen-md {
 
   .sidebar-open + #main-content {
     @apply ml-40;
+  }
+
+  .sidebar-closed + #main-content {
+    @apply ml-0 sm:ml-8;
   }
 }
 

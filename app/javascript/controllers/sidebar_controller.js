@@ -20,11 +20,11 @@ export default class extends Controller {
     if (this.sidebarOpen) {
       this.sidebarTarget.classList.add("sidebar-open");
       this.sidebarTarget.classList.remove("sidebar-closed");
-      this.mainContent.classList.add("ml-56");
+      this.mainContent.classList.add("ml-40");
     } else {
       this.sidebarTarget.classList.add("sidebar-closed");
       this.sidebarTarget.classList.remove("sidebar-open");
-      this.mainContent.classList.remove("ml-56");
+      this.mainContent.classList.remove("ml-40");
     }
   }
 
@@ -37,9 +37,9 @@ export default class extends Controller {
 
       // メインコンテンツの左位置を調整
       if (this.sidebarOpen) {
-        this.mainContent.classList.add("ml-56");
+        this.mainContent.classList.add("ml-40");
       } else {
-        this.mainContent.classList.remove("ml-56");
+        this.mainContent.classList.remove("ml-40");
       }
 
       // サイドバーの開閉状態をsessionStorageに保存
