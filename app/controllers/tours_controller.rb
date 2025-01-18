@@ -1,17 +1,19 @@
 class ToursController < ApplicationController
   before_action :set_tour, only: %i[ show edit update destroy ]
+  before_action :validate_user, only: %i[ show edit update destroy ]
   before_action :require_login
 
   # GET /tours or /tours.json
   def index
-    @search = Tour.ransack(params[:q])
+    @search = Tour.where(user_id: current_user_id).ransack(params[:q])
     @search.sorts = "created_at desc" if @search.sorts.empty?
 
     if params[:sort].present? && params[:direction].present?
-      @tours = Tour.order("#{params[:sort]} #{params[:direction]}").page(params[:page])
-    else
-      @tours = @search.result.page(params[:page])
+      @search.sorts.clear
+      @search.sorts = "#{params[:sort]} #{params[:direction]}"
     end
+
+    @tours = @search.result.page(params[:page])
   end
 
   # GET /tours/1 or /tours/1.json
@@ -91,5 +93,11 @@ class ToursController < ApplicationController
     # Only allow a list of trusted parameters through.
     def tour_params
       params.require(:tour).permit(:title, :start_date, :end_date, :track, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5)
+    end
+
+    def validate_user
+      unless @tour.user_id == current_user_id
+        redirect_to tours_path, notice: "ご指定のIDは存在しません"
+      end
     end
 end
