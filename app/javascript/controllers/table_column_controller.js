@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["dropdown", "toggleButton", "tableBody", "tableHead"];
+  static targets = ["dropdown", "toggleButton", "tableBody", "tableHead", "paginate"];
 
   connect() {
     const isMobile = window.innerWidth < 640;
@@ -85,6 +85,10 @@ export default class extends Controller {
     this.tableHeadTarget.style.display = "table-row-group";
   }
 
+  showPaginate() {
+    this.paginateTarget.classList.remove("hidden");
+  }
+
   toggleDropdown() {
     event.stopPropagation();
     // ドロップダウンをトグル
@@ -134,6 +138,7 @@ export default class extends Controller {
 
     this.showTableHead();
     this.showTableBody();
+    this.showPaginate();
   }
 
   updateCheckboxes(visibleColumns) {

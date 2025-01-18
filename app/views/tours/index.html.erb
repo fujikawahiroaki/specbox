@@ -205,7 +205,9 @@
               データが見つかりませんでした
             </div>
           <% end %>
-          <%= paginate @tours %>
+          <div data-table-column-target="paginate" class="hidden">
+            <%= paginate @tours %>
+          </div>
         <% end %>
       </div>
     </div>
