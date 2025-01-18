@@ -8,6 +8,6 @@ export default class extends Controller {
         flashMessage.classList.add('opacity-0');
         setTimeout(() => flashMessage.remove(), 100);
       }
-    }, 3000);
+    }, 1000);
   }
 }
