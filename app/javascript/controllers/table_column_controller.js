@@ -4,13 +4,15 @@ export default class extends Controller {
   static targets = ["dropdown", "toggleButton", "tableBody", "tableHead"];
 
   connect() {
+    const isMobile = window.innerWidth < 640;
+
     // ドロップダウン外部クリックをリスン
     document.addEventListener("click", this.closeDropdownOutside.bind(this));
 
     // デフォルトで表示するフィールドのIDをERBから取得
-    const defaultVisibleColumns = this.element.dataset.defaultVisibleColumns
-      ? JSON.parse(this.element.dataset.defaultVisibleColumns)
-      : [];
+    const defaultVisibleColumns = isMobile
+      ? this.getMobileDefaultVisibleColumns()
+      : this.getDefaultVisibleColumns();
 
     // セッションストレージから表示状態を取得
     let visibleColumns = JSON.parse(
@@ -21,7 +23,7 @@ export default class extends Controller {
     if (!sessionStorage.getItem("visibleColumns")) {
       visibleColumns = defaultVisibleColumns;
       sessionStorage.setItem("visibleColumns", JSON.stringify(visibleColumns));
-    } 
+    }
 
     // フィールドの表示・非表示を切り替え
     this.toggleColumns(visibleColumns);
@@ -36,6 +38,18 @@ export default class extends Controller {
   disconnect() {
     // コントローラが切り離された際にイベントリスナーを削除
     document.removeEventListener("click", this.closeDropdownOutside.bind(this));
+  }
+
+  getDefaultVisibleColumns() {
+    return this.element.dataset.defaultVisibleColumns
+      ? JSON.parse(this.element.dataset.defaultVisibleColumns)
+      : [];
+  }
+
+  getMobileDefaultVisibleColumns() {
+    return this.element.dataset.mobileDefaultVisibleColumns
+      ? JSON.parse(this.element.dataset.mobileDefaultVisibleColumns)
+      : [];
   }
 
   closeDropdownOutside(event) {
@@ -60,7 +74,7 @@ export default class extends Controller {
     // チェックボックスの状態を更新
     this.updateCheckboxes(visibleColumns);
   }
-  
+
   showTableBody() {
     // 表示が完了したタイミングで <tbody> を表示
     this.tableBodyTarget.style.display = "table-row-group";
@@ -118,8 +132,8 @@ export default class extends Controller {
       }
     });
 
-    this.showTableHead()
-    this.showTableBody()
+    this.showTableHead();
+    this.showTableBody();
   }
 
   updateCheckboxes(visibleColumns) {
