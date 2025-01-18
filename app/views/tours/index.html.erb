@@ -180,15 +180,15 @@
                     <td class="text-sm px-4 py-1 border border-gray-300">
                       <div class="flex gap-3 flex-col sm:flex-row">
                         <!-- 詳細リンク (ページ遷移) -->
-                        <%= link_to "詳細", tour, class: "rounded-lg py-1 px-3 text-sm normal-button",
+                        <%= link_to "詳細", tour, class: "rounded-lg py-1 px-3 text-sm normal-button text-center",
                           data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
 
                         <!-- 編集リンク (ページ遷移) -->
-                        <%= link_to "編集", edit_tour_path(tour), class: "rounded-lg py-1 px-3 text-sm normal-button",
+                        <%= link_to "編集", edit_tour_path(tour), class: "rounded-lg py-1 px-3 text-sm normal-button text-center",
                           data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
 
                         <!-- 削除リンク (Turbo Stream で削除) -->
-                        <%= link_to "削除", tour_path(tour), method: :delete, class: "rounded-lg py-1 px-3 denger text-white text-sm",
+                        <%= link_to "削除", tour_path(tour), method: :delete, class: "rounded-lg py-1 px-3 denger text-white text-sm text-center",
                           data: { turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_stream: "tour_#{tour.id}" } %>
                       </div>
                     </td>
