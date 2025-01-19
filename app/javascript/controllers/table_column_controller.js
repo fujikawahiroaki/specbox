@@ -138,7 +138,9 @@ export default class extends Controller {
 
     this.showTableHead();
     this.showTableBody();
-    this.showPaginate();
+    setTimeout(() => {
+      this.showPaginate();
+    }, 500)
   }
 
   updateCheckboxes(visibleColumns) {

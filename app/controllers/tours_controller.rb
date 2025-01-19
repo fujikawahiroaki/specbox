@@ -84,6 +84,30 @@ class ToursController < ApplicationController
     end
   end
 
+  def bulk_update
+    bulk_ids = params[:bulk_ids].blank? ? [] : JSON.parse(params[:bulk_ids])
+    bulk_columns = params[:bulk_columns].blank? ? [] : JSON.parse(params[:bulk_columns])
+
+    respond_to do |format|
+      if bulk_ids.empty?
+        format.html { redirect_to tours_url, notice: "一括更新対象のデータが選択されていません" }
+      elsif bulk_columns.empty?
+        format.html { redirect_to tours_url, notice: "一括更新対象の項目が選択されていません" }
+      else
+        bulk_params = {}
+        bulk_columns.each do |col|
+          bulk_params[col.to_sym] = params[col.to_sym]
+        end
+
+        if Tour.where(id: bulk_ids, user_id: current_user_id).update_all(bulk_params)
+          format.html { redirect_to tours_url, notice: "一括更新に成功しました" }
+        else
+          format.html { redirect_to tours_url, notice: "一括更新に失敗しました" }
+        end
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_tour
@@ -92,7 +116,7 @@ class ToursController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def tour_params
-      params.require(:tour).permit(:title, :start_date, :end_date, :track, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5)
+      params.require(:tour).permit(:title, :start_date, :end_date, :track, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns)
     end
 
     def validate_user

@@ -142,11 +142,21 @@ export default class extends Controller {
 
   toggleSubmitButton() {
     // フィールドがすべて有効かチェック
-    const invalidFields = this.inputTargets.filter(
-      (input) => input.dataset.valid === "false" || !input.dataset.valid
-    );
+    // 動的に選択できるフィールドの場合、非表示ならバリデーション対象外
+    const invalidFields = this.inputTargets.filter((input) => {
+      if (input.classList.contains("hidden")) {
+        return false;
+      } else {
+        return input.dataset.valid === "false" || !input.dataset.valid;
+      }
+    });
 
-    if (invalidFields.length > 0) {
+    const existsVisible =
+      this.inputTargets.filter((input) => {
+        return !input.classList.contains("hidden");
+      }).length !== 0;
+
+    if (invalidFields.length > 0 || !existsVisible) {
       this.submitTarget.disabled = true;
       this.submitTarget.classList.remove("submit-button");
       this.submitTarget.classList.add("submit-button-disabled");
