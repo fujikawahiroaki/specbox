@@ -10,6 +10,9 @@
         <% if notice.present? %>
           <p class="left-1/2 py-2 px-3 bg-green-50 mb-5 text-green-500 text-sm rounded-lg inline-block z-50" id="flash-message" data-controller="flash"><%= notice %></p>
         <% end %>
+        <% if alert.present? %>
+          <p class="left-1/2 py-2 px-3 bg-red-50 mb-5 text-red-500 text-sm rounded-lg inline-block z-50" id="flash-message" data-controller="flash"><%= alert %></p>
+        <% end %>
       </div>
 
       <%= link_to "作成", new_tour_path,

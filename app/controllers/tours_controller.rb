@@ -90,9 +90,9 @@ class ToursController < ApplicationController
 
     respond_to do |format|
       if bulk_ids.empty?
-        format.html { redirect_to tours_url, notice: "一括更新対象のデータが選択されていません" }
+        format.html { redirect_to tours_url, alert: "一括更新対象のデータが選択されていません" }
       elsif bulk_columns.empty?
-        format.html { redirect_to tours_url, notice: "一括更新対象の項目が選択されていません" }
+        format.html { redirect_to tours_url, alert: "一括更新対象の項目が選択されていません" }
       else
         bulk_params = {}
         bulk_columns.each do |col|
@@ -102,7 +102,7 @@ class ToursController < ApplicationController
         if Tour.where(id: bulk_ids, user_id: current_user_id).update_all(bulk_params)
           format.html { redirect_to tours_url, notice: "一括更新に成功しました" }
         else
-          format.html { redirect_to tours_url, notice: "一括更新に失敗しました" }
+          format.html { redirect_to tours_url, alert: "一括更新に失敗しました" }
         end
       end
     end
