@@ -138,7 +138,7 @@
                 turbo_action: "advance"
               }
             ) do |form| %>
-              <%= form.submit "選択データを一括更新", class: "text-sm rounded-lg mx-2 my-2 py-1 px-2 submit-button text-white inline-block cursor-pointer", data: {validation_target: "submit", turbo_action: "advance", turbo_confirm: "一括更新は危険な操作です！\n本当に実行しますか？"}%>
+              <%= form.submit "選択データを一括更新", class: "text-sm rounded-lg my-2 py-1 px-2 submit-button text-white inline-block cursor-pointer", data: {validation_target: "submit", turbo_action: "advance", turbo_confirm: "一括更新は危険な操作です！\n本当に実行しますか？"}%>
               <%= form.hidden_field :bulk_ids, value: "", data: { bulk_action_target: "bulkIds" } %>
               <%= form.hidden_field :bulk_columns, value: "", data: { bulk_action_target: "bulkColumns" } %>
               <div class="flex flex-wrap gap-4">
