@@ -4,7 +4,7 @@
 
     <%= render "form", tour: @tour %>
 
-    <%= link_to "一覧に戻る", tours_path, class: "mt-2 ml-2 normal-button px-2 py-1 inline-block", data: { turbo_frame: "content-zone", turbo_action: "advance" }
+    <%= link_to "一覧に戻る", tours_url_with_ranmemory, class: "mt-2 ml-2 normal-button px-2 py-1 inline-block", data: { turbo_frame: "content-zone", turbo_action: "advance" }
     %>
   </div>
 <% end %>

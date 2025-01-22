@@ -65,8 +65,8 @@
               }
             } do |form| %>
             <div class="my-2">
-              <%= form.submit class: "text-sm rounded-lg py-1 px-2 normal-button inline-block cursor-pointer" %>
-              <%= link_to 'クリア', url_for + "?cancel_filter=true", class: "text-sm rounded-lg py-1 px-2 normal-button inline-block cursor-pointer" %>
+              <%= form.submit class: "text-sm rounded-lg py-1 px-2 normal-button inline-block cursor-pointer", data: {turbo_action: "advance"} %>
+              <%= link_to 'クリア', url_for + "?cancel_filter=true", class: "text-sm rounded-lg py-1 px-2 normal-button inline-block cursor-pointer", data: {turbo_action: "advance", turbo_prefetch: false} %>
             </div>
 
             <div class="flex flex-wrap gap-4">
@@ -269,31 +269,31 @@
                       >
                     </th>
                     <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="title">
-                      <%= link_to tours_path(sort: 'title', direction: toggle_direction('title')), class: "font-bold flex items-center" do %>
+                      <%= link_to tours_url_with_ranmemory(sort: 'title', direction: toggle_direction('title')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
                         タイトル
                         <%= sort_icon('title') %>
                       <% end %>
                     </th>
                     <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="start_date">
-                      <%= link_to tours_path(sort: 'start_date', direction: toggle_direction('start_date')), class: "font-bold flex items-center" do %>
+                      <%= link_to tours_url_with_ranmemory(sort: 'start_date', direction: toggle_direction('start_date')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
                         開始日
                         <%= sort_icon('start_date') %>
                       <% end %>
                     </th>
                     <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="end_date">
-                      <%= link_to tours_path(sort: 'end_date', direction: toggle_direction('end_date')), class: "font-bold  flex items-center" do %>
+                      <%= link_to tours_url_with_ranmemory(sort: 'end_date', direction: toggle_direction('end_date')), class: "font-bold  flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
                         終了日
                         <%= sort_icon('end_date') %>
                       <% end %>
                     </th>
                     <th class="px-4 py-2 border border-gray-300 text-left hidden" data-table-column-visible-columns id="created_at">
-                      <%= link_to tours_path(sort: 'created_at', direction: toggle_direction('created_at')), class: "font-bold  flex items-center" do %>
+                      <%= link_to tours_url_with_ranmemory(sort: 'created_at', direction: toggle_direction('created_at')), class: "font-bold  flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
                         作成日時
                         <%= sort_icon('created_at') %>
                       <% end %>
                     </th>
                     <th class="px-4 py-2 border border-gray-300 text-left hidden" data-table-column-visible-columns id="note">
-                      <%= link_to tours_path(sort: 'note', direction: toggle_direction('note')), class: "font-bold  flex items-center" do %>
+                      <%= link_to tours_url_with_ranmemory(sort: 'note', direction: toggle_direction('note')), class: "font-bold  flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
                         備考
                         <%= sort_icon('note') %>
                       <% end %>

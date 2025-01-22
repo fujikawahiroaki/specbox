@@ -2,18 +2,34 @@ class ToursController < ApplicationController
   before_action :set_tour, only: %i[ show edit update destroy ]
   before_action :validate_user, only: %i[ show edit update destroy ]
   before_action :require_login
+  before_action :save_and_load_filters
+  before_action :save_params_in_session, only: %i[ index ]
+
+  def save_params_in_session
+    session[:tours_index_sort] = "" unless session[:tours_index_sort]
+    session[:tours_index_direction] = "" unless session[:tours_index_direction]
+    session[:tours_index_page] = 1 unless session[:tours_index_page]
+    session[:old_ranmemory_tours_index_html] = {} unless session[:old_ranmemory_tours_index_html]
+
+    session[:tours_index_page] = 1 if params[:q].present? && params[:q].empty?.! && params[:q].to_h != session[:old_ranmemory_tours_index_html]
+
+    session[:tours_index_sort] = params[:sort] if params[:sort].present?
+    session[:tours_index_direction] = params[:direction] if params[:direction].present?
+    session[:tours_index_page] = params[:page] if params[:page].present?
+    session[:old_ranmemory_tours_index_html] = session[:ranmemory_tours_index_html]
+  end
 
   # GET /tours or /tours.json
   def index
     @search = Tour.where(user_id: current_user_id).ransack(params[:q])
     @search.sorts = "created_at desc" if @search.sorts.empty?
 
-    if params[:sort].present? && params[:direction].present?
+    if session[:tours_index_sort].present? && session[:tours_index_direction].present?
       @search.sorts.clear
-      @search.sorts = "#{params[:sort]} #{params[:direction]}"
+      @search.sorts = "#{session[:tours_index_sort]} #{session[:tours_index_direction]}"
     end
 
-    @tours = @search.result.page(params[:page])
+    @tours = @search.result.page(session[:tours_index_page])
   end
 
   # GET /tours/1 or /tours/1.json
@@ -43,7 +59,7 @@ class ToursController < ApplicationController
 
     respond_to do |format|
       if @tour.save
-        format.html { redirect_to tours_url, notice: t("notice.create") }
+        format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), notice: t("notice.create") }
         format.json { render :show, status: :created, location: @tour }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -56,7 +72,7 @@ class ToursController < ApplicationController
   def update
     respond_to do |format|
       if @tour.update(tour_params)
-        format.html { redirect_to tours_url, notice: t("notice.update") }
+        format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), notice: t("notice.update") }
         format.json { render :show, status: :ok, location: @tour }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -72,11 +88,11 @@ class ToursController < ApplicationController
     was_on_show = request.referer&.include?("/tours/#{@tour.id}")
 
     respond_to do |format|
-      format.html { redirect_to tours_url, notice: t("notice.destroy") }
+      format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), notice: t("notice.destroy") }
       format.json { head :no_content }
       format.turbo_stream do
         if was_on_show
-          redirect_to tours_path, notice: t("notice.destroy")
+          redirect_to tours_path(q: session[:ranmemory_tours_index_html]), notice: t("notice.destroy")
         else
           render turbo_stream: turbo_stream.remove(@tour)
         end
@@ -90,9 +106,9 @@ class ToursController < ApplicationController
 
     respond_to do |format|
       if bulk_ids.empty?
-        format.html { redirect_to tours_url, alert: "一括更新対象のデータが選択されていません" }
+        format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), alert: "一括更新対象のデータが選択されていません" }
       elsif bulk_columns.empty?
-        format.html { redirect_to tours_url, alert: "一括更新対象の項目が選択されていません" }
+        format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), alert: "一括更新対象の項目が選択されていません" }
       else
         bulk_params = {}
         bulk_columns.each do |col|
@@ -100,12 +116,16 @@ class ToursController < ApplicationController
         end
 
         if Tour.where(id: bulk_ids, user_id: current_user_id).update_all(bulk_params)
-          format.html { redirect_to tours_url, notice: "一括更新に成功しました" }
+          format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), notice: "一括更新に成功しました" }
         else
-          format.html { redirect_to tours_url, alert: "一括更新に失敗しました" }
+          format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), alert: "一括更新に失敗しました" }
         end
       end
     end
+  end
+
+  def set_session_key_identifier
+    "tours_index_html"
   end
 
   private
