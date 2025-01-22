@@ -2,7 +2,8 @@
   <div>
     <% unless session['credentials'] %>
       <!-- Place a login button anywhere on your application -->
-      <span class="m-4">ログインしてください。</span>
+      <p class="my-4">ログインしてください。</p>
+      <%= button_to 'ログイン', '/auth/auth0', params: {prompt: 'login'}, data: {turbo: "false"}, class: "text-xs normal-button px-2 py-1" %>
     <% else %>
       <!-- Place a logout button anywhere on your application -->
       <h1 class="font-bold text-xl">ダッシュボード</h1>
