@@ -1,4 +1,5 @@
 class ToursController < ApplicationController
+  include ApplicationHelper
   before_action :set_tour, only: %i[ show edit update destroy ]
   before_action :validate_user, only: %i[ show edit update destroy ]
   before_action :require_login
@@ -26,7 +27,7 @@ class ToursController < ApplicationController
 
     if session[:tours_index_sort].present? && session[:tours_index_direction].present?
       @search.sorts.clear
-      @search.sorts = "#{session[:tours_index_sort]} #{session[:tours_index_direction]}"
+      @search.sorts = [ "#{session[:tours_index_sort]} #{session[:tours_index_direction]}", "created_at desc" ]
     end
 
     @tours = @search.result.page(session[:tours_index_page])
@@ -59,7 +60,7 @@ class ToursController < ApplicationController
 
     respond_to do |format|
       if @tour.save
-        format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), notice: t("notice.create") }
+        format.html { redirect_to tours_url_with_ranmemory, notice: t("notice.create") }
         format.json { render :show, status: :created, location: @tour }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -72,7 +73,7 @@ class ToursController < ApplicationController
   def update
     respond_to do |format|
       if @tour.update(tour_params)
-        format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), notice: t("notice.update") }
+        format.html { redirect_to tours_url_with_ranmemory, notice: t("notice.update") }
         format.json { render :show, status: :ok, location: @tour }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -88,7 +89,7 @@ class ToursController < ApplicationController
     was_on_show = request.referer&.include?("/tours/#{@tour.id}")
 
     respond_to do |format|
-      format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), notice: t("notice.destroy") }
+      format.html { redirect_to tours_url_with_ranmemory, notice: t("notice.destroy") }
       format.json { head :no_content }
       format.turbo_stream do
         if was_on_show
@@ -106,9 +107,9 @@ class ToursController < ApplicationController
 
     respond_to do |format|
       if bulk_ids.empty?
-        format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), alert: "一括更新対象のデータが選択されていません" }
+        format.html { redirect_to tours_url_with_ranmemory, alert: "一括更新対象のデータが選択されていません" }
       elsif bulk_columns.empty?
-        format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), alert: "一括更新対象の項目が選択されていません" }
+        format.html { redirect_to tours_url_with_ranmemory, alert: "一括更新対象の項目が選択されていません" }
       else
         bulk_params = {}
         bulk_columns.each do |col|
@@ -116,9 +117,9 @@ class ToursController < ApplicationController
         end
 
         if Tour.where(id: bulk_ids, user_id: current_user_id).update_all(bulk_params)
-          format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), notice: "一括更新に成功しました" }
+          format.html { redirect_to tours_url_with_ranmemory, notice: "一括更新に成功しました" }
         else
-          format.html { redirect_to tours_url(q: session[:ranmemory_tours_index_html]), alert: "一括更新に失敗しました" }
+          format.html { redirect_to tours_url_with_ranmemory, alert: "一括更新に失敗しました" }
         end
       end
     end

@@ -24,8 +24,6 @@ module ApplicationHelper
   def tours_url_with_ranmemory(options = {})
     ranmemory_state = session[:ranmemory_tours_index_html] || {}
 
-    logger.debug(ranmemory_state)
-
     sort = options[:sort] || session[:tours_index_sort]
     direction = options[:direction] || session[:tours_index_direction]
     page = options[:page] || session[:tours_index_page]

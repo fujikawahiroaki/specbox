@@ -255,6 +255,7 @@
             </div>
           </div>
           <%= turbo_frame_tag "data_table" do %>
+            <%= paginate @tours %>
             <div class="overflow-x-auto shadow-lg rounded-lg">
               <table class="text-sm min-w-full table-auto border-collapse">
                 <thead data-table-column-target="tableHead" style="display: none">
