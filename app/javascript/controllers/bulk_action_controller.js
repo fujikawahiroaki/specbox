@@ -173,5 +173,9 @@ export default class extends Controller {
         (row) => row.checked
       ).length;
     }
+
+    if (!this.hasSelectRowTarget) {
+      checkAllCheckbox.checked = false;
+    }
   }
 }
