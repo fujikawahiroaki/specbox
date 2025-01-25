@@ -125,6 +125,22 @@ class ToursController < ApplicationController
     end
   end
 
+  def bulk_delete
+    bulk_ids = params[:bulk_ids].blank? ? [] : JSON.parse(params[:bulk_ids])
+
+    respond_to do |format|
+      if bulk_ids.empty?
+        format.html { redirect_to tours_url_with_ranmemory, alert: "一括削除対象のデータが選択されていません" }
+      else
+        if Tour.where(id: bulk_ids, user_id: current_user_id).delete_all
+          format.html { redirect_to tours_url_with_ranmemory, notice: "一括削除に成功しました" }
+        else
+          format.html { redirect_to tours_url_with_ranmemory, alert: "一括削除に失敗しました" }
+        end
+      end
+    end
+  end
+
   def set_session_key_identifier
     "tours_index_html"
   end

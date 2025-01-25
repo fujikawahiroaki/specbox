@@ -69,7 +69,7 @@ img.max-w-screen-md {
 }
 
 .submit-button-disabled {
-  @apply bg-gray-400 border border-gray-400 rounded shadow cursor-not-allowed
+  @apply bg-gray-200 text-gray-600 border border-gray-400 rounded shadow cursor-not-allowed line-through
 }
 
 #flash-message {

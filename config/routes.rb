@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :tours do
     collection do
       patch :bulk_update
+      delete :bulk_delete
     end
   end
   resources :specimens
