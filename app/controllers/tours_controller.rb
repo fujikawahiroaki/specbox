@@ -44,7 +44,17 @@ class ToursController < ApplicationController
 
   # GET /tours/new
   def new
-    @tour = Tour.new
+    @tour = if params[:base_id].present?
+              base_record = Tour.find(params[:base_id]).dup
+              base_record.image1 = nil
+              base_record.image2 = nil
+              base_record.image3 = nil
+              base_record.image4 = nil
+              base_record.image5 = nil
+              base_record
+            else
+              Tour.new
+            end
   end
 
   # GET /tours/1/edit

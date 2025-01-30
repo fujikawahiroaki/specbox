@@ -10,20 +10,22 @@
 
       <%= render @tour %>
 
+      <%= link_to "一覧に戻る", tours_url_with_ranmemory,
+        class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
+        data: { turbo_frame: "content-zone", turbo_action: "advance" }
+      %>
       <%= link_to "編集", edit_tour_path(@tour),
         class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
         data: { turbo_frame: "content-zone", turbo_action: "advance" }
       %>
-      <%= link_to "一覧に戻る", tours_url_with_ranmemory,
-        class: "ml-2 rounded-lg py-1 px-2 inline-block normal-button",
+      <%= link_to "複製", new_tour_path(base_id: @tour.id),
+        class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
         data: { turbo_frame: "content-zone", turbo_action: "advance" }
       %>
-      <div class="inline-block ml-2">
-        <%= link_to "削除", tour_path(@tour.id), method: :delete,
-          class: "mt-2 rounded-lg py-1 px-2 inline-block denger",
-          data: {turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_action: "advance"}
-        %>
-      </div>
+      <%= link_to "削除", tour_path(@tour.id), method: :delete,
+        class: "mt-2 rounded-lg py-1 px-2 inline-block denger",
+        data: {turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_action: "advance"}
+      %>
     </div>
   </div>
 <% end %>

@@ -375,6 +375,9 @@
                             <%= link_to "編集", edit_tour_path(tour), class: "rounded-lg py-1 px-3 text-sm normal-button text-center",
                               data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
 
+                            <!-- 複製リンク (ページ遷移) -->
+                            <%= link_to "複製", new_tour_path(base_id: tour.id), class: "rounded-lg py-1 px-3 text-sm normal-button text-center",
+                              data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
                             <!-- 削除リンク (Turbo Stream で削除) -->
                             <%= link_to "削除", tour_path(tour), method: :delete, class: "rounded-lg py-1 px-3 denger text-white text-sm text-center",
                               data: { turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_stream: "tour_#{tour.id}" } %>
