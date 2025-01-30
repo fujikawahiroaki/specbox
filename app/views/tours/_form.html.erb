@@ -1,4 +1,5 @@
 <%= form_with(model: tour, class: "contents", data: {controller: "validation"}) do |form| %>
+  <% create_mode = create_mode.present? ? create_mode : false %>
   <% if tour.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-2 py-1 font-medium rounded-lg mt-3">
       <h2><%= pluralize(tour.errors.count, "error") %>つのエラーが発生しました:</h2>
@@ -13,6 +14,28 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm" >
     <div>
+      <% if create_mode %>
+        <div class="my-5">
+          <%= form.label '同一データでの作成数(最大50)' %>
+          <%= form.text_field :bulk_create_num,
+            value: 1,
+            class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {validation_target: "input",
+                   validation_type: "integer",
+                   name: "bulk_create_num",
+                   validation_required: "true",
+                   validation_message_required: "作成数は必須です",
+                   validation_min_value: 1,
+                   validation_max_value: 50,
+                   validation_min_integer_digits: 1,
+                   validation_max_integer_digits: 4,
+                   validation_message_integer: "作成数は整数で入力し、1以上50以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+        </div>
+      <% end %>
+
       <div class="my-5">
         <%= form.label 'タイトル' %>
         <%= form.text_field :title,

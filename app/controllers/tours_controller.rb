@@ -56,13 +56,21 @@ class ToursController < ApplicationController
     tour_params[:user_id] = current_user_id
     tour_params_with_user = tour_params
     tour_params_with_user[:user_id] = current_user_id
-    @tour = Tour.new(tour_params_with_user)
+    tour_params_with_user.delete(:bulk_create_num)
+
+    bulk_create_num = tour_params[:bulk_create_num].to_i
 
     respond_to do |format|
-      if @tour.save
+      begin
+        # NOTE: できればバルクインサートしたいが、バルクインサートではコールバックが効かないため、CarrierWaveによる画像保存に支障が出る
+        # TODO: CarrierWaveによる画像保存と両立する方法が思いついたらバルクインサート化
+        bulk_create_num.times do
+          @tour = Tour.new(tour_params_with_user)
+          @tour.save!
+        end
         format.html { redirect_to tours_url_with_ranmemory, notice: t("notice.create") }
         format.json { render :show, status: :created, location: @tour }
-      else
+      rescue
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @tour.errors, status: :unprocessable_entity }
       end
@@ -153,7 +161,7 @@ class ToursController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def tour_params
-      params.require(:tour).permit(:title, :start_date, :end_date, :track, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns)
+      params.require(:tour).permit(:title, :start_date, :end_date, :track, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num)
     end
 
     def validate_user
