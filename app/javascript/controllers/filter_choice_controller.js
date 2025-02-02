@@ -2,8 +2,10 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   static targets = ["dropdown", "toggleButton"];
+  static values = { modelName: String };
 
   connect() {
+    this.sessionKey = `filterChoices_${this.modelNameValue}`;
     // ドロップダウン外部クリックをリスン
     document.addEventListener("click", this.closeDropdownOutside.bind(this));
 
@@ -14,13 +16,13 @@ export default class extends Controller {
 
     // セッションストレージから表示状態を取得
     let filterChoices = JSON.parse(
-      sessionStorage.getItem("filterChoices") || "[]"
+      sessionStorage.getItem(this.sessionKey) || "[]"
     );
 
     // セッションが空の場合、デフォルト値で初期化
-    if (!sessionStorage.getItem("filterChoices")) {
+    if (!sessionStorage.getItem(this.sessionKey)) {
       filterChoices = defaultVisibleFields;
-      sessionStorage.setItem("filterChoices", JSON.stringify(filterChoices));
+      sessionStorage.setItem(this.sessionKey, JSON.stringify(filterChoices));
     }
 
     // フィールドの表示・非表示を切り替え
@@ -54,7 +56,7 @@ export default class extends Controller {
     // ドロップダウンが開かれた場合、現在の状態をチェックボックスに反映
     if (!dropdown.classList.contains("hidden")) {
       const filterChoices = JSON.parse(
-        sessionStorage.getItem("filterChoices") || "[]"
+        sessionStorage.getItem(this.sessionKey) || "[]"
       );
       this.updateCheckboxes(filterChoices);
     }
@@ -76,7 +78,7 @@ export default class extends Controller {
     this.toggleFields(filterChoices);
 
     // セッションストレージに保存
-    sessionStorage.setItem("filterChoices", JSON.stringify(filterChoices));
+    sessionStorage.setItem(this.sessionKey, JSON.stringify(filterChoices));
   }
 
   toggleFields(filterChoices) {

@@ -13,7 +13,10 @@ export default class extends Controller {
     "bulkDeleteButton",
     "selectRowCount",
   ];
+  static values = { modelName: String };
+
   connect() {
+    this.sessionKey = `bulkUpdateFields_${this.modelNameValue}`;
     this.updateCheckAllState();
     this.toggleBulkDeleteButton();
     this.toggleBulkUpdateButton();
@@ -22,7 +25,7 @@ export default class extends Controller {
   bulkUpdate(event) {
     // セッションストレージから表示状態を取得
     const bulkUpdateFields = JSON.parse(
-      sessionStorage.getItem("bulkUpdateFields") || "[]"
+      sessionStorage.getItem(this.sessionKey) || "[]"
     );
 
     const bulkIds = this.selectRowTargets

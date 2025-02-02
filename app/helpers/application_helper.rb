@@ -36,4 +36,20 @@ module ApplicationHelper
 
     tours_url(options.merge(ranmemory_state))
   end
+
+  def collection_settings_url_with_ranmemory(options = {})
+    ranmemory_state = session[:ranmemory_collection_settings_index_html] || {}
+
+    sort = options[:sort] || session[:collection_settings_index_sort]
+    direction = options[:direction] || session[:collection_settings_index_direction]
+    page = options[:page] || session[:collection_settings_index_page]
+
+    options = options.merge({
+      sort: sort,
+      direction: direction,
+      page: page
+    })
+
+    collection_settings_url(options.merge(ranmemory_state))
+  end
 end

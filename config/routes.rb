@@ -9,7 +9,12 @@ Rails.application.routes.draw do
   resources :specimens
   resources :specimen_labels
   resources :custom_taxa
-  resources :collection_settings
+  resources :collection_settings do
+    collection do
+      patch :bulk_update
+      delete :bulk_delete
+    end
+  end
   resources :collect_points
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

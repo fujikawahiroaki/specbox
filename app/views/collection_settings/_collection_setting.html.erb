@@ -1,27 +1,28 @@
-<div id="<%= dom_id collection_setting %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Collection name:</strong>
-    <%= collection_setting.collection_name %>
-  </p>
+<div id="<%= dom_id collection_setting %>" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">機関コード:</strong>
+      <%= collection_setting.institution_code %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Institution code:</strong>
-    <%= collection_setting.institution_code %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">コレクション名:</strong>
+      <%= collection_setting.collection_name %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Latest collection code:</strong>
-    <%= collection_setting.latest_collection_code %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">最新標本ID:</strong>
+      <%= collection_setting.latest_collection_code %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Note:</strong>
-    <%= collection_setting.note %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">備考:</strong>
+      <%= simple_format(collection_setting.note) %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">User:</strong>
-    <%= collection_setting.user_id %>
-  </p>
-
+    <p class="my-5">
+      <strong class="block font-medium mb-1">作成日時:</strong>
+      <%= collection_setting.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
+    </p>
+  </div>
 </div>

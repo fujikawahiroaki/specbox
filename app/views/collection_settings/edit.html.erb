@@ -1,8 +1,14 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Editing collection setting</h1>
+<%= turbo_frame_tag "content-zone" do %>
+  <div class="mx-auto md:w-2/3 w-full">
+    <h1 class="font-bold text-lg">コレクションを編集</h1>
 
-  <%= render "form", collection_setting: @collection_setting %>
+    <%= render "form", collection_setting: @collection_setting %>
 
-  <%= link_to "Show this collection setting", @collection_setting, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-  <%= link_to "Back to collection settings", collection_settings_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-</div>
+    <%= link_to "詳細に戻る", @collection_setting, class: "mt-2 ml-2 rounded-lg py-1 px-2 inline-block normal-button",
+      data: { turbo_frame: "content-zone", turbo_action: "advance" }
+    %>
+    <%= link_to "一覧に戻る", collection_settings_url_with_ranmemory, class: "mt-2 ml-2 rounded-lg py-1 px-2 inline-block normal-button",
+      data: { turbo_frame: "content-zone", turbo_action: "advance" }
+    %>
+  </div>
+<% end %>

@@ -2,8 +2,10 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   static targets = ["dropdown", "toggleButton", "tableBody", "tableHead", "paginate"];
+  static values = { modelName: String };
 
   connect() {
+    this.sessionKey = `visibleColumns_${this.modelNameValue}`;
     const isMobile = window.innerWidth < 640;
 
     // ドロップダウン外部クリックをリスン
@@ -16,13 +18,13 @@ export default class extends Controller {
 
     // セッションストレージから表示状態を取得
     let visibleColumns = JSON.parse(
-      sessionStorage.getItem("visibleColumns") || "[]"
+      sessionStorage.getItem(this.sessionKey) || "[]"
     );
 
     // セッションが空の場合、デフォルト値で初期化
-    if (!sessionStorage.getItem("visibleColumns")) {
+    if (!sessionStorage.getItem(this.sessionKey)) {
       visibleColumns = defaultVisibleColumns;
-      sessionStorage.setItem("visibleColumns", JSON.stringify(visibleColumns));
+      sessionStorage.setItem(this.sessionKey, JSON.stringify(visibleColumns));
     }
 
     // フィールドの表示・非表示を切り替え
@@ -65,7 +67,7 @@ export default class extends Controller {
   applyFilters() {
     // セッションストレージから表示状態を取得
     const visibleColumns = JSON.parse(
-      sessionStorage.getItem("visibleColumns") || "[]"
+      sessionStorage.getItem(this.sessionKey) || "[]"
     );
 
     // フィールドの表示・非表示を切り替え
@@ -98,7 +100,7 @@ export default class extends Controller {
     // ドロップダウンが開かれた場合、現在の状態をチェックボックスに反映
     if (!dropdown.classList.contains("hidden")) {
       const visibleColumns = JSON.parse(
-        sessionStorage.getItem("visibleColumns") || "[]"
+        sessionStorage.getItem(this.sessionKey) || "[]"
       );
       this.updateCheckboxes(visibleColumns);
     }
@@ -120,7 +122,7 @@ export default class extends Controller {
     this.toggleColumns(visibleColumns);
 
     // セッションストレージに保存
-    sessionStorage.setItem("visibleColumns", JSON.stringify(visibleColumns));
+    sessionStorage.setItem(this.sessionKey, JSON.stringify(visibleColumns));
   }
 
   toggleColumns(visibleColumns) {

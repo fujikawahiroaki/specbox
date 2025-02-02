@@ -1,21 +1,395 @@
-<div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-  <% end %>
+<%= turbo_frame_tag "content-zone" do %>
+  <div class="w-full">
 
-  <% content_for :title, "Collection settings" %>
+    <% content_for :institution_code, "collection_settings" %>
 
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Collection settings</h1>
-    <%= link_to "New collection setting", new_collection_setting_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
+    <div class="flex justify-between items-center mb-2">
+      <h1 class="font-bold text-xl">コレクション</h1>
+
+      <div>
+        <% if notice.present? %>
+          <p class="left-1/2 py-2 px-3 bg-green-50 mb-5 text-green-500 text-sm rounded-lg inline-block z-50" id="flash-message" data-controller="flash"><%= notice %></p>
+        <% end %>
+        <% if alert.present? %>
+          <p class="left-1/2 py-2 px-3 bg-red-50 mb-5 text-red-500 text-sm rounded-lg inline-block z-50" id="flash-message" data-controller="flash"><%= alert %></p>
+        <% end %>
+      </div>
+
+      <%= link_to "作成", new_collection_setting_path,
+        class: "text-sm rounded-lg py-3 px-5 submit-button text-white block font-medium",
+        data: { turbo_frame: "content-zone", turbo_action: "advance" }
+      %>
+    </div>
+
+    <div
+      data-controller="filter-choice"
+      data-filter-choice-model-name-value="collection_setting"
+      data-default-visible-fields="<%= ['institution_code_cont'].to_json %>"
+    >
+      <div>
+        <div class="relative inline-block">
+          <!-- ボタンをクリックでドロップダウンをトグル -->
+          <button class="normal-button text-sm px-2 py-1 rounded-md border border-gray" data-action="click->filter-choice#toggleDropdown" data-filter-choice-target="toggleButton">
+            検索項目を選択 ▼
+          </button>
+
+          <!-- ドロップダウンメニュー -->
+          <div class="text-xs absolute top-full left-0 normal-button shadow-lg border p-2 hidden bg-[#E9F5F8] z-50 whitespace-nowrap"
+               data-filter-choice-target="dropdown"
+               data-action="click->filter-choice#keepDropdownOpen">
+              <% columns = { institution_code_cont: '機関コード(部分一致)', institution_code_eq: '機関コード(完全一致)', collection_name_cont: 'コレクション名(部分一致)', collection_name_eq: 'コレクション名(完全一致)', created_at_date_eq: '作成日時(日付一致)', note_cont: '備考(部分一致)' } %>
+              <% columns.each do |col, name| %>
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="columns[]"
+                      class="m-1"
+                      data-action="change->filter-choice#updateFilter"
+                      value="<%= col %>"
+                    >
+                    <%= name %>
+                  </label>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="border border-gray-300 rounded-lg mb-4 p-2 text-sm overflow-x-auto shadow-lg rounded-lg">
+          <%= search_form_for @search,
+            html: {
+              data: {
+                turbo_frame: "data_table",
+                controller: "incremental-search",
+                action: "input->incremental-search#submit",
+                turbo_action: "advance"
+              }
+            } do |form| %>
+            <div class="my-2">
+              <%= form.submit class: "text-sm rounded-lg py-1 px-2 normal-button inline-block cursor-pointer", data: {turbo_action: "advance"} %>
+              <%= link_to 'クリア', url_for + "?cancel_filter=true", class: "text-sm rounded-lg py-1 px-2 normal-button inline-block cursor-pointer", data: {turbo_action: "advance", turbo_prefetch: false} %>
+            </div>
+
+            <div class="flex flex-wrap gap-4">
+              <div class="w-[200px] hidden" data-filter-choice-field id="institution_code_cont">
+                <%= form.label '機関コード(部分一致)', class: "block" %>
+                <%= form.search_field :institution_code_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="institution_code_eq">
+                <%= form.label '機関コード(完全一致)', class: "block" %>
+                <%= form.search_field :institution_code_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collection_name_cont">
+                <%= form.label 'コレクション名(部分一致)', class: "block" %>
+                <%= form.search_field :collection_name_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collection_name_eq">
+                <%= form.label 'コレクション名(完全一致)', class: "block" %>
+                <%= form.search_field :collection_name_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[150px] hidden" data-filter-choice-field id="created_at_date_eq">
+                <%= form.label '作成日時(日付一致)', class: "block" %>
+                <%= form.date_field :created_at_date_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="note_cont">
+                <%= form.label '備考(部分一致)', class: "block" %>
+                <%= form.search_field :note_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div data-controller="bulk-action" data-bulk-action-model-name-value="collection_setting">
+      <div data-controller="validation">
+        <div
+          data-controller="bulk-update-choice"
+          data-bulk-update-choice-model-name-value="collection_setting"
+          data-default-bulk-update-choice-fields="<%= [].to_json %>"
+        >
+          <div class="border border-gray-300 rounded-lg mb-4 p-2 text-sm shadow-lg rounded-lg">
+            <div class="text-xs">
+              <p class="text-sm text-red-600 font-medium">⚠一括操作は危険です。</p>
+              <p>旧システムでは複数ページの一括選択が可能でしたが、この新システムでは安全確保のため、現在のページに表示されているデータのみを選択可能としました。</p>
+              <p>ページの移動や検索によって選択はリセットされます。</p>
+              <p>データを選択するまで一括更新/一括削除ボタンは有効になりません。また、一括更新ボタンの場合は、選択した更新対象項目への入力が検証に合格するまで有効になりません。
+            </div>
+
+            <p class="m-2">現在の選択件数: <span data-bulk-action-target="selectRowCount">0</span></p>
+
+            <hr class="border border-gray-300">
+
+            <%= form_with(
+              url: bulk_delete_collection_settings_path,
+              method: :delete,
+              data: {
+                action: "submit->bulk-action#bulkDelete",
+                turbo_frame: "data_table",
+                turbo_action: "advance"
+              }
+            ) do |form| %>
+              <%= form.submit(
+                "選択データを一括削除",
+                class: "text-sm rounded-lg my-2 py-1 px-2 denger text-white inline-block cursor-pointer",
+                data: {
+                  bulk_action_target: "bulkDeleteButton",
+                  turbo_action: "advance",
+                  action: "submit->bulk-action#bulkDelete",
+                  turbo_confirm: "一括削除は危険な操作です！\n本当に実行しますか？"
+                }
+              )%>
+              <%= form.hidden_field :bulk_ids, value: "", data: { bulk_action_target: "bulkDeleteIds" } %>
+            <% end %>
+
+            <hr class="mb-2 border border-gray-300">
+
+            <div class="relative inline-block">
+              <!-- ボタンをクリックでドロップダウンをトグル -->
+              <button class="normal-button text-sm px-2 py-1 rounded-md border border-gray" data-action="click->bulk-update-choice#toggleDropdown" data-bulk-update-choice-target="toggleButton">
+                一括更新項目を選択 ▼
+              </button>
+              <!-- ドロップダウンメニュー -->
+              <div class="text-xs absolute top-full left-0 normal-button shadow-lg border p-2 hidden bg-[#E9F5F8] z-50 whitespace-nowrap"
+                   data-bulk-update-choice-target="dropdown"
+                   data-action="click->bulk-update-choice#keepDropdownOpen"
+              >
+                <% columns = { institution_code: '機関コード', collection_name: 'コレクション名', note: '備考' } %>
+                <% columns.each do |col, name| %>
+                  <div>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="bulk-update-fields[]"
+                        data-action="change->bulk-update-choice#updateChoice change->validation#toggleSubmitButton"
+                        class="m-1"
+                        value="<%= col %>"
+                      >
+                      <%= name %>
+                    </label>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <%= form_with(
+              url: bulk_update_collection_settings_path,
+              method: :patch,
+              data: {
+                action: "submit->bulk-action#bulkUpdate input->bulk-action#zeroSelectDisabledBulkUpdate",
+                turbo_frame: "data_table",
+                turbo_action: "advance"
+              }
+            ) do |form| %>
+              <%= form.submit(
+                "選択データを一括更新",
+                class: "text-sm rounded-lg my-2 py-1 px-2 submit-button text-white cursor-pointer",
+                data: {
+                  bulk_action_target: "bulkUpdateButton",
+                  validation_target: "submit",
+                  turbo_action: "advance",
+                  action: "submit->bulk-action#bulkUpdate",
+                  turbo_confirm: "一括更新は危険な操作です！\n本当に実行しますか？"
+                }
+              )%>
+              <%= form.hidden_field :bulk_ids, value: "", data: { bulk_action_target: "bulkIds" } %>
+              <%= form.hidden_field :bulk_columns, value: "", data: { bulk_action_target: "bulkColumns" } %>
+              <div class="flex flex-wrap gap-4">
+                <div class="w-[200px]" data-bulk-update-choice-field id="institution_code">
+                  <%= form.label '機関コード', class: "block" %>
+                  <%= form.text_field(
+                    :institution_code,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "institution_code",
+                      validation_required: "true",
+                      validation_message_required: "機関コードは必須です",
+                      validation_min_length: "1",
+                      validation_max_length: "10",
+                      validation_message_length: "機関コードは1文字以上10文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+                <div class="w-[200px]" data-bulk-update-choice-field id="collection_name">
+                  <%= form.label 'コレクション名', class: "block" %>
+                  <%= form.text_field(
+                    :collection_name,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "collection_name",
+                      validation_required: "true",
+                      validation_message_required: "コレクション名は必須です",
+                      validation_min_length: "1",
+                      validation_max_length: "174",
+                      validation_message_length: "コレクション名は1文字以上174文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+                </div>
+                <div class="w-[200px]" data-bulk-update-choice-field id="note">
+                  <%= form.label '備考', class: "block" %>
+                  <%= form.text_area(
+                    :note,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {validation_target: "input",
+                      validation_type: "string",
+                      name: "note",
+                      validation_max_length: "200",
+                      validation_message_length: "備考は200文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <div
+          data-controller="table-column"
+          data-mobile-default-visible-columns="<%= ['institution_code', 'collection_name'].to_json %>"
+          data-default-visible-columns="<%= ['institution_code', 'collection_name'].to_json %>"
+          data-table-column-model-name-value="collection_setting"
+        >
+          <div>
+            <div class="relative inline-block">
+              <!-- ボタンをクリックでドロップダウンをトグル -->
+              <button class="normal-button text-sm px-2 py-1 rounded-md border border-gray" data-action="click->table-column#toggleDropdown" data-table-column-target="toggleButton">
+                表示項目を選択 ▼
+              </button>
+              <span class="text-sm px-2">列名クリックで並べ替え</span>
+
+              <!-- ドロップダウンメニュー -->
+              <div class="text-xs absolute top-full left-0 normal-button shadow-lg border p-2 hidden bg-[#E9F5F8] z-50 whitespace-nowrap"
+                   data-table-column-target="dropdown"
+                   data-action="click->table-column#keepDropdownOpen">
+                  <% columns = { institution_code: 'タイトル', collection_name: 'コレクション名', latest_collection_code: '最新標本ID', created_at: '作成日時', note: '備考' } %>
+                  <% columns.each do |col, name| %>
+                    <div>
+                      <label>
+                        <input
+                          type="checkbox"
+                          name="columns[]"
+                          class="m-1"
+                          data-action="change->table-column#updateColumn"
+                          value="<%= col %>"
+                        >
+                        <%= name %>
+                      </label>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <%= turbo_frame_tag "data_table", data: {action: "turbo:frame-load->bulk-action#resetSelectDisplay"} do %>
+              <%= paginate @collection_settings %>
+              <div class="overflow-x-auto shadow-lg rounded-lg">
+                <table class="text-sm min-w-full table-auto border-collapse">
+                  <thead data-table-column-target="tableHead" style="display: none">
+                    <tr class="column-names">
+                      <th class="text-sm px-4 py-2 border border-gray-300 text-center w-8">
+                        <input
+                          type="checkbox"
+                          name="selectRows[]"
+                          data-action="change->bulk-action#updateAllRow change->validation#toggleSubmitButton change->bulk-action#zeroSelectDisabledBulkUpdate"
+                          data-bulk-action-target="selectAllRow"
+                          id="selectAllRow"
+                        >
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="institution_code">
+                        <%= link_to collection_settings_url_with_ranmemory(sort: 'institution_code', direction: toggle_direction('institution_code')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          機関コード
+                          <%= sort_icon('institution_code') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collection_name">
+                        <%= link_to collection_settings_url_with_ranmemory(sort: 'collection_name', direction: toggle_direction('collection_name')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          コレクション名
+                          <%= sort_icon('collection_name') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="latest_collection_code">
+                        <%= link_to collection_settings_url_with_ranmemory(sort: 'latest_collection_code', direction: toggle_direction('latest_collection_code')), class: "font-bold  flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          最新標本ID
+                          <%= sort_icon('latest_collection_code') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left hidden" data-table-column-visible-columns id="created_at">
+                        <%= link_to collection_settings_url_with_ranmemory(sort: 'created_at', direction: toggle_direction('created_at')), class: "font-bold  flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          作成日時
+                          <%= sort_icon('created_at') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left hidden" data-table-column-visible-columns id="note">
+                        <%= link_to collection_settings_url_with_ranmemory(sort: 'note', direction: toggle_direction('note')), class: "font-bold  flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          備考
+                          <%= sort_icon('note') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody data-table-column-target="tableBody" style="display: none">
+                    <% @collection_settings.each do |collection_setting| %>
+                      <tr id="collection_setting_<%= collection_setting.id %>" class="row-hover">
+                        <!-- turbo_stream_from で削除対象の行を監視 -->
+                        <%= turbo_stream_from "collection_setting_#{collection_setting.id}" %>
+                        <td class="text-sm px-4 py-1 border border-gray-300 text-center w-8">
+                          <input
+                            type="checkbox"
+                            name="selectRows[]"
+                            value="<%= collection_setting.id %>"
+                            data-bulk-action-target="selectRow"
+                            data-action="change->bulk-action#updateSelectRow change->validation#toggleSubmitButton change->bulk-action#zeroSelectDisabledBulkUpdate"
+                            id="bulk-action-select-row-<%= collection_setting.id %>"
+                          >
+                        </td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="institution_code"><%= collection_setting.institution_code %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collection_name"><%= collection_setting.collection_name %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="latest_collection_code"><%= collection_setting.latest_collection_code %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300 hidden" data-table-column-visible-columns id="created_at"><%= collection_setting.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300 hidden" data-table-column-visible-columns id="note"><%= collection_setting.note %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300">
+                          <div class="flex gap-3 flex-col sm:flex-row">
+                            <!-- 詳細リンク (ページ遷移) -->
+                            <%= link_to "詳細", collection_setting, class: "rounded-lg py-1 px-3 text-sm normal-button text-center",
+                              data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
+
+                            <!-- 編集リンク (ページ遷移) -->
+                            <%= link_to "編集", edit_collection_setting_path(collection_setting), class: "rounded-lg py-1 px-3 text-sm normal-button text-center",
+                              data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
+
+                            <!-- 複製リンク (ページ遷移) -->
+                            <%= link_to "複製", new_collection_setting_path(base_id: collection_setting.id), class: "rounded-lg py-1 px-3 text-sm normal-button text-center",
+                              data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
+                            <!-- 削除リンク (Turbo Stream で削除) -->
+                            <%= link_to "削除", collection_setting_path(collection_setting), method: :delete, class: "rounded-lg py-1 px-3 denger text-white text-sm text-center",
+                              data: { turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_stream: "collection_setting_#{collection_setting.id}" } %>
+                          </div>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+              <% if @collection_settings.empty? %>
+                <div class="m-12">
+                  データが見つかりませんでした
+                </div>
+              <% end %>
+              <div data-table-column-target="paginate" class="hidden">
+                <%= paginate @collection_settings %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div id="collection_settings" class="min-w-full">
-    <% @collection_settings.each do |collection_setting| %>
-      <%= render collection_setting %>
-      <p>
-        <%= link_to "Show this collection setting", collection_setting, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-      </p>
-    <% end %>
-  </div>
-</div>
+<% end %>

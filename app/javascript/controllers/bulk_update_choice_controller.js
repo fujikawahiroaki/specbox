@@ -2,8 +2,10 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   static targets = ["dropdown", "toggleButton"];
+  static values = { modelName: String };
 
   connect() {
+    this.sessionKey = `bulkUpdateFields_${this.modelNameValue}`;
     // ドロップダウン外部クリックをリスン
     document.addEventListener("click", this.closeDropdownOutside.bind(this));
 
@@ -15,14 +17,14 @@ export default class extends Controller {
 
     // セッションストレージから表示状態を取得
     let bulkUpdateFields = JSON.parse(
-      sessionStorage.getItem("bulkUpdateFields") || "[]"
+      sessionStorage.getItem(this.sessionKey) || "[]"
     );
 
     // セッションが空の場合、デフォルト値で初期化
-    if (!sessionStorage.getItem("bulkUpdateFields")) {
+    if (!sessionStorage.getItem(this.sessionKey)) {
       bulkUpdateFields = defaultVisibleFields;
       sessionStorage.setItem(
-        "bulkUpdateFields",
+        this.sessionKey,
         JSON.stringify(bulkUpdateFields)
       );
     }
@@ -58,7 +60,7 @@ export default class extends Controller {
     // ドロップダウンが開かれた場合、現在の状態をチェックボックスに反映
     if (!dropdown.classList.contains("hidden")) {
       const bulkUpdateFields = JSON.parse(
-        sessionStorage.getItem("bulkUpdateFields") || "[]"
+        sessionStorage.getItem(this.sessionKey) || "[]"
       );
       this.updateCheckboxes(bulkUpdateFields);
     }
@@ -83,7 +85,7 @@ export default class extends Controller {
 
     // セッションストレージに保存
     sessionStorage.setItem(
-      "bulkUpdateFields",
+      this.sessionKey,
       JSON.stringify(bulkUpdateFields)
     );
   }

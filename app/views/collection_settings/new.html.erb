@@ -1,7 +1,10 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">New collection setting</h1>
+<%= turbo_frame_tag "content-zone" do %>
+  <div class="mx-auto md:w-2/3 w-full">
+    <h1 class="font-bold text-lg">コレクションの作成</h1>
 
-  <%= render "form", collection_setting: @collection_setting %>
+    <%= render "form", collection_setting: @collection_setting, create_mode: true %>
 
-  <%= link_to "Back to collection settings", collection_settings_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-</div>
+    <%= link_to "一覧に戻る", collection_settings_url_with_ranmemory, class: "mt-2 ml-2 normal-button px-2 py-1 inline-block", data: { turbo_frame: "content-zone", turbo_action: "advance" }
+    %>
+  </div>
+<% end %>

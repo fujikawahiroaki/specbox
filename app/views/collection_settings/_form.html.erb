@@ -1,7 +1,8 @@
-<%= form_with(model: collection_setting, class: "contents") do |form| %>
+<%= form_with(model: collection_setting, class: "contents", data: {controller: "validation"}) do |form| %>
+  <% create_mode = create_mode.present? ? create_mode : false %>
   <% if collection_setting.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
-      <h2><%= pluralize(collection_setting.errors.count, "error") %> prohibited this collection_setting from being saved:</h2>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-2 py-1 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(collection_setting.errors.count, "error") %>つのエラーが発生しました:</h2>
 
       <ul>
         <% collection_setting.errors.each do |error| %>
@@ -11,32 +12,100 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :collection_name %>
-    <%= form.text_field :collection_name, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm" >
+    <div>
+      <% if create_mode %>
+        <div class="my-5">
+          <%= form.label '同一データでの作成数(最大50)' %>
+          <%= form.text_field :bulk_create_num,
+            value: 1,
+            class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {validation_target: "input",
+                   validation_type: "integer",
+                   name: "bulk_create_num",
+                   validation_required: "true",
+                   validation_message_required: "作成数は必須です",
+                   validation_min_value: 1,
+                   validation_max_value: 50,
+                   validation_min_integer_digits: 1,
+                   validation_max_integer_digits: 2,
+                   validation_message_integer: "作成数は整数で入力し、1以上50以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+        </div>
+      <% end %>
 
-  <div class="my-5">
-    <%= form.label :institution_code %>
-    <%= form.text_field :institution_code, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label '機関コード' %>
+        <%= form.text_field :institution_code,
+          class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+          data: {validation_target: "input",
+                 validation_type: "string",
+                 name: "institution_code",
+                 validation_required: "true",
+                 validation_message_required: "機関コードは必須です",
+                 validation_max_length: "10",
+                 validation_message_length: "機関コードは10文字以下にしてください"
+          }
+        %>
+        <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :latest_collection_code %>
-    <%= form.number_field :latest_collection_code, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label 'コレクション名' %>
+        <%= form.text_field :collection_name,
+          class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+          data: {validation_target: "input",
+                 validation_type: "string",
+                 name: "institution_code",
+                 validation_required: "true",
+                 validation_message_required: "コレクション名は必須です",
+                 validation_max_length: "174",
+                 validation_message_length: "コレクション名は174文字以下にしてください"
+          }
+        %>
+        <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :note %>
-    <%= form.text_area :note, rows: 4, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label '最新標本ID' %>
+        <%= form.number_field :latest_collection_code,
+          class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+          value: 0,
+          data: {validation_target: "input",
+                 validation_type: "integer",
+                 name: "bulk_create_num",
+                 validation_required: "true",
+                 validation_message_required: "最新標本IDは必須です",
+                 validation_min_value: 0,
+                 validation_max_value: 999999999999999999,
+                 validation_min_integer_digits: 1,
+                 validation_max_integer_digits: 18,
+                 validation_message_integer: "最新標本IDは0以上999999999999999999以下の整数で入力してください"
+          }
+        %>
+        <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :user_id %>
-    <%= form.text_field :user_id, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+      <div class="my-5">
+        <%= form.label '備考' %>
+        <%= form.text_area :note,
+          rows: 4,
+          class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+          data: {validation_target: "input",
+                 validation_type: "string",
+                 name: "note",
+                 validation_max_length: "200",
+                 validation_message_length: "備考は200文字以下にしてください"
+          }
+        %>
+        <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+      </div>
+    </div>
   </div>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit class: "rounded-lg mt-2 py-1 px-2 submit-button text-white inline-block cursor-pointer btn btn-primary", data: {validation_target: "submit", turbo_action: "advance"} %>
   </div>
 <% end %>
