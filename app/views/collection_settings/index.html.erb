@@ -37,7 +37,7 @@
           <div class="text-xs absolute top-full left-0 normal-button shadow-lg border p-2 hidden bg-[#E9F5F8] z-50 whitespace-nowrap"
                data-filter-choice-target="dropdown"
                data-action="click->filter-choice#keepDropdownOpen">
-              <% columns = { institution_code_cont: '機関コード(部分一致)', institution_code_eq: '機関コード(完全一致)', collection_name_cont: 'コレクション名(部分一致)', collection_name_eq: 'コレクション名(完全一致)', created_at_date_eq: '作成日時(日付一致)', note_cont: '備考(部分一致)' } %>
+              <% columns = { institution_code_cont: '機関コード(部分一致)', institution_code_eq: '機関コード(完全一致)', collection_name_cont: 'コレクション名(部分一致)', collection_name_eq: 'コレクション名(完全一致)', latest_collection_code_eq: '最新標本ID(完全一致)', latest_collection_code_gteq: '最新標本ID(指定値以上)', latest_collection_code_lteq: '最新標本ID(指定値以下)', created_at_date_eq: '作成日時(日付一致)', note_cont: '備考(部分一致)' } %>
               <% columns.each do |col, name| %>
                 <div>
                   <label>
@@ -87,6 +87,19 @@
               <div class="w-[200px] hidden" data-filter-choice-field id="collection_name_eq">
                 <%= form.label 'コレクション名(完全一致)', class: "block" %>
                 <%= form.search_field :collection_name_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="latest_collection_code_eq">
+                <%= form.label '最新標本ID(完全一致)', class: "block" %>
+                <%= form.search_field :latest_collection_code_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="latest_collection_code_gteq">
+                <%= form.label '最新標本ID(指定値以上)', class: "block" %>
+                <%= form.search_field :latest_collection_code_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="latest_collection_code_lteq">
+                <%= form.label '最新標本ID(指定値以下)', class: "block" %>
+                <%= form.search_field :latest_collection_code_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
               </div>
               <div class="w-[150px] hidden" data-filter-choice-field id="created_at_date_eq">
                 <%= form.label '作成日時(日付一致)', class: "block" %>
