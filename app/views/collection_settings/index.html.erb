@@ -168,7 +168,7 @@
                    data-bulk-update-choice-target="dropdown"
                    data-action="click->bulk-update-choice#keepDropdownOpen"
               >
-                <% columns = { institution_code: '機関コード', collection_name: 'コレクション名', note: '備考' } %>
+                <% columns = { institution_code: '機関コード', collection_name: 'コレクション名', latest_collection_code: '最新標本ID', note: '備考' } %>
                 <% columns.each do |col, name| %>
                   <div>
                     <label>
@@ -245,6 +245,24 @@
                   ) %>
                   <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
                 </div>
+                <div class="w-[200px]" data-bulk-update-choice-field id="latest_collection_code">
+                  <%= form.label '最新標本ID', class: "block" %>
+                  <%= form.number_field :latest_collection_code,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "integer",
+                      name: "bulk_create_num",
+                      validation_required: "true",
+                      validation_message_required: "最新標本IDは必須です",
+                      validation_min_value: 0,
+                      validation_max_value: 999999999999999999,
+                      validation_min_integer_digits: 1,
+                      validation_max_integer_digits: 18,
+                      validation_message_integer: "最新標本IDは0以上999999999999999999以下の整数で入力してください"
+                    }
+                  %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
                 </div>
                 <div class="w-[200px]" data-bulk-update-choice-field id="note">
                   <%= form.label '備考', class: "block" %>
