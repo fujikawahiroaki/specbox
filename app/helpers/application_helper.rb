@@ -52,4 +52,20 @@ module ApplicationHelper
 
     collection_settings_url(options.merge(ranmemory_state))
   end
+
+  def collect_points_url_with_ranmemory(options = {})
+    ranmemory_state = session[:ranmemory_collect_points_index_html] || {}
+
+    sort = options[:sort] || session[:collect_points_index_sort]
+    direction = options[:direction] || session[:collect_points_index_direction]
+    page = options[:page] || session[:collect_points_index_page]
+
+    options = options.merge({
+      sort: sort,
+      direction: direction,
+      page: page
+    })
+
+    collect_points_url(options.merge(ranmemory_state))
+  end
 end

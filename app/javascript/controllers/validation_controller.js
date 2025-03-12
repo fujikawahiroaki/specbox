@@ -69,8 +69,12 @@ export default class extends Controller {
 
     // 数値のバリデーション（整数または少数）
     if (validationType === "integer" || validationType === "decimal") {
+      // 必須チェック
+      if (required && !value) {
+        errorMessage = requiredMessage;
+      }
       // 整数チェック
-      if (
+      else if (
         validationType === "integer" &&
         !this.isInteger(value, allowNegative)
       ) {

@@ -1,15 +1,31 @@
-<div class="mx-auto md:w-2/3 w-full flex">
-  <div class="mx-auto">
-    <% if notice.present? %>
-      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-    <% end %>
+<%= turbo_frame_tag "content-zone" do %>
+  <div class="mx-auto md:w-2/3 w-full flex">
+    <div class="mx-auto">
+      <% if notice.present? %>
+        <p class="py-1 px-3 bg-green-50 mb-5 text-green-500  rounded-lg inline-block" id="notice"><%= notice %></p>
+      <% end %>
 
-    <%= render @collect_point %>
 
-    <%= link_to "Edit this collect point", edit_collect_point_path(@collect_point), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to "Back to collect points", collect_points_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <div class="inline-block ml-2">
-      <%= button_to "Destroy this collect point", @collect_point, method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+      <h1 class="font-bold text-lg">コレクションの詳細</h1>
+
+      <%= render @collection_setting %>
+
+      <%= link_to "一覧に戻る", collection_settings_url_with_ranmemory,
+        class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
+        data: { turbo_frame: "content-zone", turbo_action: "advance" }
+      %>
+      <%= link_to "編集", edit_collection_setting_path(@collection_setting),
+        class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
+        data: { turbo_frame: "content-zone", turbo_action: "advance" }
+      %>
+      <%= link_to "複製", new_collection_setting_path(base_id: @collection_setting.id),
+        class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
+        data: { turbo_frame: "content-zone", turbo_action: "advance" }
+      %>
+      <%= link_to "削除", collection_setting_path(@collection_setting.id), method: :delete,
+        class: "mt-2 rounded-lg py-1 px-2 inline-block denger",
+        data: {turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_action: "advance"}
+      %>
     </div>
   </div>
-</div>
+<% end %>

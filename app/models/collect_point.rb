@@ -1,4 +1,6 @@
 class CollectPoint < ApplicationRecord
+  include ImagePath
+
   self.table_name = "collect_points"
   self.primary_key = "id"
 
@@ -56,4 +58,52 @@ class CollectPoint < ApplicationRecord
   # 以下、オリジナルの定義
   # 備考
   validates :note, length: { minimum: 0, maximum: 200 }, exclusion: { in: [ nil ] }
+
+  ransacker :created_at_date do
+    Arel.sql("DATE(created_at)")
+  end
+
+  ransacker :english_place_name do
+    Arel.sql("concat_ws(', ', NULLIF('', contient), NULLIF('', island_group), NULLIF('', island), NULLIF('', country), NULLIF('', state_provice), NULLIF('', county), NULLIF('', municipality))")
+  end
+
+  ransacker :all_place_name do
+    Arel.sql("concat_ws(', ', contient, island_group, island, country, state_provice, county, municipality, verbatim_locality, japanese_place_name, japanese_place_name_detail)")
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    [
+      "id",
+      "created_at",
+      "contient",
+      "island_group",
+      "island",
+      "country",
+      "state_provice",
+      "county",
+      "municipality",
+      "verbatim_locality",
+      "japanese_place_name",
+      "japanese_place_name_detail",
+      "coordinate_precision",
+      "location",
+      "minimum_elevation",
+      "maximum_elevation",
+      "minimum_depth",
+      "maximum_depth",
+      "note",
+      "image1",
+      "image2",
+      "image3",
+      "image4",
+      "image5",
+      "created_at_date",
+      "all_place_name",
+      "english_place_name"
+    ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
 end

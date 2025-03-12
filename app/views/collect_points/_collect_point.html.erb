@@ -1,117 +1,88 @@
-<div id="<%= dom_id collect_point %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Contient:</strong>
-    <%= collect_point.contient %>
-  </p>
+<div id="<%= dom_id collect_point %>" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">大陸:</strong>
+      <%= collect_point.contient %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Island group:</strong>
-    <%= collect_point.island_group %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">島群:</strong>
+      <%= collect_point.island_group %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Island:</strong>
-    <%= collect_point.island %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">島:</strong>
+      <%= collect_point.island %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Country:</strong>
-    <%= collect_point.country %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">国名コード(ISO 3166-1):</strong>
+      <%= collect_point.country %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">State provice:</strong>
-    <%= collect_point.state_provice %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">州・県:</strong>
+      <%= collect_point.state_provice %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">County:</strong>
-    <%= collect_point.county %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">海外における郡・区:</strong>
+      <%= collect_point.county %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Municipality:</strong>
-    <%= collect_point.municipality %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">市名以下の詳細地名:</strong>
+      <%= collect_point.municipality %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Verbatim locality:</strong>
-    <%= collect_point.verbatim_locality %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">日本語地名(ラベル用):</strong>
+      <%= collect_point.japanese_place_name %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Japanese place name:</strong>
-    <%= collect_point.japanese_place_name %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">日本語地名(詳細):</strong>
+      <%= collect_point.japanese_place_name_detail %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Japanese place name detail:</strong>
-    <%= collect_point.japanese_place_name_detail %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">採集地の説明:</strong>
+      <%= collect_point.verbatim_locality %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Coordinate precision:</strong>
-    <%= collect_point.coordinate_precision %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">半径(m):</strong>
+      <%= collect_point.coordinate_precision %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Location:</strong>
-    <%= collect_point.location %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">最低標高(m):</strong>
+      <%= collect_point.minimum_elevation %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Minimum elevation:</strong>
-    <%= collect_point.minimum_elevation %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">最高標高(m):</strong>
+      <%= collect_point.maximum_elevation %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Maximum elevation:</strong>
-    <%= collect_point.maximum_elevation %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">最小水深(m):</strong>
+      <%= collect_point.minimum_depth %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Minimum depth:</strong>
-    <%= collect_point.minimum_depth %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">最大水深(m):</strong>
+      <%= collect_point.maximum_depth %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Maximum depth:</strong>
-    <%= collect_point.maximum_depth %>
-  </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">備考:</strong>
+      <%= simple_format(collect_point.note) %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Note:</strong>
-    <%= collect_point.note %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Image1:</strong>
-    <%= collect_point.image1 %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Image2:</strong>
-    <%= collect_point.image2 %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Image3:</strong>
-    <%= collect_point.image3 %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Image4:</strong>
-    <%= collect_point.image4 %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Image5:</strong>
-    <%= collect_point.image5 %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">User:</strong>
-    <%= collect_point.user_id %>
-  </p>
-
+    <p class="my-5">
+      <strong class="block font-medium mb-1">作成日時:</strong>
+      <%= collect_point.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
+    </p>
+  </div>
 </div>
