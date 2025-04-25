@@ -7,7 +7,7 @@ class CollectPoint < ApplicationRecord
   # ISO3166-1 alpha2国名コード全ての配列
   @@iso_3166_1_alpha2_all = ISO3166::Country.codes
 
-  belongs_to :auth_user
+  belongs_to :auth_user, foreign_key: :user_id
   has_many :tours, through: :collect_points_tour
 
   mount_uploader :image1, DjangoPictureUploader
