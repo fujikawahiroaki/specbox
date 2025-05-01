@@ -6,23 +6,23 @@
       <% end %>
 
 
-      <h1 class="font-bold text-lg">コレクションの詳細</h1>
+      <h1 class="font-bold text-lg">採集地点の詳細</h1>
 
-      <%= render @collection_setting %>
+      <%= render @collect_point %>
 
-      <%= link_to "一覧に戻る", collection_settings_url_with_ranmemory,
+      <%= link_to "一覧に戻る", collect_points_url_with_ranmemory,
         class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
         data: { turbo_frame: "content-zone", turbo_action: "advance" }
       %>
-      <%= link_to "編集", edit_collection_setting_path(@collection_setting),
+      <%= link_to "編集", edit_collect_point_path(@collect_point),
         class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
         data: { turbo_frame: "content-zone", turbo_action: "advance" }
       %>
-      <%= link_to "複製", new_collection_setting_path(base_id: @collection_setting.id),
+      <%= link_to "複製", new_collect_point_path(base_id: @collect_point.id),
         class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
         data: { turbo_frame: "content-zone", turbo_action: "advance" }
       %>
-      <%= link_to "削除", collection_setting_path(@collection_setting.id), method: :delete,
+      <%= link_to "削除", collect_point_path(@collect_point.id), method: :delete,
         class: "mt-2 rounded-lg py-1 px-2 inline-block denger",
         data: {turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_action: "advance"}
       %>

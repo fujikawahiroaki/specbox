@@ -52,9 +52,9 @@ class CollectPointsController < ApplicationController
               base_record.image4 = nil
               base_record.image5 = nil
               base_record
-            else
+    else
               CollectPoint.new
-            end
+    end
   end
 
   # GET /collect_points/1/edit
@@ -67,6 +67,14 @@ class CollectPointsController < ApplicationController
     collect_point_params_with_user = collect_point_params
     collect_point_params_with_user[:user_id] = current_user_id
     collect_point_params_with_user.delete(:bulk_create_num)
+    collect_point_params_with_user.delete(:longitude)
+    collect_point_params_with_user.delete(:latitude)
+
+    location_factory = RGeo::Geographic.spherical_factory(srid: 4326)
+    location = location_factory.point(
+      collect_point_params[:longitude].to_f,
+      collect_point_params[:latitude].to_f
+    )
 
     bulk_create_num = collect_point_params[:bulk_create_num].to_i
 
@@ -76,11 +84,12 @@ class CollectPointsController < ApplicationController
         # TODO: CarrierWaveによる画像保存と両立する方法が思いついたらバルクインサート化
         bulk_create_num.times do
           @collect_point = CollectPoint.new(collect_point_params_with_user)
+          @collect_point.location = location
           @collect_point.save!
         end
         format.html { redirect_to collect_points_url_with_ranmemory, notice: t("notice.create") }
         format.json { render :show, status: :created, location: @collect_point }
-      rescue
+      rescue => e
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @collect_point.errors, status: :unprocessable_entity }
       end
@@ -171,7 +180,7 @@ class CollectPointsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def collect_point_params
-      params.require(:collect_point).permit(:contient, :island_group, :island, :country, :state_provice, :county, :municipality, :verbatim_locality, :japanese_place_name, :japanese_place_name_detail, :coordinate_precision, :location, :minimum_elevation, :maximum_elevation, :minimum_depth, :maximum_depth, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num)
+      params.require(:collect_point).permit(:contient, :island_group, :island, :country, :state_provice, :county, :municipality, :verbatim_locality, :japanese_place_name, :japanese_place_name_detail, :coordinate_precision, :latitude, :longitude, :minimum_elevation, :maximum_elevation, :minimum_depth, :maximum_depth, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num)
     end
 
     def validate_user

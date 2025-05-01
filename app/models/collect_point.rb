@@ -16,6 +16,7 @@ class CollectPoint < ApplicationRecord
   mount_uploader :image4, DjangoPictureUploader
   mount_uploader :image5, DjangoPictureUploader
 
+  attribute :id, :uuid, default: -> { SecureRandom.uuid }
   # 以下、分類データのカラムをGBIFベースで定義
   # カラム項目はDarwin Core 1.2に概ね準拠
   # カラム名はDarwin Core 1.2をPEP8準拠の表記に変更したもの
@@ -45,8 +46,6 @@ class CollectPoint < ApplicationRecord
   validates :japanese_place_name_detail, length: { minimum: 0, maximum: 50 }, exclusion: { in: [ nil ] }
   # 採集地の範囲(緯度・経度座標を囲んだ地域の半径をメートル単位で指定)
   validates :coordinate_precision, numericality: { greater_than_or_equal_to: 0 }, exclusion: { in: [ nil ] }
-  # 採集地点
-  validates :location, exclusion: { in: [ nil ] }
   # 採集地の最低海抜距離(メートル)
   validates :minimum_elevation, exclusion: { in: [ nil ] }
   # 採集地の最高海抜距離(メートル)
@@ -69,6 +68,18 @@ class CollectPoint < ApplicationRecord
 
   ransacker :all_place_name do
     Arel.sql("concat_ws(', ', contient, island_group, island, country, state_provice, county, municipality, verbatim_locality, japanese_place_name, japanese_place_name_detail)")
+  end
+
+  def english_place_name
+    [ country, contient, island_group, island, state_provice, county, municipality ].select! { |name| name.nil?.! && name.size != 0 }.join(", ")
+  end
+
+  def longitude
+    location ? location.longitude : nil
+  end
+
+  def latitude
+    location ? location.latitude : nil
   end
 
   def self.ransackable_attributes(auth_object = nil)

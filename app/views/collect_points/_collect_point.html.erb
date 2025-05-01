@@ -51,6 +51,15 @@
     </p>
 
     <p class="my-5">
+      <strong class="block font-medium mb-1">緯度(10進):</strong>
+      <%= collect_point.location.latitude %>
+    </p>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">経度(10進):</strong>
+      <%= collect_point.location.longitude %>
+    </p>
+
+    <p class="my-5">
       <strong class="block font-medium mb-1">半径(m):</strong>
       <%= collect_point.coordinate_precision %>
     </p>

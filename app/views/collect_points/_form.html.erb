@@ -218,9 +218,51 @@
       </div>
 
       <div class="my-5">
+        <%= form.label '緯度(10進座標、小数点以下6桁、不明なら0)', class: "block" %>
+        <%= form.number_field(
+          :latitude,
+          step: "0.000001",
+          value: collect_point.location ? collect_point.location.latitude : 0.0, 
+          class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+          data: {
+            validation_target: "input",
+            validation_type: "decimal",
+            name: "latitude",
+            validation_required: "true",
+            validation_message_required: "緯度は必須です(不明な場合は0にしてください)",
+            validation_max_decimal_digits: 6,
+            validation_message_decimal: "小数点以下は6桁までにしてください"
+          }
+        ) %>
+        <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+      </div>
+
+      <div class="my-5">
+        <%= form.label '経度(10進座標、小数点以下6桁、不明なら0)', class: "block" %>
+        <%= form.number_field(
+          :longitude,
+          step: "0.000001",
+          value: collect_point.location ? collect_point.location.longitude : 0.0, 
+          class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+          data: {
+            validation_target: "input",
+            validation_type: "decimal",
+            name: "longitude",
+            validation_required: "true",
+            validation_message_required: "経度は必須です(不明な場合は0にしてください)",
+            validation_max_decimal_digits: 6,
+            validation_message_decimal: "小数点以下は6桁までにしてください"
+          }
+        ) %>
+        <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+      </div>
+
+      <div class="my-5">
         <%= form.label '半径(m)', class: "block" %>
         <%= form.number_field(
           :coordinate_precision,
+          step: "0.000001",
+          value: collect_point.coordinate_precision ? collect_point.coordinate_precision : 0.0,
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
             validation_target: "input",
@@ -229,7 +271,9 @@
             validation_required: "true",
             validation_message_required: "半径は必須です",
             validation_min_value: 0,
-            validation_message_integer: "0.0以上の数(小数可)で入力してください"
+            validation_message_integer: "0.0以上の数(小数可)で入力してください",
+            validation_max_decimal_digits: 6,
+            validation_message_decimal: "小数点以下は6桁までにしてください"
           }
         ) %>
         <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
@@ -239,6 +283,8 @@
         <%= form.label '最低標高(m)', class: "block" %>
         <%= form.number_field(
           :minimum_elevation,
+          step: "0.000001",
+          value: collect_point.minimum_elevation ? collect_point.minimum_elevation : 0.0,
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
             validation_target: "input",
@@ -247,7 +293,9 @@
             validation_required: "true",
             validation_message_required: "最低標高は必須です",
             validation_min_value: 0,
-            validation_message_integer: "0.0以上の数(小数可)で入力してください"
+            validation_message_integer: "0.0以上の数(小数可)で入力してください",
+            validation_max_decimal_digits: 6,
+            validation_message_decimal: "小数点以下は6桁までにしてください"
           }
         ) %>
         <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
@@ -257,6 +305,8 @@
         <%= form.label '最高標高(m)', class: "block" %>
         <%= form.number_field(
           :maximum_elevation,
+          step: "0.000001",
+          value: collect_point.maximum_elevation ? collect_point.maximum_elevation : 0.0,
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
             validation_target: "input",
@@ -265,7 +315,9 @@
             validation_required: "true",
             validation_message_required: "最高標高は必須です",
             validation_min_value: 0,
-            validation_message_integer: "0.0以上の数(小数可)で入力してください"
+            validation_message_integer: "0.0以上の数(小数可)で入力してください",
+            validation_max_decimal_digits: 6,
+            validation_message_decimal: "小数点以下は6桁までにしてください"
           }
         ) %>
         <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
@@ -275,6 +327,8 @@
         <%= form.label '最小水深(m)', class: "block" %>
         <%= form.number_field(
           :minimum_depth,
+          step: "0.000001",
+          value: collect_point.minimum_depth ? collect_point.minimum_depth : 0.0,
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
             validation_target: "input",
@@ -283,7 +337,9 @@
             validation_required: "true",
             validation_message_required: "最小水深は必須です",
             validation_min_value: 0,
-            validation_message_integer: "0.0以上の数(小数可)で入力してください"
+            validation_message_integer: "0.0以上の数(小数可)で入力してください",
+            validation_max_decimal_digits: 6,
+            validation_message_decimal: "小数点以下は6桁までにしてください"
           }
         ) %>
         <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
@@ -293,6 +349,8 @@
         <%= form.label '最大水深(m)', class: "block" %>
         <%= form.number_field(
           :maximum_depth,
+          step: "0.000001",
+          value: collect_point.maximum_depth ? collect_point.maximum_depth : 0.0,
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
             validation_target: "input",
@@ -301,7 +359,9 @@
             validation_required: "true",
             validation_message_required: "最大水深は必須です",
             validation_min_value: 0,
-            validation_message_integer: "0.0以上の数(小数可)で入力してください"
+            validation_message_integer: "0.0以上の数(小数可)で入力してください",
+            validation_max_decimal_digits: 6,
+            validation_message_decimal: "小数点以下は6桁までにしてください"
           }
         ) %>
         <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
