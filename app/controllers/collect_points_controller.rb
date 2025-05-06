@@ -89,7 +89,7 @@ class CollectPointsController < ApplicationController
         end
         format.html { redirect_to collect_points_url_with_ranmemory, notice: t("notice.create") }
         format.json { render :show, status: :created, location: @collect_point }
-      rescue => e
+      rescue
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @collect_point.errors, status: :unprocessable_entity }
       end
@@ -98,8 +98,17 @@ class CollectPointsController < ApplicationController
 
   # PATCH/PUT /collect_points/1 or /collect_points/1.json
   def update
+    location_factory = RGeo::Geographic.spherical_factory(srid: 4326)
+    location = location_factory.point(
+      collect_point_params[:longitude].to_f,
+      collect_point_params[:latitude].to_f
+    )
+    update_params = collect_point_params
+    update_params.delete(:longitude)
+    update_params.delete(:latitude)
+    @collect_point.location = location
     respond_to do |format|
-      if @collect_point.update(collect_point_params)
+      if @collect_point.update(update_params)
         format.html { redirect_to collect_points_url_with_ranmemory, notice: t("notice.update") }
         format.json { render :show, status: :ok, location: @collect_point }
       else
