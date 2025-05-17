@@ -6,7 +6,7 @@
       <%= button_to 'ログイン', '/auth/auth0', params: {prompt: 'login'}, data: {turbo: "false"}, class: "text-xs normal-button px-2 py-1" %>
     <% else %>
       <!-- Place a logout button anywhere on your application -->
-      <h1 class="font-bold text-xl">ダッシュボード</h1>
+      <h1 class="font-bold text-xl">ダッシュボード🖥️</h1>
       <%= button_to 'ログアウト', '/auth/logout', method: :get, data: { turbo: false } %>
       <p>Find me in app/views/dashboard/index.html.erb</p>
       <p>current_user: <%= @username %>, current_user_id: <%= @user_id %></p>
