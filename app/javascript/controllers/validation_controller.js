@@ -105,7 +105,7 @@ export default class extends Controller {
         validationType === "decimal" &&
         this.isDecimal(value, allowNegative)
       ) {
-        const [integerPart, decimalPart] = value.split(".");
+        const [_, decimalPart = ""] = value.split(".");
         if (decimalPart.length > maxDecimalDigits) {
           errorMessage = `小数部分は${maxDecimalDigits}桁以内で入力してください。`;
         }
@@ -181,7 +181,7 @@ export default class extends Controller {
   // 少数チェック関数（厳密な少数チェック）
   isDecimal(value, allowNegative) {
     // 少数の正規表現：整数部分と小数点以下の部分（負の少数も許可）
-    const regex = allowNegative ? /^-?\d+\.\d+$/ : /^\d+\.\d+$/;
+    const regex = allowNegative ? /^-?\d+(\.\d+)?$/ : /^\d+(\.\d+)?$/;
     return regex.test(value);
   }
 
