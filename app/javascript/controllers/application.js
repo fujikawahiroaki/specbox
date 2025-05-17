@@ -10,6 +10,7 @@ import FilterChoiceController from "./filter_choice_controller";
 import IncrementalSearchController from "./incremental_search_controller";
 import BulkActionController from "./bulk_action_controller";
 import BulkUpdateChoiceController from "./bulk_update_choice_controller";
+import LeafletMapController from "./map_controller";
 
 const application = Application.start();
 
@@ -28,5 +29,6 @@ application.register("filter-choice", FilterChoiceController);
 application.register("incremental-search", IncrementalSearchController);
 application.register("bulk-action", BulkActionController);
 application.register("bulk-update-choice", BulkUpdateChoiceController);
+application.register("leaflet-map", LeafletMapController);
 
 export { application };
