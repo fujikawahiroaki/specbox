@@ -1,5 +1,14 @@
 <div id="<%= dom_id collect_point %>" class="grid grid-cols-1 md:grid-cols-2 gap-6">
   <div>
+    <%= turbo_frame_tag "collect_point_map" do %>
+      <div
+        data-controller="leaflet-map"
+        data-leaflet-map-latitude-value="<%= @collect_point.latitude %>"
+        data-leaflet-map-longitude-value="<%= @collect_point.longitude %>"
+        class="w-full h-[300px] rounded border border-gray-300 shadow"
+      ></div>
+    <% end %>
+
     <p class="my-5">
       <strong class="block font-medium mb-1">大陸:</strong>
       <%= collect_point.contient %>
@@ -93,5 +102,9 @@
       <strong class="block font-medium mb-1">作成日時:</strong>
       <%= collect_point.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
     </p>
+  </div>
+
+  <div>
+    <%= render partial: "shared/image_modal", locals: {model: collect_point} %> 
   </div>
 </div>
