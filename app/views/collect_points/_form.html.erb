@@ -14,6 +14,18 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm" >
     <div>
+      <p class="font-bold">地点入力補助マップ</p>
+      <p>地図をクリックしてピンを立てると緯度・経度が自動入力されます<p>
+      <div
+        data-controller="leaflet-selector"
+        data-leaflet-selector-latitude-value="<%= form.object.latitude %>"
+        data-leaflet-selector-longitude-value="<%= form.object.longitude %>"
+        class="w-full border rounded shadow mb-4"
+        style="height: 300px;"
+      ></div>
+    </div>
+
+    <div>
       <% if create_mode %>
         <div class="my-5">
           <%= form.label '同一データでの作成数(最大50)' %>
