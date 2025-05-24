@@ -105,12 +105,20 @@
         <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
       </div>
 
-      <div class="my-5">
-        <%= form.label '国名コード', class: "block" %>
+      <div class="my-5" data-controller="country-code-selector">
+        <%= form.label '国名（ISO 3166-1準拠の半角英字2字の国名コード）', class: "block" %>
+        <p class="text-sm">下のリストから国名を選択すると自動で反映されます</p>
+        <select
+          data-country-code-selector-target="select"
+          data-action="change->country-code-selector#updateCode"
+          class="text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full">
+        </select>
+
         <%= form.text_field(
           :country,
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
+            country_code_selector_target: "input",
             validation_target: "input",
             validation_type: "string",
             name: "country",
@@ -121,6 +129,7 @@
             validation_message_length: "2文字(ISO 3166-1準拠)にしてください"
           }
         ) %>
+
         <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
       </div>
 
