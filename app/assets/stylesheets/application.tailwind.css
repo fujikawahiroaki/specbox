@@ -12,6 +12,10 @@
 
 */
 
+.copy-button {
+  @apply px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600;
+}
+
 body {
   @apply bg-gradient-to-b from-white to-[#CCE9EE] bg-fixed;
 }

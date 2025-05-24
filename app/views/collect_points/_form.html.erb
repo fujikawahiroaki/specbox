@@ -1,4 +1,4 @@
-<%= form_with(model: collect_point, class: "contents", data: {controller: "validation"}) do |form| %>
+<%= form_with(model: collect_point, class: "contents", data: {controller: "validation", turbo_frame: "content-zone"}) do |form| %>
   <% create_mode = create_mode.present? ? create_mode : false %>
   <% if collect_point.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-2 py-1 font-medium rounded-lg mt-3">
@@ -12,20 +12,23 @@
     </div>
   <% end %>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm" >
+  <div class="grid grid-cols-1 my-5 md:grid-cols-2 gap-6 text-sm" >
     <div>
-      <p class="font-bold">地点入力補助マップ</p>
-      <p>地図をクリックしてピンを立てると緯度・経度が自動入力されます<p>
-      <div
-        data-controller="leaflet-selector"
-        data-leaflet-selector-latitude-value="<%= form.object.latitude %>"
-        data-leaflet-selector-longitude-value="<%= form.object.longitude %>"
-        class="w-full border rounded shadow mb-4"
-        style="height: 300px;"
-      ></div>
+      <!-- ここに地図を埋め込みたい -->
+      <div>
+        <%= render "collect_points/map_embed", collect_point: collect_point %>
+      </div>
     </div>
 
+
     <div>
+      <div>
+        <p>
+          長音母音入力補助 コピペして使用してください
+          <br>
+          ā ī ū ē ō ȳ Ā Ī Ū Ē Ō Ȳ â î û ê ô Â Î Û Ê Ô
+        </p>
+      </div>
       <% if create_mode %>
         <div class="my-5">
           <%= form.label '同一データでの作成数(最大50)' %>
@@ -161,6 +164,7 @@
         <%= form.label '市名以下の詳細地名', class: "block" %>
         <%= form.text_field(
           :municipality,
+          id: "municipality",
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
             validation_target: "input",
@@ -179,6 +183,7 @@
         <%= form.label '日本語地名ラベル用', class: "block" %>
         <%= form.text_field(
           :japanese_place_name,
+          id: "japanese_place_name",
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
             validation_target: "input",
@@ -197,6 +202,7 @@
         <%= form.label '日本語地名詳細', class: "block" %>
         <%= form.text_field(
           :japanese_place_name_detail,
+          id: "japanese_place_name_detail",
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
             validation_target: "input",
@@ -233,6 +239,7 @@
         <%= form.label '緯度(10進座標、小数点以下6桁、不明なら0)', class: "block" %>
         <%= form.number_field(
           :latitude,
+          id: "latitude",
           step: "0.000001",
           value: collect_point.location ? collect_point.location.latitude : 0.0, 
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
@@ -253,6 +260,7 @@
         <%= form.label '経度(10進座標、小数点以下6桁、不明なら0)', class: "block" %>
         <%= form.number_field(
           :longitude,
+          id: "longitude",
           step: "0.000001",
           value: collect_point.location ? collect_point.location.longitude : 0.0, 
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
@@ -295,6 +303,7 @@
         <%= form.label '最低標高(m)', class: "block" %>
         <%= form.number_field(
           :minimum_elevation,
+          id: "minimum_elevation",
           step: "0.000001",
           value: collect_point.minimum_elevation ? collect_point.minimum_elevation : 0.0,
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
@@ -317,6 +326,7 @@
         <%= form.label '最高標高(m)', class: "block" %>
         <%= form.number_field(
           :maximum_elevation,
+          id: "maximum_elevation",
           step: "0.000001",
           value: collect_point.maximum_elevation ? collect_point.maximum_elevation : 0.0,
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",

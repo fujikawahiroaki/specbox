@@ -10,7 +10,7 @@ export default class extends Controller {
       "lightbox",
       "fixed",
       "inset-0",
-      "z-50",
+      "z-[2000]",
       "bg-black",
       "bg-opacity-70",
       "flex",

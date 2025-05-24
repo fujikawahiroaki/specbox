@@ -1,79 +1,202 @@
 import { Controller } from "@hotwired/stimulus"
 import L from "leaflet"
-import "leaflet-css"
-
-L.Icon.Default.imagePath = "/assets/leaflet/"
+import { muniArray } from "./muni_array.js"
+import * as hepburn from "hepburn"
+import { toHiragana } from "wanakana"
 
 export default class extends Controller {
-  static targets = []
   static values = {
     latitude: Number,
     longitude: Number,
-    zoom: { type: Number, default: 1 }
+    zoom: { type: Number, default: 5 }
   }
 
-  // ⬇️ connect後にDOM全体から探す
+  static targets = ["map"]
+
   connect() {
-    // グローバルにinput[name=latitude]とinput[name=longitude]を探す
-    this.latitudeInput = document.querySelector("input[name='collect_point[latitude]']")
-    this.longitudeInput = document.querySelector("input[name='collect_point[longitude]']")
+    this.initializeMap()
+  }
 
-    if (!this.latitudeInput || !this.longitudeInput) {
-      console.warn("緯度・経度フィールドが見つかりません")
-      return
-    }
-
-    const latVal = this.latitudeInput.value || this.latitudeValue
-    const lngVal = this.longitudeInput.value || this.longitudeValue
-
-    console.log(latVal)
-
-    const defaultZoomLevel = (parseFloat(latVal) == 0 && parseFloat(lngVal) == 0) ? 1 : 13
-
-    const initialLat = latVal ? parseFloat(latVal) : 35.6987  // 秋葉原
-    const initialLng = lngVal ? parseFloat(lngVal) : 139.7731
-
-    this.map = L.map(this.element).setView([initialLat, initialLng], defaultZoomLevel)
+  initializeMap() {
+    this.map = L.map(this.mapTarget).setView(
+      [this.latitudeValue || 35.681236, this.longitudeValue || 139.767125],
+      this.zoomValue
+    )
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap contributors"
+      attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a>'
     }).addTo(this.map)
 
-    // 既に緯度経度が入力済みなら初期ピンを立てる
-    if (latVal && lngVal && parseFloat(latVal) !== 0 && parseFloat(lngVal) !== 0) {
-      this.marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(this.map)
-      this.marker.on("dragend", this.updateFieldsFromMarker.bind(this))
+    this.marker = L.marker([this.latitudeValue, this.longitudeValue], {
+      draggable: false
+    }).addTo(this.map)
+
+    this.map.on("click", this.handleMapClick.bind(this))
+  }
+
+  async handleMapClick(event) {
+    const lat = event.latlng.lat.toFixed(6)
+    const lng = event.latlng.lng.toFixed(6)
+
+    this.latitude = lat
+    this.longitude = lng
+
+    this.marker.setLatLng([lat, lng])
+
+    this.elevation = await this.fetchElevation(lng, lat)
+    const place = await this.fetchPlaceNameAndKana(lng, lat)
+
+    this.renderLocationInfo(place)
+  }
+
+  async fetchElevation(lng, lat) {
+    try {
+      const res = await fetch(`https://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon=${lng}&lat=${lat}&outtype=JSON`)
+      const json = await res.json()
+      return json.elevation === "-----" ? "取得できませんでした" : parseFloat(json.elevation).toFixed(0)
+    } catch (e) {
+      return "取得できませんでした"
+    }
+  }
+
+  async fetchPlaceNameAndKana(lng, lat) {
+    try {
+      const res = await fetch(`https://mreversegeocoder.gsi.go.jp/reverse-geocoder/LonLatToAddress?lat=${lat}&lon=${lng}`)
+      const json = await res.json()
+      let muniCd = json.results?.muniCd
+      if (!muniCd) throw new Error("muniCd がありません")
+      if (muniCd.startsWith("0")) muniCd = muniCd.slice(1)
+
+      const arr = muniArray[muniCd] || []
+      const pref = arr[1] || ""
+      const city = arr[3] || ""
+      const detail = json.results.lv01Nm?.replace(/^大字/, "").replace(/^字/, "") || ""
+
+      const zipTarget = `${city}${detail}`
+      const zipResponse = await fetch(`/collect_points/reverse_zipcode?for_reverce_zipcode=${encodeURIComponent(zipTarget)}`)
+      const zipJson = await zipResponse.json()
+
+      const kanaComponents = zipJson.data?.items?.[0]?.componentskana || []
+      const cityKana = toHiragana(kanaComponents[1] || "")
+      const detailKana = toHiragana(kanaComponents[2] || "")
+
+      const romajiCity = this.toHebon(cityKana)
+      const romajiDetail = this.toHebon(detailKana)
+
+      return {
+        latitude: this.latitude,
+        longitude: this.longitude,
+        elevation: this.elevation,
+        cityKana,
+        detailKana,
+        japanesePlaceName: `${pref} ${city} ${detail}`,
+        romaji: `${romajiCity}, ${romajiDetail}`
+      }
+    } catch (e) {
+      return {
+        latitude: this.latitude,
+        longitude: this.longitude,
+        elevation: this.elevation,
+        cityKana: "取得できませんでした",
+        detailKana: "取得できませんでした",
+        japanesePlaceName: "取得できませんでした",
+        romaji: "ローマ字化できませんでした"
+      }
+    }
+  }
+
+  toHebon(kana) {
+    if (!kana) return "ローマ字化できませんでした"
+    let romaji = hepburn.fromKana(kana).trim().toUpperCase()
+
+    const suffixMap = [
+      ["SHI", "-SHI"],
+      ["CHO", "-CHŌ"],
+      ["MACHI", "-MACHI"],
+      ["MURA", "-MURA"],
+      ["SON", "-SON"],
+      ["KU", "-KU"]
+    ]
+    for (const [suffix, replacement] of suffixMap) {
+      if (romaji.endsWith(suffix)) {
+        romaji = romaji.slice(0, -suffix.length) + replacement
+        break
+      }
     }
 
-    this.map.on("click", this.setMarkerFromClick.bind(this))
-
-    setTimeout(() => this.map.invalidateSize(), 100)
-  }
-
-  setMarkerFromClick(e) {
-    const { lat, lng } = e.latlng
-
-    if (!this.marker) {
-      this.marker = L.marker([lat, lng], { draggable: true }).addTo(this.map)
-      this.marker.on("dragend", this.updateFieldsFromMarker.bind(this))
-    } else {
-      this.marker.setLatLng([lat, lng])
+    if (romaji.includes("GUN, ")) {
+      romaji = romaji.replace("GUN, ", "-GUN, ")
+      const gunIdx = romaji.indexOf("-GUN, ") + 6
+      romaji = romaji.charAt(0) + romaji.slice(1, gunIdx).toLowerCase() + romaji.charAt(gunIdx) + romaji.slice(gunIdx + 1).toLowerCase()
     }
 
-    this.setFields(lat, lng)
+    return this.convertToMacron(romaji.charAt(0) + romaji.slice(1).toLowerCase())
   }
 
-  updateFieldsFromMarker() {
-    const { lat, lng } = this.marker.getLatLng()
-    this.setFields(lat, lng)
+  convertToMacron(romaji) {
+    return romaji
+      .replace(/AA/g, "Ā")
+      .replace(/II/g, "Ī")
+      .replace(/UU/g, "Ū")
+      .replace(/EE/g, "Ē")
+      .replace(/OU/g, "Ō")
+      .replace(/OO/g, "Ō")
   }
 
-  setFields(lat, lng) {
-    this.latitudeInput.value = lat.toFixed(6)
-    this.longitudeInput.value = lng.toFixed(6)
+  renderLocationInfo(data) {
+    const infoEl = document.getElementById("location-info-display")
+    if (!infoEl) return
+    
+    const makeRow = (label, value, targets = []) => {
+      const copyBtn = `<button type="button" data-action="leaflet-selector#copy" data-value="${value}" class="px-2 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600 cursor-pointer">コピー</button>`
+      const applyBtns = (Array.isArray(targets) ? targets : [targets])
+        .map(target =>
+          `<button type="button" data-action="leaflet-selector#apply" data-target="${target}" data-value="${value}" class="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer">${this.getApplyLabel(target)}</button>`
+        ).join(" ")
+
+      return `
+        <div>
+          <strong>${label}</strong>: <span>${value}</span>
+          <div class="mt-1 space-x-2">${copyBtn} ${applyBtns}</div>
+        </div>
+      `
+    }
+
+    const kanaRow = (label, value) => {
+      return `<div><strong>${label}</strong>: <span>${value}</span></div>`
+    }
+
+    infoEl.innerHTML = [
+      makeRow("緯度", data.latitude, "latitude"),
+      makeRow("経度", data.longitude, "longitude"),
+      makeRow("標高", `${data.elevation}`, ["minimum_elevation", "maximum_elevation"]),
+      makeRow("日本語地名", data.japanesePlaceName, ["japanese_place_name", "japanese_place_name_detail"]),
+      kanaRow("市町村名の読みがな", data.cityKana),
+      kanaRow("地名詳細の読みがな", data.detailKana),
+      makeRow("ローマ字地名", data.romaji, "municipality")
+    ].join("")
   }
 
-  disconnect() {
-    if (this.map) this.map.remove()
+  getApplyLabel(target) {
+    switch (target) {
+      case "minimum_elevation": return "最低標高に反映"
+      case "maximum_elevation": return "最高標高に反映"
+      case "japanese_place_name": return "日本語地名に反映"
+      case "japanese_place_name_detail": return "日本語地名詳細に反映"
+      case "municipality": return "ローマ字地名に反映"
+      default: return "反映"
+    }
+  }
+
+  copy(event) {
+    const value = event.target.dataset.value
+    navigator.clipboard.writeText(value)
+  }
+
+  apply(event) {
+    const target = event.target.dataset.target
+    const value = event.target.dataset.value
+    const input = document.getElementById(target)
+    if (input) input.value = value
   }
 }

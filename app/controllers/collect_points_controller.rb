@@ -177,6 +177,31 @@ class CollectPointsController < ApplicationController
     end
   end
 
+  def reverse_zipcode
+    address = params[:for_reverce_zipcode]
+    api_key = ENV["ZIPCODE_REVERCE_API_KEY"]
+    uri = URI("https://zipcode.milkyfieldcompany.com/api/v1/findzipcode")
+    uri.query = URI.encode_www_form({ apikey: api_key, address: address })
+
+    begin
+      response = Net::HTTP.get_response(uri)
+
+      Rails.logger.debug("Zipcode API status: #{response.code}")
+      Rails.logger.debug("Zipcode API body: #{response.body}")
+
+      if response.is_a?(Net::HTTPSuccess)
+        json = JSON.parse(response.body)
+        Rails.logger.debug(json)
+        render json: { data: json }
+      else
+        render json: { error: "Zipcode API returned status #{response.code}" }, status: response.code.to_i
+      end
+    rescue => e
+      Rails.logger.error("reverse_zipcode API error: #{e.message}")
+      render json: { error: "取得失敗: #{e.message}" }, status: 500
+    end
+  end
+
   def set_session_key_identifier
     "collect_points_index_html"
   end
@@ -189,7 +214,7 @@ class CollectPointsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def collect_point_params
-      params.require(:collect_point).permit(:contient, :island_group, :island, :country, :state_provice, :county, :municipality, :verbatim_locality, :japanese_place_name, :japanese_place_name_detail, :coordinate_precision, :latitude, :longitude, :minimum_elevation, :maximum_elevation, :minimum_depth, :maximum_depth, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num)
+      params.require(:collect_point).permit(:contient, :island_group, :island, :country, :state_provice, :county, :municipality, :verbatim_locality, :japanese_place_name, :japanese_place_name_detail, :coordinate_precision, :latitude, :longitude, :minimum_elevation, :maximum_elevation, :minimum_depth, :maximum_depth, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num, :for_reverce_zipcode)
     end
 
     def validate_user
