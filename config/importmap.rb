@@ -10,3 +10,4 @@ pin "leaflet-css" # @0.1.0
 pin "wanakana" # @5.3.1
 pin "hepburn" # @1.2.1
 pin "bulk-replace" # @0.0.1
+pin "leaflet-geosearch" # @4.2.0

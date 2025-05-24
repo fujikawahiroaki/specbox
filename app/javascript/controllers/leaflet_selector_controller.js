@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import L from "leaflet"
+import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch"
 import { muniArray } from "./muni_array.js"
 import * as hepburn from "hepburn"
 import { toHiragana } from "wanakana"
@@ -14,12 +15,16 @@ export default class extends Controller {
   static targets = ["map"]
 
   connect() {
+    this.marker = null;
     this.initializeMap()
   }
 
   initializeMap() {
+    const lat = this.latitudeValue ?? 35.681236
+    const lng = this.longitudeValue ?? 139.767125
+
     this.map = L.map(this.mapTarget).setView(
-      [this.latitudeValue || 35.681236, this.longitudeValue || 139.767125],
+      [lat, lng],
       this.zoomValue
     )
 
@@ -32,6 +37,55 @@ export default class extends Controller {
     }).addTo(this.map)
 
     this.map.on("click", this.handleMapClick.bind(this))
+
+    this.handleMapClick(
+      {
+        latlng: {
+          lat: lat,
+          lng: lng,
+        }
+      }
+    )
+
+    this.map.addControl(new GeoSearchControl({
+      provider: new OpenStreetMapProvider(),
+      style: 'bar',
+      autoClose: true,
+      retainZoomLevel: false,
+      animateZoom: true,
+      searchLabel: '地名を検索',
+      keepResult: true,
+      showMarker: false,
+      showPopup: false
+    }))
+
+    this.map.on("geosearch/showlocation", (result) => {
+      const lat = parseFloat(result.location.y || result.location.raw?.lat)
+      const lng = parseFloat(result.location.x || result.location.raw?.lon)
+
+      if (!isNaN(lat) && !isNaN(lng)) {
+        this.map.setView([lat, lng], this.map.getZoom())
+
+        if (this.marker) {
+          this.marker.setLatLng([lat, lng])
+        } else {
+          this.marker = L.marker([lat, lng], { draggable: false }).addTo(this.map)
+        }
+
+        this.handleMapClick({ latlng: { lat, lng } })
+      } else {
+        console.warn("検索結果に緯度経度がありませんでした", result)
+      }
+    })
+  }
+
+  updateMarker(lat, lng) {
+    if (this.marker) {
+      this.map.removeLayer(this.marker)
+    }
+    this.marker = L.marker([lat, lng], {
+      draggable: false
+    }).addTo(this.map)
   }
 
   async handleMapClick(event) {
@@ -40,8 +94,6 @@ export default class extends Controller {
 
     this.latitude = lat
     this.longitude = lng
-
-    this.marker.setLatLng([lat, lng])
 
     this.elevation = await this.fetchElevation(lng, lat)
     const place = await this.fetchPlaceNameAndKana(lng, lat)

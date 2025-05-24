@@ -11,7 +11,7 @@ export default class extends Controller {
   }
 
   connect() {
-    if (!this.latitudeValue || !this.longitudeValue) return;
+    if (!this.latitudeValue == null || !this.longitudeValue == null) return;
 
     // 地図の生成と設定
     this.map = L.map(this.element).setView([this.latitudeValue, this.longitudeValue], 13)
