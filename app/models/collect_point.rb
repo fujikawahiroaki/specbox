@@ -8,7 +8,9 @@ class CollectPoint < ApplicationRecord
   @@iso_3166_1_alpha2_all = ISO3166::Country.codes
 
   belongs_to :auth_user, foreign_key: :user_id
-  has_many :tours, through: :collect_points_tour
+
+  has_many :collect_points_tours, class_name: "CollectPointsTour", foreign_key: "collectpoint_id", dependent: :destroy
+  has_many :tours, through: :collect_points_tours
 
   mount_uploader :image1, DjangoPictureUploader
   mount_uploader :image2, DjangoPictureUploader

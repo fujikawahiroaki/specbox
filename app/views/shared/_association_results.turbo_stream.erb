@@ -1,0 +1,8 @@
+<% collection.each do |item| %>
+  <%= render partial: "shared/association_option", formats: :turbo_stream, locals: {
+    item: item,
+    display_field: local_assigns[:display_field] || :name,
+    value_field: local_assigns[:value_field] || :id,
+    selected_ids: local_assigns[:selected_ids] || []
+  } %>
+<% end %>

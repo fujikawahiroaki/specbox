@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     collection do
       patch :bulk_update
       delete :bulk_delete
+      get :search
     end
   end
   resources :specimens

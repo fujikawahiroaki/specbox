@@ -10,6 +10,19 @@
 
       <%= render @tour %>
 
+      <% if params[:return_to_model].present? && params[:return_to_id].present? %>
+        <% model = params[:return_to_model] %>
+        <% id = params[:return_to_id] %>
+        <% path_helper = "#{model}_path" %>
+        <% if respond_to?(path_helper) %>
+          <div class="mb-4">
+            <%= link_to "← リンク元に戻る", send(path_helper, id),
+                data: { turbo_frame: "content-zone", turbo_action: "advance" },
+                class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button" %>
+          </div>
+        <% end %>
+      <% end %>
+
       <%= link_to "一覧に戻る", tours_url_with_ranmemory,
         class: "mt-2 rounded-lg py-1 px-2 inline-block normal-button",
         data: { turbo_frame: "content-zone", turbo_action: "advance" }

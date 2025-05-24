@@ -45,20 +45,25 @@ class CollectPointsController < ApplicationController
   # GET /collect_points/new
   def new
     @collect_point = if params[:base_id].present?
-              base_record = CollectPoint.find(params[:base_id]).dup
-              base_record.image1 = nil
-              base_record.image2 = nil
-              base_record.image3 = nil
-              base_record.image4 = nil
-              base_record.image5 = nil
-              base_record
+              base_record = CollectPoint.find(params[:base_id])
+              new_record = base_record.dup
+              new_record.image1 = nil
+              new_record.image2 = nil
+              new_record.image3 = nil
+              new_record.image4 = nil
+              new_record.image5 = nil
+              new_record.tours = base_record.tours
+              new_record
     else
               CollectPoint.new
     end
+    @copied_tours = @collect_point.tours
+    @tours = Tour.where(user_id: current_user_id).order(start_date: :desc)
   end
 
   # GET /collect_points/1/edit
   def edit
+    @tours = Tour.where(user_id: current_user_id).order(start_date: :desc)
   end
 
   # POST /collect_points or /collect_points.json
@@ -69,12 +74,15 @@ class CollectPointsController < ApplicationController
     collect_point_params_with_user.delete(:bulk_create_num)
     collect_point_params_with_user.delete(:longitude)
     collect_point_params_with_user.delete(:latitude)
+    collect_point_params_with_user.delete(:tour_ids)
 
     location_factory = RGeo::Geographic.spherical_factory(srid: 4326)
     location = location_factory.point(
       collect_point_params[:longitude].to_f,
       collect_point_params[:latitude].to_f
     )
+
+    tour_ids = collect_point_params[:tour_ids]
 
     bulk_create_num = collect_point_params[:bulk_create_num].to_i
 
@@ -86,6 +94,7 @@ class CollectPointsController < ApplicationController
           @collect_point = CollectPoint.new(collect_point_params_with_user)
           @collect_point.location = location
           @collect_point.save!
+          @collect_point.tour_ids = tour_ids
         end
         format.html { redirect_to collect_points_url_with_ranmemory, notice: t("notice.create") }
         format.json { render :show, status: :created, location: @collect_point }
@@ -214,7 +223,7 @@ class CollectPointsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def collect_point_params
-      params.require(:collect_point).permit(:contient, :island_group, :island, :country, :state_provice, :county, :municipality, :verbatim_locality, :japanese_place_name, :japanese_place_name_detail, :coordinate_precision, :latitude, :longitude, :minimum_elevation, :maximum_elevation, :minimum_depth, :maximum_depth, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num, :for_reverce_zipcode)
+      params.require(:collect_point).permit(:contient, :island_group, :island, :country, :state_provice, :county, :municipality, :verbatim_locality, :japanese_place_name, :japanese_place_name_detail, :coordinate_precision, :latitude, :longitude, :minimum_elevation, :maximum_elevation, :minimum_depth, :maximum_depth, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num, :for_reverce_zipcode, tour_ids: [])
     end
 
     def validate_user

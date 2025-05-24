@@ -102,9 +102,31 @@
       <strong class="block font-medium mb-1">作成日時:</strong>
       <%= collect_point.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
     </p>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1">関連する採集行:</strong>
+      <% if collect_point.tours.any? %>
+        <ul class="list-disc list-inside space-y-4 text-sm">
+          <% collect_point.tours.each do |tour| %>
+            <li>
+              <span class="font-medium"><%= tour.title.presence || "（無題）" %></span>
+              <%= link_to "詳細",
+                tour_path(tour, return_to_model: "collect_point", return_to_id: collect_point.id),
+                class: "text-sm px-1 py-1 ml-2 normal-button",
+                data: {
+                  turbo_action: "advance",
+                }
+              %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <span class="text-sm text-gray-600">なし</span>
+      <% end %>
+    </div>
   </div>
 
   <div>
-    <%= render partial: "shared/image_modal", locals: {model: collect_point} %> 
+    <%= render partial: "shared/image_modal", locals: {model: collect_point} %>
   </div>
 </div>

@@ -250,7 +250,7 @@
           :latitude,
           id: "latitude",
           step: "0.000001",
-          value: collect_point.location ? collect_point.location.latitude : 0.0, 
+          value: collect_point.location ? collect_point.location.latitude : 0.0,
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
             validation_target: "input",
@@ -271,7 +271,7 @@
           :longitude,
           id: "longitude",
           step: "0.000001",
-          value: collect_point.location ? collect_point.location.longitude : 0.0, 
+          value: collect_point.location ? collect_point.location.longitude : 0.0,
           class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
           data: {
             validation_target: "input",
@@ -411,6 +411,33 @@
           }
         %>
         <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+      </div>
+
+      <div class="my-5">
+        <% tours_to_display = defined?(@copied_tours) ? @copied_tours : @collect_point.tours %>
+        <div
+          data-controller="association-selector"
+          data-association-selector-model-name-value="tour"
+          data-association-selector-form-model-name-value="collect_point"
+          data-association-selector-search-path-value="<%= search_tours_path(format: :turbo_stream) %>"
+          data-association-selector-display-field-value="title"
+          data-association-selector-association-type-value="many_to_many"
+          data-association-selector-initial-items-value="<%= tours_to_display.map { |t| { id: t.id, label: t.title } }.to_json %>"
+        >
+
+          <label for="tour-search" class="block text-sm font-medium">採集行を検索して追加</label>
+          <input type="text"
+                 data-association-selector-target="searchInput"
+                 data-action="keydown->association-selector#search input->association-selector#search"
+                 class="w-full border rounded px-2 py-1 mt-1"
+                 placeholder="採集行タイトルで検索" />
+
+          <ul id="results" data-association-selector-target="results"
+              class="mt-2 border rounded bg-white shadow max-h-60 overflow-auto text-sm"></ul>
+
+          <label class="block text-sm font-medium mt-4">紐付け済み採集行</label>
+          <div data-association-selector-target="selectedList" class="flex flex-wrap gap-2 mt-2"></div>
+        </div>
       </div>
 
       <div>

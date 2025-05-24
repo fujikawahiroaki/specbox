@@ -3,7 +3,7 @@ class ToursController < ApplicationController
   before_action :set_tour, only: %i[ show edit update destroy ]
   before_action :validate_user, only: %i[ show edit update destroy ]
   before_action :require_login
-  before_action :save_and_load_filters
+  before_action :save_and_load_filters, except: :search
   before_action :save_params_in_session, only: %i[ index ]
 
   def save_params_in_session
@@ -52,9 +52,9 @@ class ToursController < ApplicationController
               base_record.image4 = nil
               base_record.image5 = nil
               base_record
-            else
+    else
               Tour.new
-            end
+    end
   end
 
   # GET /tours/1/edit
@@ -163,6 +163,20 @@ class ToursController < ApplicationController
     "tours_index_html"
   end
 
+  def search
+    @tours = Tour.where(user_id: current_user_id).where("title ILIKE ?", "%#{params[:q]}%")
+    @display_field = "title"
+    @value_field = "id"
+    render partial: "shared/association_results",
+      formats: :turbo_stream,
+      locals: {
+        collection: @tours,
+        display_field: "title",
+        value_field: "id",
+        selected_ids: params[:selected_ids] || []
+       }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_tour
@@ -171,7 +185,7 @@ class ToursController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def tour_params
-      params.require(:tour).permit(:title, :start_date, :end_date, :track, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num)
+      params.require(:tour).permit(:title, :start_date, :end_date, :track, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num, :selected_ids)
     end
 
     def validate_user
