@@ -79,18 +79,15 @@ export default class extends Controller {
     });
   }
 
-  updateMarker(lat, lng) {
-    if (this.marker) {
-      this.map.removeLayer(this.marker);
-    }
-    this.marker = L.marker([lat, lng], {
-      draggable: false,
-    }).addTo(this.map);
-  }
-
   async handleMapClick(event) {
     const lat = event.latlng.lat.toFixed(6);
     const lng = event.latlng.lng.toFixed(6);
+
+    if (this.marker) {
+      this.marker.setLatLng([lat, lng]);
+    } else {
+      this.marker = L.marker([lat, lng], { draggable: false }).addTo(this.map);
+    }
 
     this.latitude = lat;
     this.longitude = lng;

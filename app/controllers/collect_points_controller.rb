@@ -30,7 +30,21 @@ class CollectPointsController < ApplicationController
       @search.sorts = [ "#{session[:collect_points_index_sort]} #{session[:collect_points_index_direction]}", "created_at desc" ]
     end
 
-    @collect_points = @search.result.page(session[:collect_points_index_page])
+    @collect_points = @search.result
+
+    if params[:q].present? &&
+       params[:q][:within_latitude].present? &&
+       params[:q][:within_longitude].present? &&
+       params[:q][:within_radius].present?
+
+      lat = params[:q][:within_latitude]
+      lon = params[:q][:within_longitude]
+      radius = params[:q][:within_radius]
+
+      @collect_points = @collect_points.within_distance_from(lat, lon, radius)
+    end
+
+    @collect_points = @collect_points.page(session[:collect_points_index_page] || 1)
   end
 
   # GET /collect_points/1 or /collect_points/1.json
@@ -223,7 +237,7 @@ class CollectPointsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def collect_point_params
-      params.require(:collect_point).permit(:contient, :island_group, :island, :country, :state_provice, :county, :municipality, :verbatim_locality, :japanese_place_name, :japanese_place_name_detail, :coordinate_precision, :latitude, :longitude, :minimum_elevation, :maximum_elevation, :minimum_depth, :maximum_depth, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num, :for_reverce_zipcode, tour_ids: [])
+      params.require(:collect_point).permit(:contient, :island_group, :island, :country, :state_provice, :county, :municipality, :verbatim_locality, :japanese_place_name, :japanese_place_name_detail, :coordinate_precision, :latitude, :longitude, :minimum_elevation, :maximum_elevation, :minimum_depth, :maximum_depth, :note, :image1, :image2, :image3, :image4, :image5, :remove_image1, :remove_image2, :remove_image3, :remove_image4, :remove_image5, :bulk_ids, :bulk_columns, :bulk_create_num, :for_reverce_zipcode, :latitude_eq, :latitude_gteq, :latitude_lteq, :longitude_eq, :longitude_gteq, :longitude_lteq, :within_latitude, :within_longitude, :within_radius, tour_ids: [])
     end
 
     def validate_user

@@ -39,6 +39,7 @@
                data-action="click->filter-choice#keepDropdownOpen">
                <% columns = {
                  all_place_name_cont: '地名系項目あいまい',
+                 within_distance_from: '指定座標から指定半径内の地点',
                  contient_cont: '大陸(部分一致)',
                  contient_eq: '大陸(完全一致)',
                  island_group_cont: '島群(部分一致)',
@@ -59,6 +60,12 @@
                  japanese_place_name_detail_eq: '日本語地名詳細(完全一致)',
                  verbatim_locality_cont: '採集地の説明(部分一致)',
                  verbatim_locality_eq: '採集地の説明(完全一致)',
+                 latitude_eq: '緯度(完全一致)',
+                 latitude_gteq: '緯度(指定値以上)',
+                 latitude_lteq: '緯度(指定値以下)',
+                 longitude_eq: '経度(完全一致)',
+                 longitude_gteq: '経度(指定値以上)',
+                 longitude_lteq: '経度(指定値以下)',
                  coordinate_precision_eq: '半径(指定メートル完全一致)',
                  coordinate_precision_gteq: '半径(指定メートル以上)',
                  coordinate_precision_lteq: '半径(指定メートル以下)',
@@ -108,6 +115,36 @@
             <div class="my-2">
               <%= form.submit class: "text-sm rounded-lg py-1 px-2 normal-button inline-block cursor-pointer", data: {turbo_action: "advance"} %>
               <%= link_to 'クリア', url_for + "?cancel_filter=true", class: "text-sm rounded-lg py-1 px-2 normal-button inline-block cursor-pointer", data: {turbo_action: "advance", turbo_prefetch: false} %>
+            </div>
+
+            <div class="mb-4 bg-blue-50 p-3 rounded-lg border border-blue-200 hidden" data-filter-choice-field id="within_distance_from">
+              <div class="mb-4">
+                <p>指定座標から指定半径内の地点</p>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <%= form.label :within_latitude, '緯度（中心）', class: "block text-sm font-medium text-gray-700" %>
+                  <%= form.search_field :within_latitude,
+                    class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
+                    value: params.dig(:q, :within_latitude) || session.dig(:ranmemory_collect_points_index_html, "within_latitude")
+                  %>
+                </div>
+                <div>
+                  <%= form.label :within_longitude, '経度（中心）', class: "block text-sm font-medium text-gray-700" %>
+                  <%= form.search_field :within_longitude,
+                    class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
+                    value: params.dig(:q, :within_longitude) || session.dig(:ranmemory_collect_points_index_html, "within_longitude")
+                  %>
+                </div>
+                <div>
+                  <%= form.label :within_radius, '半径（メートル）', class: "block text-sm font-medium text-gray-700" %>
+                  <%= form.search_field :within_radius,
+                    step: 10, min: 0,
+                    class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
+                    value: params.dig(:q, :within_radius) || session.dig(:ranmemory_collect_points_index_html, "within_radius")
+                  %>
+                </div>
+              </div>
             </div>
 
             <div class="flex flex-wrap gap-4">
@@ -206,6 +243,32 @@
                 <%= form.search_field :verbatim_locality_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
               </div>
 
+              <div class="w-[200px] hidden" data-filter-choice-field id="latitude_eq">
+                <%= form.label '緯度(指定値完全一致)', class: "block" %>
+                <%= form.search_field :latitude_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="latitude_gteq">
+                <%= form.label '緯度(指定値以上)', class: "block" %>
+                <%= form.search_field :latitude_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="latitude_lteq">
+                <%= form.label '緯度(指定値以下)', class: "block" %>
+                <%= form.search_field :latitude_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="longitude_eq">
+                <%= form.label '経度(指定値完全一致)', class: "block" %>
+                <%= form.search_field :longitude_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="longitude_gteq">
+                <%= form.label '経度(指定値以上)', class: "block" %>
+                <%= form.search_field :longitude_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="longitude_lteq">
+                <%= form.label '経度(指定値以下)', class: "block" %>
+                <%= form.search_field :longitude_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
               <div class="w-[200px] hidden" data-filter-choice-field id="coordinate_precision_eq">
                 <%= form.label '半径(指定メートル完全一致)', class: "block" %>
                 <%= form.search_field :coordinate_precision_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
@@ -219,7 +282,7 @@
                 <%= form.search_field :coordinate_precision_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
               </div>
 
-              <div class="w-[200px] hidden" data-filter-choice-field id="minimum_elevation_eq_precision_eq">
+              <div class="w-[200px] hidden" data-filter-choice-field id="minimum_elevation_eq">
                 <%= form.label '最低標高(指定メートル完全一致)', class: "block" %>
                 <%= form.search_field :minimum_elevation_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
               </div>

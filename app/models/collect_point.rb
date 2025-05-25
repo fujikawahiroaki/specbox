@@ -84,6 +84,22 @@ class CollectPoint < ApplicationRecord
     location ? location.latitude : nil
   end
 
+  ransacker :latitude do
+    Arel.sql("ST_Y(location::geometry)")
+  end
+
+  ransacker :longitude do
+    Arel.sql("ST_X(location::geometry)")
+  end
+
+  scope :within_distance_from, ->(lat, lon, radius) {
+    point_wkt = "POINT(#{lon.to_f} #{lat.to_f})"
+    where(
+      "ST_DWithin(location, ST_GeographyFromText(?), ?)",
+      "SRID=4326;#{point_wkt}", radius.to_f
+    )
+  }
+
   def self.ransackable_attributes(auth_object = nil)
     [
       "id",
@@ -112,7 +128,12 @@ class CollectPoint < ApplicationRecord
       "image5",
       "created_at_date",
       "all_place_name",
-      "english_place_name"
+      "english_place_name",
+      "longitude",
+      "latitude",
+      "within_longitude",
+      "within_latitude",
+      "within_radius"
     ]
   end
 
