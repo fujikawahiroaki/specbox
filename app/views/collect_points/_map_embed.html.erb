@@ -13,7 +13,7 @@
     地図の検索結果が一意に絞られてからエンターキーを押してください。候補のクリックでは地図のピンが動かないことがあります。
   </p>
 
-  <div data-leaflet-selector-target="map" class="h-[50vh] rounded shadow mb-4"></div>
+  <div data-leaflet-selector-target="map" class="h-[30vh] rounded shadow mb-4"></div>
 
   <p class="text-sm text-gray-700 mb-2">
     緯度・経度を除き、日本国内の地点のみ情報を取得できます。
@@ -21,10 +21,10 @@
     ローマ字地名については、郡と町名の分割に対応できていません。
   </p>
 
-  <div id="location-info-display" class="text-sm space-y-4 p-3 bg-gray-50 border border-gray-300 rounded">
+  <div id="location-info-display" class="text-sm space-y-4 p-3 pt-4 border border-gray-300 rounded">
     <div>
       <strong>緯度</strong>: <span id="display-latitude">-</span>
-      <div class="mt-1 space-x-2">
+      <div class="space-x-2 space-y-2">
         <button type="button" data-action="leaflet-selector#copy" data-value="" class="px-2 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600 cursor-pointer">コピー</button>
         <button type="button" data-action="leaflet-selector#apply" data-target="latitude" data-value="" class="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer">反映</button>
       </div>
@@ -32,7 +32,7 @@
 
     <div>
       <strong>経度</strong>: <span id="display-longitude">-</span>
-      <div class="mt-1 space-x-2">
+      <div class="space-x-2 space-y-2">
         <button type="button" data-action="leaflet-selector#copy" data-value="" class="px-2 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600 cursor-pointer">コピー</button>
         <button type="button" data-action="leaflet-selector#apply" data-target="longitude" data-value="" class="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer">反映</button>
       </div>
@@ -40,7 +40,7 @@
 
     <div>
       <strong>標高</strong>: <span id="display-elevation">-</span> m
-      <div class="mt-1 space-x-2">
+      <div class="space-x-2 space-y-2">
         <button type="button" data-action="leaflet-selector#copy" data-value="" class="px-2 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600 cursor-pointer">コピー</button>
         <button type="button" data-action="leaflet-selector#apply" data-target="minimum_elevation" data-value="" class="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer">最低標高に反映</button>
         <button type="button" data-action="leaflet-selector#apply" data-target="maximum_elevation" data-value="" class="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer">最高標高に反映</button>
@@ -49,7 +49,7 @@
 
     <div>
       <strong>日本語地名</strong>: <span id="display-place-name">-</span>
-      <div class="mt-1 space-x-2">
+      <div class="space-x-2 space-y-2">
         <button type="button" data-action="leaflet-selector#copy" data-value="" class="px-2 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600 cursor-pointer">コピー</button>
         <button type="button" data-action="leaflet-selector#apply" data-target="japanese_place_name" data-value="" class="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer">日本語地名に反映</button>
         <button type="button" data-action="leaflet-selector#apply" data-target="japanese_place_name_detail" data-value="" class="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer">日本語地名詳細に反映</button>
@@ -66,7 +66,7 @@
 
     <div>
       <strong>ローマ字地名</strong>: <span id="display-romaji">-</span>
-      <div class="mt-1 space-x-2">
+      <div class="space-x-2 space-y-2">
         <button type="button" data-action="leaflet-selector#copy" data-value="" class="px-2 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600 cursor-pointer">コピー</button>
         <button type="button" data-action="leaflet-selector#apply" data-target="municipality" data-value="" class="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer">反映</button>
       </div>

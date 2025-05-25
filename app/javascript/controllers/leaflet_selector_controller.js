@@ -227,7 +227,7 @@ export default class extends Controller {
       return `
         <div>
           <strong>${label}</strong>: <span>${value}</span>
-          <div class="mt-1 space-x-2">${copyBtn} ${applyBtns}</div>
+          <div class="space-x-2 space-y-2">${copyBtn} ${applyBtns}</div>
         </div>
       `;
     };

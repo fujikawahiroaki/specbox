@@ -12,7 +12,7 @@
     </div>
   <% end %>
 
-  <div class="grid grid-cols-1 my-5 md:grid-cols-2 gap-6 text-sm" >
+  <div class="grid grid-cols-1 my-5 md:grid-cols-3 gap-6 text-sm" >
     <div>
       <!-- ここに地図を埋め込みたい -->
       <div>
@@ -439,10 +439,10 @@
           <div data-association-selector-target="selectedList" class="flex flex-wrap gap-2 mt-2"></div>
         </div>
       </div>
+    </div>
 
-      <div>
-        <%= render "shared/image_upload", form: form, model: @collect_point %>
-      </div>
+    <div>
+      <%= render "shared/image_upload", form: form, model: @collect_point %>
     </div>
   </div>
 
