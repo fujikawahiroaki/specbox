@@ -118,31 +118,46 @@
             </div>
 
             <div class="mb-4 bg-blue-50 p-3 rounded-lg border border-blue-200 hidden" data-filter-choice-field id="within_distance_from">
-              <div class="mb-4">
+              <div>
                 <p>指定座標から指定半径内の地点</p>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <%= form.label :within_latitude, '緯度（中心）', class: "block text-sm font-medium text-gray-700" %>
-                  <%= form.search_field :within_latitude,
-                    class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
-                    value: params.dig(:q, :within_latitude) || session.dig(:ranmemory_collect_points_index_html, "within_latitude")
-                  %>
-                </div>
-                <div>
-                  <%= form.label :within_longitude, '経度（中心）', class: "block text-sm font-medium text-gray-700" %>
-                  <%= form.search_field :within_longitude,
-                    class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
-                    value: params.dig(:q, :within_longitude) || session.dig(:ranmemory_collect_points_index_html, "within_longitude")
-                  %>
-                </div>
-                <div>
-                  <%= form.label :within_radius, '半径（メートル）', class: "block text-sm font-medium text-gray-700" %>
-                  <%= form.search_field :within_radius,
-                    step: 10, min: 0,
-                    class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
-                    value: params.dig(:q, :within_radius) || session.dig(:ranmemory_collect_points_index_html, "within_radius")
-                  %>
+              <div data-controller="geolocation-input">
+                <button
+                  class="text-sm rounded-lg my-2 py-1 px-3 submit-button text-white"
+                  data-action="geolocation-input#getLocation click->incremental-search#submit"
+                  type="button"
+                >
+                  現在地を取得
+                </button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <%= form.label :within_latitude, '緯度（中心）', class: "block text-sm font-medium text-gray-700" %>
+                    <%= form.search_field :within_latitude,
+                      class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
+                      value: params.dig(:q, :within_latitude) || session.dig(:ranmemory_collect_points_index_html, "within_latitude"),
+                      data: {
+                        geolocation_input_target: "latitude"
+                      }
+                    %>
+                  </div>
+                  <div>
+                    <%= form.label :within_longitude, '経度（中心）', class: "block text-sm font-medium text-gray-700" %>
+                    <%= form.search_field :within_longitude,
+                      class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
+                      value: params.dig(:q, :within_longitude) || session.dig(:ranmemory_collect_points_index_html, "within_longitude"),
+                      data: {
+                        geolocation_input_target: "longitude"
+                      }
+                    %>
+                  </div>
+                  <div>
+                    <%= form.label :within_radius, '半径（メートル）', class: "block text-sm font-medium text-gray-700" %>
+                    <%= form.search_field :within_radius,
+                      step: 10, min: 0,
+                      class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
+                      value: params.dig(:q, :within_radius) || session.dig(:ranmemory_collect_points_index_html, "within_radius")
+                    %>
+                  </div>
                 </div>
               </div>
             </div>
