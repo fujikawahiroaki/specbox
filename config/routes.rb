@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :specimens
   resources :specimen_labels
   resources :custom_taxa
+  resources :default_taxa
   resources :collection_settings do
     collection do
       patch :bulk_update
