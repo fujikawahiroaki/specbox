@@ -794,6 +794,8 @@
                      japanese_place_name: '日本語地名ラベル用',
                      japanese_place_name_detail: '日本語地名詳細',
                      verbatim_locality: '採集地の説明',
+                     latitude: '緯度',
+                     longitude: '経度',
                      coordinate_precision: '半径(m)',
                      minimum_elevation: '最低標高(m)',
                      maximum_elevation: '最高標高(m)',
@@ -900,6 +902,18 @@
                           <%= sort_icon('verbatim_locality') %>
                         <% end %>
                       </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="latitude">
+                        <%= link_to collect_points_url_with_ranmemory(sort: 'latitude', direction: toggle_direction('latitude')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          緯度(10進)
+                          <%= sort_icon('latitude') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="longitude">
+                        <%= link_to collect_points_url_with_ranmemory(sort: 'longitude', direction: toggle_direction('longitude')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          経度(10進)
+                          <%= sort_icon('longitude') %>
+                        <% end %>
+                      </th>
                       <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="coordinate_precision">
                         <%= link_to collect_points_url_with_ranmemory(sort: 'coordinate_precision', direction: toggle_direction('coordinate_precision')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
                           半径(m)
@@ -971,6 +985,8 @@
                         <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="japanese_place_name"><%= collect_point.japanese_place_name %></td>
                         <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="japanese_place_name_detail"><%= collect_point.japanese_place_name_detail %></td>
                         <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="verbatim_locality"><%= collect_point.verbatim_locality %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="latitude"><%= collect_point.latitude %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="longitude"><%= collect_point.longitude %></td>
                         <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="coordinate_precision"><%= collect_point.coordinate_precision %></td>
                         <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="minimum_elevation"><%= collect_point.minimum_elevation %></td>
                         <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="maximum_elevation"><%= collect_point.maximum_elevation %></td>
