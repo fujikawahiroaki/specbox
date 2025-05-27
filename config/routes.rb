@@ -22,6 +22,8 @@ Rails.application.routes.draw do
       patch :bulk_update
       delete :bulk_delete
       get :reverse_zipcode
+      get :export_csv
+      get :export_csv_excel
     end
   end
 

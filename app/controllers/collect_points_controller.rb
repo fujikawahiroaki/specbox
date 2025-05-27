@@ -1,3 +1,5 @@
+require "csv"
+
 class CollectPointsController < ApplicationController
   include ApplicationHelper
   before_action :set_collect_point, only: %i[ show edit update destroy ]
@@ -225,6 +227,21 @@ class CollectPointsController < ApplicationController
     end
   end
 
+  def export_csv
+    @collect_points = search_results_for_csv
+    send_data generate_csv(@collect_points),
+              filename: "collect_points.csv",
+              type: "text/csv; charset=UTF-8"
+  end
+
+  def export_csv_excel
+    @collect_points = search_results_for_csv
+    bom = "\uFEFF"  # UTF-8 BOM
+    send_data bom + generate_csv(@collect_points),
+              filename: "collect_points_excel.csv",
+              type: "text/csv; charset=UTF-8"
+  end
+
   def set_session_key_identifier
     "collect_points_index_html"
   end
@@ -243,6 +260,77 @@ class CollectPointsController < ApplicationController
     def validate_user
       unless @collect_point.user_id == current_user_id
         redirect_to collect_points_path, notice: "ご指定のIDは存在しません"
+      end
+    end
+
+    def search_results_for_csv
+      search = CollectPoint.where(user_id: current_user_id).ransack(params[:q])
+      search.sorts = "created_at desc" if search.sorts.empty?
+
+      if session[:collect_points_index_sort].present? && session[:collect_points_index_direction].present?
+        search.sorts.clear
+        search.sorts = [
+          "#{session[:collect_points_index_sort]} #{session[:collect_points_index_direction]}",
+          "created_at desc"
+        ]
+      end
+
+      result = search.result
+
+      if params[:q].present? &&
+         params[:q][:within_latitude].present? &&
+         params[:q][:within_longitude].present? &&
+         params[:q][:within_radius].present?
+
+        lat = params[:q][:within_latitude]
+        lon = params[:q][:within_longitude]
+        radius = params[:q][:within_radius]
+
+        result = result.within_distance_from(lat, lon, radius)
+      end
+
+      result
+    end
+
+    def generate_csv(records)
+      headers = [
+        "continent", "island_group", "country", "island", "state_provice", "county",
+        "municipality", "japanese_place_name", "japanese_place_name_detail",
+        "longitude", "latitude", "coordinate_precision",
+        "minimum_elevation", "maximum_elevation",
+        "minimum_depth", "maximum_depth", "note", "created_at", "image1", "image2", "image3", "image4", "image5"
+      ]
+
+      CSV.generate(headers: true) do |csv|
+        csv << headers
+
+        records.find_each do |cp|
+          csv << [
+            cp.contient,  # ヘッダは誤字を修正して"continent"として出力
+            cp.island_group,
+            cp.country,
+            cp.island,
+            cp.state_provice,
+            cp.county,
+            cp.municipality,
+            cp.japanese_place_name,
+            cp.japanese_place_name_detail,
+            cp.longitude,
+            cp.latitude,
+            cp.coordinate_precision,
+            cp.minimum_elevation,
+            cp.maximum_elevation,
+            cp.minimum_depth,
+            cp.maximum_depth,
+            cp.note,
+            cp.created_at&.iso8601,
+            cp.image1&.url,
+            cp.image2&.url,
+            cp.image3&.url,
+            cp.image4&.url,
+            cp.image5&.url
+          ]
+        end
       end
     end
 end

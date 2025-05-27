@@ -15,10 +15,20 @@
         <% end %>
       </div>
 
-      <%= link_to "作成", new_collect_point_path,
-        class: "text-sm rounded-lg py-3 px-5 submit-button text-white block font-medium",
-        data: { turbo_frame: "content-zone", turbo_action: "advance" }
-      %>
+      <div class="my-4 flex gap-4">
+        <%= link_to "⬇️ CSVをDL", export_csv_collect_points_path(q: params[:q]),
+          class: "text-sm rounded-lg py-3 px-5 normal-button text-black block font-medium",
+          data: { turbo: false } %>
+
+        <%= link_to "⬇️ Excel用CSVをDL", export_csv_excel_collect_points_path(q: params[:q]),
+          class: "text-sm rounded-lg py-3 px-5 normal-button text-black block font-medium",
+          data: { turbo: false } %>
+
+        <%= link_to "作成", new_collect_point_path,
+          class: "text-sm rounded-lg py-3 px-5 submit-button text-white block font-medium",
+          data: { turbo_frame: "content-zone", turbo_action: "advance" }
+        %>
+      </div>
     </div>
 
     <div
