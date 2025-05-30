@@ -1,8 +1,14 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Editing custom taxon</h1>
+<%= turbo_frame_tag "content-zone" do %>
+  <div class="px-4 md:px-10 lg:px-20 py-4 max-w-screen-xl mx-auto">
+    <h1 class="font-bold text-lg">カスタム分類を編集</h1>
 
-  <%= render "form", custom_taxon: @custom_taxon %>
+    <%= render "form", custom_taxon: @custom_taxon %>
 
-  <%= link_to "Show this custom taxon", @custom_taxon, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-  <%= link_to "Back to custom taxa", custom_taxa_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-</div>
+    <%= link_to "詳細に戻る", @custom_taxon, class: "mt-2 ml-2 rounded-lg py-1 px-2 inline-block normal-button",
+      data: { turbo_frame: "content-zone", turbo_action: "advance" }
+    %>
+    <%= link_to "一覧に戻る", custom_taxa_url_with_ranmemory, class: "mt-2 ml-2 rounded-lg py-1 px-2 inline-block normal-button",
+      data: { turbo_frame: "content-zone", turbo_action: "advance" }
+    %>
+  </div>
+<% end %>

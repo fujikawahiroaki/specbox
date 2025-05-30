@@ -9,8 +9,20 @@ Rails.application.routes.draw do
   end
   resources :specimens
   resources :specimen_labels
-  resources :custom_taxa
-  resources :default_taxa
+  resources :custom_taxa do
+    collection do
+      patch :bulk_update
+      delete :bulk_delete
+      get :export_csv
+      get :export_csv_excel
+    end
+  end
+  resources :default_taxa do
+    collection do
+      get :export_csv
+      get :export_csv_excel
+    end
+  end
   resources :collection_settings do
     collection do
       patch :bulk_update

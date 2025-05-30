@@ -1,8 +1,8 @@
-<%= form_with(model: custom_taxon, class: "contents") do |form| %>
+<%= form_with(model: custom_taxon, class: "contents", data: {controller: "validation"}) do |form| %>
+  <% create_mode = create_mode.present? ? create_mode : false %>
   <% if custom_taxon.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
-      <h2><%= pluralize(custom_taxon.errors.count, "error") %> prohibited this custom_taxon from being saved:</h2>
-
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-2 py-1 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(custom_taxon.errors.count, "error") %>つのエラーが発生しました:</h2>
       <ul>
         <% custom_taxon.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -11,17 +11,412 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :is_private %>
-    <%= form.check_box :is_private, class: "block mt-2 h-5 w-5" %>
-  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+    <%= form.fields_for :all_taxon do |taxon_form| %>
+      <div>
+        <% if create_mode %>
+          <div class="my-5">
+            <%= form.label '同一データでの作成数(最大50)' %>
+            <%= form.text_field :bulk_create_num,
+              value: 1,
+              class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+              data: {
+                validation_target: "input",
+                validation_type: "integer",
+                name: "bulk_create_num",
+                validation_required: "true",
+                validation_message_required: "作成数は必須です",
+                validation_min_value: 1,
+                validation_max_value: 50,
+                validation_min_integer_digits: 1,
+                validation_max_integer_digits: 2,
+                validation_message_integer: "作成数は整数で入力し、1以上50以下にしてください"
+              }
+            %>
+            <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+          </div>
+        <% end %>
 
-  <div class="my-5">
-    <%= form.label :user_id %>
-    <%= form.text_field :user_id, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+        <div class="my-5" data-bulk-update-choice-field id="kingdom">
+          <%= taxon_form.label '界', class: "block" %>
+          <%= taxon_form.text_field :kingdom,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {validation_target: "input", validation_type: "string", name: "kingdom", validation_required: "false", validation_min_length: "0", validation_max_length: "30", validation_message_length: "30文字以下にしてください"}
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="phylum">
+          <%= taxon_form.label '門', class: "block" %>
+          <%= taxon_form.text_field :phylum,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {validation_target: "input", validation_type: "string", name: "phylum", validation_required: "false", validation_min_length: "0", validation_max_length: "30", validation_message_length: "30文字以下にしてください"}
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="class_name">
+          <%= taxon_form.label '綱', class: "block" %>
+          <%= taxon_form.text_field :class_name,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {validation_target: "input", validation_type: "string", name: "class_name", validation_required: "false", validation_min_length: "0", validation_max_length: "30", validation_message_length: "30文字以下にしてください"}
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="order">
+          <%= taxon_form.label '目', class: "block" %>
+          <%= taxon_form.text_field :order,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {validation_target: "input", validation_type: "string", name: "order", validation_required: "false", validation_min_length: "0", validation_max_length: "30", validation_message_length: "30文字以下にしてください"}
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="suborder">
+          <%= taxon_form.label '亜目', class: "block" %>
+          <%= taxon_form.text_field :suborder,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {validation_target: "input", validation_type: "string", name: "suborder", validation_required: "false", validation_min_length: "0", validation_max_length: "30", validation_message_length: "30文字以下にしてください"}
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="family">
+          <%= taxon_form.label '科', class: "block" %>
+          <%= taxon_form.text_field :family,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "family",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="subfamily">
+          <%= taxon_form.label '亜科', class: "block" %>
+          <%= taxon_form.text_field :subfamily,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "subfamily",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="tribe">
+          <%= taxon_form.label '族', class: "block" %>
+          <%= taxon_form.text_field :tribe,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "tribe",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="subtribe">
+          <%= taxon_form.label '亜族', class: "block" %>
+          <%= taxon_form.text_field :subtribe,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "subtribe",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="genus">
+          <%= taxon_form.label '属', class: "block" %>
+          <%= taxon_form.text_field :genus,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "genus",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="subgenus">
+          <%= taxon_form.label '亜属', class: "block" %>
+          <%= taxon_form.text_field :subgenus,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "subgenus",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="species">
+          <%= taxon_form.label '種', class: "block" %>
+          <%= taxon_form.text_field :species,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "species",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="subspecies">
+          <%= taxon_form.label '亜種', class: "block" %>
+          <%= taxon_form.text_field :subspecies,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "subspecies",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="scientific_name_author">
+          <%= taxon_form.label '記載者', class: "block" %>
+          <%= taxon_form.text_field :scientific_name_author,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "scientific_name_author",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "50",
+              validation_message_length: "50文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="name_publishedin_year">
+          <%= taxon_form.label '記載年(不明な場合は0)', class: "block" %>
+          <%= taxon_form.number_field :name_publishedin_year,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            value: custom_taxon.name_publishedin_year ? custom_taxon.name_publishedin_year : 0,
+            data: {
+              validation_target: "input",
+              validation_type: "integer",
+              name: "name_publishedin_year",
+              validation_required: "true",
+              validation_message_required: "記載年は必須です(不明な場合は0にしてください)",
+              validation_min_value: 0,
+              validation_min_integer_digits: 1,
+              validation_max_integer_digits: 10000,
+              validation_message_integer: "0以上の整数で入力してください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="change_genus_brackets">
+          <%= taxon_form.label '属移動カッコの有無', class: "block" %>
+          <%= taxon_form.check_box :change_genus_brackets,
+            class: "form-input ",
+            data: {
+              validation_target: "input",
+              validation_type: "boolean",
+              name: "change_genus_brackets"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="unknown_author_brackets">
+          <%= taxon_form.label '記載者不明角カッコの有無', class: "block" %>
+          <%= taxon_form.check_box :unknown_author_brackets,
+            class: "form-input ",
+            data: {
+              validation_target: "input",
+              validation_type: "boolean",
+              name: "unknown_author_brackets"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="unknown_name_publishedin_year_brackets">
+          <%= taxon_form.label '記載年不明角カッコの有無', class: "block" %>
+          <%= taxon_form.check_box :unknown_name_publishedin_year_brackets,
+            class: "form-input ",
+            data: {
+              validation_target: "input",
+              validation_type: "boolean",
+              name: "unknown_name_publishedin_year_brackets"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="actual_dist_year">
+          <%= taxon_form.label '記載実流通年(不明な場合は0)', class: "block" %>
+          <%= taxon_form.number_field :actual_dist_year,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            value: custom_taxon.name_publishedin_year ? custom_taxon.name_publishedin_year : 0,
+            data: {
+              validation_target: "input",
+              validation_type: "integer",
+              name: "actual_dist_year",
+              validation_required: "true",
+              validation_message_required: "記載実流通年は必須です(不明な場合は0にしてください)",
+              validation_min_value: 0,
+              validation_min_integer_digits: 1,
+              validation_max_integer_digits: 10000,
+              validation_message_integer: "0以上の整数で入力してください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="japanese_name">
+          <%= taxon_form.label '和名', class: "block" %>
+          <%= taxon_form.text_field :japanese_name,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "japanese_name",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="distribution">
+          <%= taxon_form.label '分布', class: "block" %>
+          <%= taxon_form.text_field :distribution,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "distribution",
+              validation_required: "false",
+              validation_min_length: "0",
+              validation_max_length: "500",
+              validation_message_length: "500文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+
+        <div class="my-5" data-bulk-update-choice-field id="note">
+          <%= taxon_form.label '備考', class: "block" %>
+          <%= taxon_form.text_area :note,
+            rows: 4,
+            class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "note",
+              validation_required: "false",
+              validation_max_length: "500",
+              validation_message_length: "備考は500文字以下にしてください"
+            }
+          %>
+          <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
+        </div>
+      </div>
+
+      <div>
+        <% (1..5).each do |i| %>
+          <div class="my-2">
+            <%= taxon_form.label "画像#{i}" %>
+            <div class="border border-gray-500 rounded-lg px-4 py-2 w-auto">
+              <div class="my-2">
+                <%= taxon_form.file_field "image#{i}", data: { controller: "preview", action: "change->preview#preview", index: i }, class: "hidden", id: "file_input#{i}" %>
+                <label for=<%= "file_input#{i}" %> class="cursor-pointer normal-button px-2 py-1">
+                  ファイルを選択
+                </label>
+              </div>
+              <% if custom_taxon.send("image#{i}").present? %>
+                <div>
+                  <%= taxon_form.check_box "remove_image#{i}" %>
+                  <%= taxon_form.label "remove_image#{i}", "削除" %>
+                </div>
+                <div class="img-container">
+                  <img
+                    id="preview_image<%= i %>"
+                    src="<%= custom_taxon.send("image#{i}").url %>"
+                    alt="画像#{i}"
+                    class="thumbnail"
+                    data-original-src="<%= custom_taxon.send("image#{i}").url %>">
+                </div>
+              <% else %>
+                <img
+                  id="preview_image<%= i %>"
+                  src=""
+                  alt="画像#{i}"
+                  class="thumbnail hidden">
+              <% end %>
+              <div data-container="preview">
+                <div class="my-2">
+                  <button type="button"
+                          id="cancel_button<%= i %>"
+                          data-controller="preview"
+                          data-action="click->preview#cancel"
+                          data-index="<%= i %>"
+                          class="hidden inline-block px-2 py-1 normal-button">
+                    アップロードを取り消し
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
   </div>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit class: "rounded-lg mt-2 py-1 px-2 submit-button text-white inline-block cursor-pointer btn btn-primary", data: { validation_target: "submit", turbo_action: "advance" } %>
   </div>
 <% end %>

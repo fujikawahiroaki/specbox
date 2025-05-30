@@ -68,4 +68,20 @@ module ApplicationHelper
 
     collect_points_url(options.merge(ranmemory_state))
   end
+
+  def custom_taxa_url_with_ranmemory(options = {})
+    ranmemory_state = session[:ranmemory_custom_taxa_index_html] || {}
+
+    sort = options[:sort] || session[:custom_taxa_index_sort]
+    direction = options[:direction] || session[:custom_taxa_index_direction]
+    page = options[:page] || session[:custom_taxa_index_page]
+
+    options = options.merge({
+      sort: sort,
+      direction: direction,
+      page: page
+    })
+
+    custom_taxa_url(options.merge(ranmemory_state))
+  end
 end
