@@ -150,7 +150,7 @@ class ToursController < ApplicationController
       if bulk_ids.empty?
         format.html { redirect_to tours_url_with_ranmemory, alert: "一括削除対象のデータが選択されていません" }
       else
-        if Tour.where(id: bulk_ids, user_id: current_user_id).delete_all
+        if Tour.where(id: bulk_ids, user_id: current_user_id).destroy_all
           format.html { redirect_to tours_url_with_ranmemory, notice: "一括削除に成功しました" }
         else
           format.html { redirect_to tours_url_with_ranmemory, alert: "一括削除に失敗しました" }

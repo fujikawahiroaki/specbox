@@ -9,7 +9,7 @@ class CollectPoint < ApplicationRecord
 
   belongs_to :auth_user, foreign_key: :user_id
 
-  has_many :collect_points_tours, class_name: "CollectPointsTour", foreign_key: "collectpoint_id", dependent: :destroy
+  has_many :collect_points_tours, class_name: "CollectPointsTour", foreign_key: "collectpoint_id", dependent: :delete_all
   has_many :tours, through: :collect_points_tours
 
   mount_uploader :image1, DjangoPictureUploader

@@ -5,7 +5,7 @@ class Tour < ApplicationRecord
   self.primary_key = "id"
   belongs_to :auth_user, foreign_key: :user_id
 
-  has_many :collect_points_tours, dependent: :destroy
+  has_many :collect_points_tours, dependent: :delete_all
   has_many :collect_points, through: :collect_points_tour
 
   mount_uploader :image1, DjangoPictureUploader
