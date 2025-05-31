@@ -73,6 +73,8 @@ class CustomTaxon < ApplicationRecord
   ransack_alias :created_at_date,                        :all_taxon_created_at_date
   ransack_alias :all_taxon_name,                         :all_taxon_all_taxon_name
   ransack_alias :created_at,                             :all_taxon_created_at
+  ransack_alias :scientific_name,                        :all_taxon_scientific_name
+  ransack_alias :scientific_and_japanese_name,           :all_taxon_scientific_and_japanese_name
 
   def self.ransackable_attributes(auth_object = nil)
     AllTaxon.ransackable_attributes(auth_object)

@@ -81,15 +81,15 @@ class AllTaxon < ApplicationRecord
   end
 
   ransacker :created_at_date do
-    Arel.sql("DATE(created_at)")
+    Arel.sql("DATE(all_taxa.created_at)")
   end
 
   ransacker :scientific_name do
-    Arel.sql("concat_ws(' ', genus, species, subspecies)")
+    Arel.sql("concat_ws(' ', all_taxa.genus, all_taxa.species, all_taxa.subspecies)")
   end
 
   ransacker :scientific_and_japanese_name do
-    Arel.sql("concat_ws(' ', genus, species, subspecies, japanese_name)")
+    Arel.sql("concat_ws(' ', all_taxa.genus, all_taxa.species, all_taxa.subspecies, all_taxa.japanese_name)")
   end
 
   ransacker :all_taxon_name do |parent|
