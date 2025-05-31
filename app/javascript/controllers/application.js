@@ -15,6 +15,7 @@ import LeafletSelectorController from "./leaflet_selector_controller";
 import CountryCodeSelectorController from "./country_code_selector_controller";
 import AssociationSelectorController from "./association_selector_controller";
 import GeolocationInputController from "./geolocation_input_controller.js_controller";
+import ClipboardController from "./clipboard_controller";
 
 const application = Application.start();
 
@@ -38,5 +39,6 @@ application.register("leaflet-selector", LeafletSelectorController);
 application.register("country-code-selector", CountryCodeSelectorController);
 application.register("association-selector", AssociationSelectorController);
 application.register("geolocation-input", GeolocationInputController);
+application.register("clipboard", ClipboardController);
 
 export { application };

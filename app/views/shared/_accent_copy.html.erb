@@ -1,0 +1,21 @@
+<div class="m-2">
+  <p class="mb-2">
+    長音母音入力補助（クリックでコピー）
+  </p>
+  <div class="flex flex-wrap gap-2">
+    <% long_vowels = ["ā", "ī", "ū", "ē", "ō", "ȳ", "Ā", "Ī", "Ū", "Ē", "Ō", "Ȳ",
+                      "â", "î", "û", "ê", "ô", "Â", "Î", "Û", "Ê", "Ô"] %>
+
+    <% long_vowels.each do |char| %>
+      <button
+        type="button"
+        data-controller="clipboard"
+        data-action="click->clipboard#copy"
+        data-clipboard-text-value="<%= char %>"
+        class="text-sm px-2 py-1 bg-gray-100 border rounded hover:bg-gray-200 transition"
+      >
+        <%= char %>
+      </button>
+    <% end %>
+  </div>
+</div>
