@@ -41,7 +41,17 @@
           <%= taxon_form.label '界', class: "block" %>
           <%= taxon_form.text_field :kingdom,
             class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
-            data: {validation_target: "input", validation_type: "string", name: "kingdom", validation_required: "false", validation_min_length: "0", validation_max_length: "30", validation_message_length: "30文字以下にしてください"}
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "kingdom",
+              validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
           %>
           <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
         </div>
@@ -50,7 +60,17 @@
           <%= taxon_form.label '門', class: "block" %>
           <%= taxon_form.text_field :phylum,
             class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
-            data: {validation_target: "input", validation_type: "string", name: "phylum", validation_required: "false", validation_min_length: "0", validation_max_length: "30", validation_message_length: "30文字以下にしてください"}
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "phylum",
+              validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
           %>
           <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
         </div>
@@ -59,7 +79,17 @@
           <%= taxon_form.label '綱', class: "block" %>
           <%= taxon_form.text_field :class_name,
             class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
-            data: {validation_target: "input", validation_type: "string", name: "class_name", validation_required: "false", validation_min_length: "0", validation_max_length: "30", validation_message_length: "30文字以下にしてください"}
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "class_name",
+              validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
           %>
           <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
         </div>
@@ -68,7 +98,17 @@
           <%= taxon_form.label '目', class: "block" %>
           <%= taxon_form.text_field :order,
             class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
-            data: {validation_target: "input", validation_type: "string", name: "order", validation_required: "false", validation_min_length: "0", validation_max_length: "30", validation_message_length: "30文字以下にしてください"}
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "order",
+              validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
           %>
           <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
         </div>
@@ -77,7 +117,17 @@
           <%= taxon_form.label '亜目', class: "block" %>
           <%= taxon_form.text_field :suborder,
             class: "form-input  text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
-            data: {validation_target: "input", validation_type: "string", name: "suborder", validation_required: "false", validation_min_length: "0", validation_max_length: "30", validation_message_length: "30文字以下にしてください"}
+            data: {
+              validation_target: "input",
+              validation_type: "string",
+              name: "suborder",
+              validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
+              validation_min_length: "0",
+              validation_max_length: "30",
+              validation_message_length: "30文字以下にしてください"
+            }
           %>
           <div data-validation-target="error" class="text-red-500 text-sm mt-2 "></div>
         </div>
@@ -91,6 +141,8 @@
               validation_type: "string",
               name: "family",
               validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
               validation_min_length: "0",
               validation_max_length: "30",
               validation_message_length: "30文字以下にしてください"
@@ -108,6 +160,8 @@
               validation_type: "string",
               name: "subfamily",
               validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
               validation_min_length: "0",
               validation_max_length: "30",
               validation_message_length: "30文字以下にしてください"
@@ -125,6 +179,8 @@
               validation_type: "string",
               name: "tribe",
               validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
               validation_min_length: "0",
               validation_max_length: "30",
               validation_message_length: "30文字以下にしてください"
@@ -142,6 +198,8 @@
               validation_type: "string",
               name: "subtribe",
               validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
               validation_min_length: "0",
               validation_max_length: "30",
               validation_message_length: "30文字以下にしてください"
@@ -159,6 +217,8 @@
               validation_type: "string",
               name: "genus",
               validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
               validation_min_length: "0",
               validation_max_length: "30",
               validation_message_length: "30文字以下にしてください"
@@ -176,6 +236,8 @@
               validation_type: "string",
               name: "subgenus",
               validation_required: "false",
+              validation_regex: "^([A-Z][a-z]+)?$",
+              validation_message_regex: "先頭のみ大文字の半角アルファベット1単語にしてください",
               validation_min_length: "0",
               validation_max_length: "30",
               validation_message_length: "30文字以下にしてください"
@@ -193,6 +255,8 @@
               validation_type: "string",
               name: "species",
               validation_required: "false",
+              validation_regex: "^[a-z-]*$",
+              validation_message_regex: "半角小文字アルファベットとハイフンのみ使用可能です",
               validation_min_length: "0",
               validation_max_length: "30",
               validation_message_length: "30文字以下にしてください"
@@ -210,6 +274,8 @@
               validation_type: "string",
               name: "subspecies",
               validation_required: "false",
+              validation_regex: "^[a-z-]*$",
+              validation_message_regex: "半角小文字アルファベットとハイフンのみ使用可能です",
               validation_min_length: "0",
               validation_max_length: "30",
               validation_message_length: "30文字以下にしてください"
