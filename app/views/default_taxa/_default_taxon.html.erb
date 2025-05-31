@@ -1,7 +1,122 @@
-<div id="<%= dom_id default_taxon %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Is private:</strong>
-    <%= default_taxon.is_private %>
-  </p>
+<div id="<%= dom_id default_taxon %>" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div>
+    <p class="my-5">
+      <strong class="block font-medium mb-1">界:</strong>
+      <%= default_taxon.kingdom %>
+    </p>
 
+    <p class="my-5">
+      <strong class="block font-medium mb-1">門:</strong>
+      <%= default_taxon.phylum %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">綱:</strong>
+      <%= default_taxon.class_name %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">目:</strong>
+      <%= default_taxon.order %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">亜目:</strong>
+      <%= default_taxon.suborder %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">科:</strong>
+      <%= default_taxon.family %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">亜科:</strong>
+      <%= default_taxon.subfamily %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">族:</strong>
+      <%= default_taxon.tribe %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">亜族:</strong>
+      <%= default_taxon.subtribe %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">属:</strong>
+      <%= default_taxon.genus %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">亜属:</strong>
+      <%= default_taxon.subgenus %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">種:</strong>
+      <%= default_taxon.species %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">亜種:</strong>
+      <%= default_taxon.subspecies %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">記載者:</strong>
+      <%= default_taxon.scientific_name_author %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">記載年:</strong>
+      <%= default_taxon.name_publishedin_year %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">属移動カッコの有無:</strong>
+      <%= default_taxon.change_genus_brackets ? 'あり' : 'なし' %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">記載者不明角カッコの有無:</strong>
+      <%= default_taxon.unknown_author_brackets ? 'あり' : 'なし' %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">記載年不明角カッコの有無:</strong>
+      <%= default_taxon.unknown_name_publishedin_year_brackets ? 'あり' : 'なし' %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">記載実流通年:</strong>
+      <%= default_taxon.actual_dist_year %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">和名:</strong>
+      <%= default_taxon.japanese_name %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">分布:</strong>
+      <%= default_taxon.distribution %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">備考:</strong>
+      <%= default_taxon.note %>
+    </p>
+
+    <p class="my-5">
+      <strong class="block font-medium mb-1">作成日時:</strong>
+      <%= l(default_taxon.created_at, format: :long) %>
+    </p>
+  </div>
+
+  <div>
+    <%= render partial: "shared/image_modal", locals: {model: default_taxon} %>
+  </div>
 </div>

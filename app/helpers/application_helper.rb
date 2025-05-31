@@ -84,4 +84,20 @@ module ApplicationHelper
 
     custom_taxa_url(options.merge(ranmemory_state))
   end
+
+  def default_taxa_url_with_ranmemory(options = {})
+    ranmemory_state = session[:ranmemory_default_taxa_index_html] || {}
+
+    sort = options[:sort] || session[:default_taxa_index_sort]
+    direction = options[:direction] || session[:default_taxa_index_direction]
+    page = options[:page] || session[:default_taxa_index_page]
+
+    options = options.merge({
+      sort: sort,
+      direction: direction,
+      page: page
+    })
+
+    default_taxa_url(options.merge(ranmemory_state))
+  end
 end

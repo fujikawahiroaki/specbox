@@ -31,7 +31,22 @@
       </div>
     </div>
 
-    <%= render "shared/accent_copy" %>
+    <div class="m-2 p-2 rounded-md border border-gray">
+      <p class="text-sm">
+        CSVダウンロードの対象は検索に合致したデータです。全データをダウンロードしたい場合は検索状態をクリアしてください。
+      </p>
+      </p>
+      <p class="text-sm">
+        大量データのCSVダウンロードには時間がかかることがあります。ダウンロードが完了するまで、データの作成・編集・削除はしないでください。
+      </p>
+      <p class="text-sm">
+        CSV準備中にも他のページへの移動は可能です。完了し次第、ブラウザから通知されます。
+      </p>
+    </div>
+
+    <div class="m-2 rounded-md border border-gray">
+      <%= render "shared/accent_copy" %>
+    </div>
 
     <div
       data-controller="filter-choice"

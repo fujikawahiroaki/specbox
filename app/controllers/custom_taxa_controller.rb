@@ -3,6 +3,7 @@ require "csv"
 class CustomTaxaController < ApplicationController
   include ApplicationHelper
   before_action :set_custom_taxon, only: %i[ show edit update destroy ]
+  before_action :set_default_taxon, only: %i[ new ]
   before_action :validate_user, only: %i[ show edit update destroy ]
   before_action :require_login
   before_action :save_and_load_filters
@@ -58,6 +59,19 @@ class CustomTaxaController < ApplicationController
               new_record
     else
               CustomTaxon.new
+    end
+    if @default_taxon.present?
+      source_all = @default_taxon.all_taxon
+      if source_all
+        dup_all = source_all.dup
+        dup_all.id = nil
+        dup_all.image1 = nil
+        dup_all.image2 = nil
+        dup_all.image3 = nil
+        dup_all.image4 = nil
+        dup_all.image5 = nil
+        @custom_taxon.all_taxon = dup_all
+      end
     end
     @custom_taxon.build_all_taxon unless @custom_taxon.all_taxon
     @custom_taxon
@@ -193,6 +207,10 @@ class CustomTaxaController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_custom_taxon
       @custom_taxon = CustomTaxon.find_by(taxon_ptr_id: params[:id], user_id: current_user_id)
+    end
+
+    def set_default_taxon
+      @default_taxon = DefaultTaxon.find_by(taxon_ptr_id: params[:default_taxon_id])
     end
 
     # Only allow a list of trusted parameters through.
