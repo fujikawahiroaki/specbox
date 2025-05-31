@@ -11,9 +11,12 @@
     </div>
   <% end %>
 
+
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
     <%= form.fields_for :all_taxon do |taxon_form| %>
       <div>
+       <%= render "shared/accent_copy" %>
+
         <% if create_mode %>
           <div class="my-5">
             <%= form.label '同一データでの作成数(最大50)' %>

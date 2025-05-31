@@ -22,13 +22,8 @@
 
 
     <div>
-      <div>
-        <p>
-          長音母音入力補助 コピペして使用してください
-          <br>
-          ā ī ū ē ō ȳ Ā Ī Ū Ē Ō Ȳ â î û ê ô Â Î Û Ê Ô
-        </p>
-      </div>
+      <%= render "shared/accent_copy" %>
+
       <% if create_mode %>
         <div class="my-5">
           <%= form.label '同一データでの作成数(最大50)' %>
