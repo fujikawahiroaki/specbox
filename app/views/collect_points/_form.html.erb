@@ -61,6 +61,8 @@
             validation_type: "string",
             name: "contient",
             validation_required: "false",
+            validation_regex: "^[!-~ ]*$",
+            validation_message_regex: "半角英数記号のみにしてください",
             validation_min_length: "0",
             validation_max_length: "20",
             validation_message_length: "20文字以下にしてください"
@@ -79,6 +81,8 @@
             validation_type: "string",
             name: "island_group",
             validation_required: "false",
+            validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+            validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
             validation_min_length: "0",
             validation_max_length: "30",
             validation_message_length: "30文字以下にしてください"
@@ -97,6 +101,8 @@
             validation_type: "string",
             name: "island",
             validation_required: "false",
+            validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+            validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
             validation_min_length: "0",
             validation_max_length: "24",
             validation_message_length: "24文字以下にしてください"
@@ -120,7 +126,7 @@
           data: {
             country_code_selector_target: "input",
             validation_target: "input",
-            validation_type: "string",
+            validation_type: "countryCode",
             name: "country",
             validation_required: "true",
             validation_message_required: "国名コードは必須です",
@@ -143,6 +149,8 @@
             validation_type: "string",
             name: "state_provice",
             validation_required: "false",
+            validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+            validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
             validation_min_length: "0",
             validation_max_length: "30",
             validation_message_length: "30文字以下にしてください"
@@ -161,6 +169,8 @@
             validation_type: "string",
             name: "county",
             validation_required: "false",
+            validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+            validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
             validation_min_length: "0",
             validation_max_length: "30",
             validation_message_length: "30文字以下にしてください"
@@ -180,6 +190,8 @@
             validation_type: "string",
             name: "municipality",
             validation_required: "false",
+            validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+            validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
             validation_min_length: "0",
             validation_max_length: "50",
             validation_message_length: "50文字以下にしてください"

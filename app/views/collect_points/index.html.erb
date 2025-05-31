@@ -495,6 +495,8 @@
                       validation_type: "string",
                       name: "contient",
                       validation_required: "false",
+                      validation_regex: "^[!-~ ]*$",
+                      validation_message_regex: "半角英数記号のみにしてください",
                       validation_min_length: "0",
                       validation_max_length: "20",
                       validation_message_length: "20文字以下にしてください"
@@ -513,6 +515,8 @@
                       validation_type: "string",
                       name: "island_group",
                       validation_required: "false",
+                      validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+                      validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
                       validation_min_length: "0",
                       validation_max_length: "30",
                       validation_message_length: "30文字以下にしてください"
@@ -531,6 +535,8 @@
                       validation_type: "string",
                       name: "island",
                       validation_required: "false",
+                      validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+                      validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
                       validation_min_length: "0",
                       validation_max_length: "24",
                       validation_message_length: "24文字以下にしてください"
@@ -539,14 +545,22 @@
                   <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
                 </div>
 
-                <div class="w-[200px]" data-bulk-update-choice-field id="country">
-                  <%= form.label '国名コード', class: "block" %>
+                <div class="w-[200px]" data-controller="country-code-selector" data-bulk-update-choice-field id="country">
+                  <%= form.label '国名（ISO 3166-1準拠の半角英字2字の国名コード）', class: "block" %>
+                  <p class="text-sm">下のリストから国名を選択すると自動で反映されます</p>
+                  <select
+                    data-country-code-selector-target="select"
+                    data-action="change->country-code-selector#updateCode"
+                    class="text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full">
+                  </select>
+
                   <%= form.text_field(
                     :country,
                     class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
                     data: {
+                      country_code_selector_target: "input",
                       validation_target: "input",
-                      validation_type: "string",
+                      validation_type: "countryCode",
                       name: "country",
                       validation_required: "true",
                       validation_message_required: "国名コードは必須です",
@@ -555,6 +569,7 @@
                       validation_message_length: "2文字(ISO 3166-1準拠)にしてください"
                     }
                   ) %>
+
                   <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
                 </div>
 
@@ -568,6 +583,8 @@
                       validation_type: "string",
                       name: "state_provice",
                       validation_required: "false",
+                      validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+                      validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
                       validation_min_length: "0",
                       validation_max_length: "30",
                       validation_message_length: "30文字以下にしてください"
@@ -586,6 +603,8 @@
                       validation_type: "string",
                       name: "county",
                       validation_required: "false",
+                      validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+                      validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
                       validation_min_length: "0",
                       validation_max_length: "30",
                       validation_message_length: "30文字以下にしてください"
@@ -604,6 +623,8 @@
                       validation_type: "string",
                       name: "municipality",
                       validation_required: "false",
+                      validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+                      validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
                       validation_min_length: "0",
                       validation_max_length: "50",
                       validation_message_length: "50文字以下にしてください"

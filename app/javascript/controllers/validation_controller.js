@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import iso3166list from "./iso3166list";
 
 export default class extends Controller {
   static targets = ["input", "error", "submit"];
@@ -34,6 +35,7 @@ export default class extends Controller {
     const regexMessage = input.dataset.validationMessageRegex;
     const integerMessage = input.dataset.validationMessageInteger;
     const decimalMessage = input.dataset.validationMessageDecimal;
+    const countryCodeMessage = input.dataset.validationMessageCountryCode;
     const minIntegerDigits = parseInt(
       input.dataset.validationMinIntegerDigits || 0
     );
@@ -123,6 +125,29 @@ export default class extends Controller {
       } else if (value && !this.isValidDate(value)) {
         errorMessage =
           input.dataset.validationMessageInvalid || "無効な日付です";
+      }
+    }
+
+    // 国名コードのバリデーション
+    if (validationType === "countryCode") {
+      // 必須チェック
+      if (required && !value) {
+        errorMessage = requiredMessage;
+      }
+      // コード形式チェック（大文字2文字であること＆リストに含まれるか）
+      else if (value) {
+        // 1) 2文字のアルファベットかどうか（必須ではない場合は空文字はスルー）
+        const twoLetterRegex = /^[A-Z]{2}$/;
+        if (!twoLetterRegex.test(value)) {
+          errorMessage =
+            countryCodeMessage ||
+            "国名コードは大文字アルファベット2文字で入力してください。";
+        }
+        // 2) iso3166list に存在するかどうか
+        else if (!iso3166list.some((item) => item.id === value)) {
+          errorMessage =
+            countryCodeMessage || "無効な国名コードです（ISO 3166-1 にありません）。";
+        }
       }
     }
 
