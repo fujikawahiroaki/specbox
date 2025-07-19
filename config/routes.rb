@@ -7,7 +7,14 @@ Rails.application.routes.draw do
       get :search
     end
   end
-  resources :specimens
+  resources :specimens do
+    collection do
+      patch :bulk_update
+      delete :bulk_delete
+      get :export_csv
+      get :export_csv_excel
+    end
+  end
   resources :specimen_labels
   resources :custom_taxa do
     collection do

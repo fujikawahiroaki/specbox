@@ -1,21 +1,1465 @@
-<div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-  <% end %>
+<%= turbo_frame_tag "content-zone" do %>
+  <div class="w-full">
 
-  <% content_for :title, "Specimens" %>
+    <% content_for :institution_code, "specimens" %>
 
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Specimens</h1>
-    <%= link_to "New specimen", new_specimen_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
-  </div>
+    <div class="flex justify-between items-center mb-2">
+      <h1 class="font-bold text-xl">標本🐞</h1>
 
-  <div id="specimens" class="min-w-full">
-    <% @specimens.each do |specimen| %>
-      <%= render specimen %>
-      <p>
-        <%= link_to "Show this specimen", specimen, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+      <div>
+        <% if notice.present? %>
+          <p class="left-1/2 py-2 px-3 bg-green-50 mb-5 text-green-500 text-sm rounded-lg inline-block z-50" id="flash-message" data-controller="flash"><%= notice %></p>
+        <% end %>
+        <% if alert.present? %>
+          <p class="left-1/2 py-2 px-3 bg-red-50 mb-5 text-red-500 text-sm rounded-lg inline-block z-50" id="flash-message" data-controller="flash"><%= alert %></p>
+        <% end %>
+      </div>
+
+      <div class="my-4 flex gap-4">
+        <%= link_to "⬇️ CSVをDL", export_csv_specimens_path(q: params[:q]),
+          class: "text-sm rounded-lg py-3 px-5 normal-button text-black block font-medium",
+          data: { turbo: false } %>
+
+        <%= link_to "⬇️ Excel用CSVをDL", export_csv_excel_specimens_path(q: params[:q]),
+          class: "text-sm rounded-lg py-3 px-5 normal-button text-black block font-medium",
+          data: { turbo: false } %>
+
+        <%= link_to "作成", new_specimen_path,
+          class: "text-sm rounded-lg py-3 px-5 submit-button text-white block font-medium",
+          data: { turbo_frame: "content-zone", turbo_action: "advance" }
+        %>
+      </div>
+    </div>
+
+    <div class="m-2 p-2 rounded-md border border-gray">
+      <p class="text-sm">
+        CSVダウンロードの対象は検索に合致したデータです。全データをダウンロードしたい場合は検索状態をクリアしてください。
       </p>
-    <% end %>
+      </p>
+      <p class="text-sm">
+        大量データのCSVダウンロードには時間がかかることがあります。ダウンロードが完了するまで、データの作成・編集・削除はしないでください。
+      </p>
+      <p class="text-sm">
+        CSV準備中にも他のページへの移動は可能です。完了し次第、ブラウザから通知されます。
+      </p>
+    </div>
+
+    <div class="m-2 rounded-md border border-gray">
+      <%= render "shared/accent_copy" %>
+    </div>
+
+    <div
+      data-controller="filter-choice"
+      data-filter-choice-model-name-value="specimen"
+      data-default-visible-fields="<%= ['taxon_info_all_taxon_name_cont, collect_point_info_all_place_name_cont'].to_json %>"
+    >
+      <div>
+        <div class="relative inline-block">
+          <!-- ボタンをクリックでドロップダウンをトグル -->
+          <button class="normal-button text-sm px-2 py-1 rounded-md border border-gray" data-action="click->filter-choice#toggleDropdown" data-filter-choice-target="toggleButton">
+            検索項目を選択 ▼
+          </button>
+
+          <!-- ドロップダウンメニュー -->
+          <div class="text-xs absolute top-full left-0 normal-button shadow-lg border p-2 hidden bg-[#E9F5F8] z-50 whitespace-nowrap"
+               data-filter-choice-target="dropdown"
+               data-action="click->filter-choice#keepDropdownOpen">
+               <% columns = {
+                 taxon_info_scientific_and_japanese_name_cont: '属・種・亜種・和名あいまい',
+                 taxon_info_all_taxon_name_cont: '学名系項目あいまい(上位分類含む)',
+                 collect_point_info_all_place_name_cont: '地名系項目あいまい',
+                 collect_point_info_within_distance_from: '指定座標から指定半径内で採集された標本',
+                 taxon_info_kingdom_cont: '界(部分一致)',
+                 taxon_info_kingdom_eq: '界(完全一致)',
+                 taxon_info_phylum_cont: '門(部分一致)',
+                 taxon_info_phylum_eq: '門(完全一致)',
+                 taxon_info_class_name_cont: '鋼(部分一致)',
+                 taxon_info_class_name_eq: '鋼(完全一致)',
+                 taxon_info_order_cont: '目(部分一致)',
+                 taxon_info_order_eq: '目(完全一致)',
+                 taxon_info_suborder_cont: '亜目(部分一致)',
+                 taxon_info_suborder_eq: '亜目(完全一致)',
+                 taxon_info_family_cont: '科(部分一致)',
+                 taxon_info_family_eq: '科(完全一致)',
+                 taxon_info_subfamily_cont: '亜科(部分一致)',
+                 taxon_info_subfamily_eq: '亜科(完全一致)',
+                 taxon_info_tribe_cont: '族(部分一致)',
+                 taxon_info_tribe_eq: '族(完全一致)',
+                 taxon_info_subtribe_cont: '亜族(部分一致)',
+                 taxon_info_subtribe_eq: '亜族(完全一致)',
+                 taxon_info_genus_cont: '属(部分一致)',
+                 taxon_info_genus_eq: '属(完全一致)',
+                 taxon_info_subgenus_cont: '亜属(部分一致)',
+                 taxon_info_subgenus_eq: '亜属(完全一致)',
+                 taxon_info_species_cont: '種(部分一致)',
+                 taxon_info_species_eq: '種(完全一致)',
+                 taxon_info_subspecies_cont: '亜種(部分一致)',
+                 taxon_info_subspecies_eq: '亜種(完全一致)',
+                 taxon_info_scientific_name_author_cont: '記載者(部分一致)',
+                 taxon_info_scientific_name_author_eq: '記載者(完全一致)',
+                 taxon_info_name_publishedin_year_eq: '記載年(完全一致)',
+                 taxon_info_name_publishedin_year_gteq: '記載年(指定値以上)',
+                 taxon_info_name_publishedin_year_lteq: '記載年(指定値以下)',
+                 taxon_info_actual_dist_year_eq: '記載実流通年(完全一致)',
+                 taxon_info_actual_dist_year_gteq: '記載実流通年(指定値以上)',
+                 taxon_info_actual_dist_year_lteq: '記載実流通年(指定値以下)',
+                 taxon_info_japanese_name_cont: '和名(部分一致)',
+                 taxon_info_japanese_name_eq: '和名(完全一致)',
+                 taxon_info_distribution_cont: '分布(部分一致)',
+                 taxon_info_distribution_eq: '分布(完全一致)',
+                 collect_point_info_contient_cont: '大陸(部分一致)',
+                 collect_point_info_contient_eq: '大陸(完全一致)',
+                 collect_point_info_island_group_cont: '島群(部分一致)',
+                 collect_point_info_island_group_eq: '島群(完全一致)',
+                 collect_point_info_island_cont: '島(部分一致)',
+                 collect_point_info_island_eq: '島(完全一致)',
+                 collect_point_info_country_cont: '国名コード(部分一致)',
+                 collect_point_info_country_eq: '国名コード(完全一致)',
+                 collect_point_info_state_provice_cont: '州・県(部分一致)',
+                 collect_point_info_state_provice_eq: '州・県(完全一致)',
+                 collect_point_info_county_cont: '海外における郡・区(部分一致)',
+                 collect_point_info_county_eq: '海外における郡・区(完全一致)',
+                 collect_point_info_municipality_cont: '市名以下の詳細地名(部分一致)',
+                 collect_point_info_municipality_eq: '市名以下の詳細地名(完全一致)',
+                 collect_point_info_japanese_place_name_cont: '日本語地名ラベル用(部分一致)',
+                 collect_point_info_japanese_place_name_eq: '日本語地名ラベル用(完全一致)',
+                 collect_point_info_japanese_place_name_detail_cont: '日本語地名詳細(部分一致)',
+                 collect_point_info_japanese_place_name_detail_eq: '日本語地名詳細(完全一致)',
+                 collect_point_info_verbatim_locality_cont: '採集地の説明(部分一致)',
+                 collect_point_info_verbatim_locality_eq: '採集地の説明(完全一致)',
+                 collect_point_info_latitude_eq: '緯度(完全一致)',
+                 collect_point_info_latitude_gteq: '緯度(指定値以上)',
+                 collect_point_info_latitude_lteq: '緯度(指定値以下)',
+                 collect_point_info_longitude_eq: '経度(完全一致)',
+                 collect_point_info_longitude_gteq: '経度(指定値以上)',
+                 collect_point_info_longitude_lteq: '経度(指定値以下)',
+                 collect_point_info_coordinate_precision_eq: '半径(指定メートル完全一致)',
+                 collect_point_info_coordinate_precision_gteq: '半径(指定メートル以上)',
+                 collect_point_info_coordinate_precision_lteq: '半径(指定メートル以下)',
+                 collect_point_info_minimum_elevation_eq: '最低標高(指定メートル完全一致)',
+                 collect_point_info_minimum_elevation_gteq: '最低標高(指定メートル以上)',
+                 collect_point_info_minimum_elevation_lteq: '最低標高(指定メートル以下)',
+                 collect_point_info_maximum_elevation_eq: '最高標高(指定メートル完全一致)',
+                 collect_point_info_maximum_elevation_gteq: '最高標高(指定メートル以上)',
+                 collect_point_info_maximum_elevation_lteq: '最高標高(指定メートル以下)',
+                 collect_point_info_minimum_depth_eq: '最小水深(指定メートル完全一致)',
+                 collect_point_info_minimum_depth_gteq: '最小水深(指定メートル以上)',
+                 collect_point_info_minimum_depth_lteq: '最小水深(指定メートル以下)',
+                 collect_point_info_maximum_depth_eq: '最大水深(指定メートル完全一致)',
+                 collect_point_info_maximum_depth_gteq: '最大水深(指定メートル以上)',
+                 collect_point_info_maximum_depth_lteq: '最大水深(指定メートル以下)',
+                 date_last_modified_date_eq: '作成日時(日付一致)',
+                 note_cont: '備考(部分一致)'
+              } %>
+              <% columns.each do |col, name| %>
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="columns[]"
+                      class="m-1"
+                      data-action="change->filter-choice#updateFilter"
+                      value="<%= col %>"
+                    >
+                    <%= name %>
+                  </label>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="border border-gray-300 rounded-lg mb-4 p-2 text-sm overflow-x-auto shadow-lg rounded-lg">
+          <%= search_form_for @search,
+            html: {
+              data: {
+                turbo_frame: "data_table",
+                controller: "incremental-search",
+                action: "input->incremental-search#submit",
+                turbo_action: "advance"
+              }
+            } do |form| %>
+            <div class="my-2">
+              <%= form.submit class: "text-sm rounded-lg py-1 px-2 normal-button inline-block cursor-pointer", data: {turbo_action: "advance"} %>
+              <%= link_to 'クリア', url_for + "?cancel_filter=true", class: "text-sm rounded-lg py-1 px-2 normal-button inline-block cursor-pointer", data: {turbo_action: "advance", turbo_prefetch: false} %>
+            </div>
+
+            <div class="max-w-[550px] mb-4 bg-blue-50 p-3 rounded-lg border border-blue-200 hidden" data-filter-choice-field id="collect_point_info_within_distance_from">
+              <div>
+                <p>指定座標から指定半径内の地点</p>
+              </div>
+              <div data-controller="geolocation-input">
+                <button
+                  class="text-sm rounded-lg my-2 py-1 px-3 submit-button text-white"
+                  data-action="geolocation-input#getLocation click->incremental-search#submit"
+                  type="button"
+                >
+                  現在地を取得
+                </button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <%= form.label :within_latitude, '緯度（中心）', class: "block text-sm font-medium text-gray-700" %>
+                    <%= form.search_field :within_latitude,
+                      class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
+                      value: params.dig(:q, :within_latitude) || session.dig(:ranmemory_specimens_index_html, "within_latitude"),
+                      data: {
+                        geolocation_input_target: "latitude"
+                      }
+                    %>
+                  </div>
+                  <div>
+                    <%= form.label :within_longitude, '経度（中心）', class: "block text-sm font-medium text-gray-700" %>
+                    <%= form.search_field :within_longitude,
+                      class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
+                      value: params.dig(:q, :within_longitude) || session.dig(:ranmemory_specimens_index_html, "within_longitude"),
+                      data: {
+                        geolocation_input_target: "longitude"
+                      }
+                    %>
+                  </div>
+                  <div>
+                    <%= form.label :within_radius, '半径（メートル）', class: "block text-sm font-medium text-gray-700" %>
+                    <%= form.search_field :within_radius,
+                      step: 10, min: 0,
+                      class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-1 w-full",
+                      value: params.dig(:q, :within_radius) || session.dig(:ranmemory_specimens_index_html, "within_radius")
+                    %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4">
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_all_place_name_cont">
+                <%= form.label '地名系項目あいまい', class: "block" %>
+                <%= form.search_field :collect_point_info_all_place_name_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_all_taxon_name_cont">
+                <%= form.label '学名系項目あいまい(上位分類含む)', class: "block" %>
+                <%= form.search_field :taxon_info_all_taxon_name_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_scientific_and_japanese_name_cont">
+                <%= form.label '属・種・亜種・和名あいまい', class: "block" %>
+                <%= form.search_field :taxon_info_scientific_and_japanese_name_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_kingdom_cont">
+                <%= form.label '界(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_kingdom_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_kingdom_eq">
+                <%= form.label '界(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_kingdom_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_phylum_cont">
+                <%= form.label '門(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_phylum_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_phylum_eq">
+                <%= form.label '門(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_phylum_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_class_name_cont">
+                <%= form.label '綱(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_class_name_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_class_name_eq">
+                <%= form.label '綱(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_class_name_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_order_cont">
+                <%= form.label '目(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_order_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_order_eq">
+                <%= form.label '目(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_order_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_suborder_cont">
+                <%= form.label '亜目(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_suborder_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_suborder_eq">
+                <%= form.label '亜目(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_suborder_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_family_cont">
+                <%= form.label '科(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_family_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_family_eq">
+                <%= form.label '科(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_family_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_subfamily_cont">
+                <%= form.label '亜科(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_subfamily_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_subfamily_eq">
+                <%= form.label '亜科(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_subfamily_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_tribe_cont">
+                <%= form.label '族(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_tribe_cont, class: "text-sm block shadow.rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_tribe_eq">
+                <%= form.label '族(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_tribe_eq, class: "text-sm block shadow.rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_subtribe_cont">
+                <%= form.label '亜族(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_subtribe_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_subtribe_eq">
+                <%= form.label '亜族(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_subtribe_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_genus_cont">
+                <%= form.label '属(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_genus_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_genus_eq">
+                <%= form.label '属(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_genus_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_subgenus_cont">
+                <%= form.label '亜属(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_subgenus_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_subgenus_eq">
+                <%= form.label '亜属(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_subgenus_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_species_cont">
+                <%= form.label '種(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_species_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_species_eq">
+                <%= form.label '種(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_species_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_subspecies_cont">
+                <%= form.label '亜種(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_subspecies_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_subspecies_eq">
+                <%= form.label '亜種(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_subspecies_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_scientific_name_author_cont">
+                <%= form.label '記載者(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_scientific_name_author_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_scientific_name_author_eq">
+                <%= form.label '記載者(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_scientific_name_author_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_name_publishedin_year_eq">
+                <%= form.label '記載年(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_name_publishedin_year_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_name_publishedin_year_gteq">
+                <%= form.label '記載年(指定値以上)', class: "block" %>
+                <%= form.search_field :taxon_info_name_publishedin_year_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_name_publishedin_year_lteq">
+                <%= form.label '記載年(指定値以下)', class: "block" %>
+                <%= form.search_field :taxon_info_name_publishedin_year_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_actual_dist_year_eq">
+                <%= form.label '記載実流通年(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_actual_dist_year_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_actual_dist_year_gteq">
+                <%= form.label '記載実流通年(指定値以上)', class: "block" %>
+                <%= form.search_field :taxon_info_actual_dist_year_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_actual_dist_year_lteq">
+                <%= form.label '記載実流通年(指定値以下)', class: "block" %>
+                <%= form.search_field :taxon_info_actual_dist_year_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_japanese_name_cont">
+                <%= form.label '和名(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_japanese_name_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_japanese_name_eq">
+                <%= form.label '和名(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_japanese_name_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_distribution_cont">
+                <%= form.label '分布(部分一致)', class: "block" %>
+                <%= form.search_field :taxon_info_distribution_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="taxon_info_distribution_eq">
+                <%= form.label '分布(完全一致)', class: "block" %>
+                <%= form.search_field :taxon_info_distribution_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_contient_cont">
+                <%= form.label '大陸(部分一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_contient_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_contient_eq">
+                <%= form.label '大陸(完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_contient_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_island_group_cont">
+                <%= form.label '島群(部分一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_island_group_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_island_group_eq">
+                <%= form.label '島群(完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_island_group_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_island_cont">
+                <%= form.label '島(部分一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_island_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_island_eq">
+                <%= form.label '島(完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_island_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_country_cont">
+                <%= form.label '国名コード(部分一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_country_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_country_eq">
+                <%= form.label '国名コード(完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_country_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_state_provice_cont">
+                <%= form.label '州・県(部分一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_state_provice_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_state_provice_eq">
+                <%= form.label '州・県(完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_state_provice_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_county_cont">
+                <%= form.label '海外における郡・区(部分一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_county_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_county_cont_eq">
+                <%= form.label '海外における郡・区(完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_county_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_municipality_cont">
+                <%= form.label '市名以下の詳細地名(部分一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_municipality_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_municipality_eq">
+                <%= form.label '市名以下の詳細地名(完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_municipality_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_japanese_place_name_cont">
+                <%= form.label '日本語地名ラベル用(部分一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_japanese_place_name_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_japanese_place_name_eq">
+                <%= form.label '日本語地名ラベル用(完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_japanese_place_name_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_japanese_place_name_detail_cont">
+                <%= form.label '日本語地名詳細(部分一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_japanese_place_name_detail_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_japanese_place_name_detail_eq">
+                <%= form.label '日本語地名詳細(完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_japanese_place_name_detail_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_verbatim_locality_cont">
+                <%= form.label '採集地の説明(部分一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_verbatim_locality_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_verbatim_locality_eq">
+                <%= form.label '採集地の説明(完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_verbatim_locality_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_latitude_eq">
+                <%= form.label '緯度(指定値完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_latitude_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_latitude_gteq">
+                <%= form.label '緯度(指定値以上)', class: "block" %>
+                <%= form.search_field :collect_point_info_latitude_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_latitude_lteq">
+                <%= form.label '緯度(指定値以下)', class: "block" %>
+                <%= form.search_field :collect_point_info_latitude_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_longitude_eq">
+                <%= form.label '経度(指定値完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_longitude_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_longitude_gteq">
+                <%= form.label '経度(指定値以上)', class: "block" %>
+                <%= form.search_field :collect_point_info_longitude_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_longitude_lteq">
+                <%= form.label '経度(指定値以下)', class: "block" %>
+                <%= form.search_field :collect_point_info_longitude_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_coordinate_precision_eq">
+                <%= form.label '半径(指定メートル完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_coordinate_precision_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_coordinate_precision_gteq">
+                <%= form.label '半径(指定メートル以上)', class: "block" %>
+                <%= form.search_field :collect_point_info_coordinate_precision_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_coordinate_precision_lteq">
+                <%= form.label '半径(指定メートル以下)', class: "block" %>
+                <%= form.search_field :collect_point_info_coordinate_precision_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_minimum_elevation_eq">
+                <%= form.label '最低標高(指定メートル完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_minimum_elevation_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_minimum_elevation_gteq">
+                <%= form.label '最低標高(指定メートル以上)', class: "block" %>
+                <%= form.search_field :collect_point_info_minimum_elevation_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_minimum_elevation_lteq">
+                <%= form.label '最低標高(指定メートル以下)', class: "block" %>
+                <%= form.search_field :collect_point_info_minimum_elevation_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_maximum_elevation_eq">
+                <%= form.label '最高標高(指定メートル完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_maximum_elevation_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_maximum_elevation_gteq">
+                <%= form.label '最高標高(指定メートル以上)', class: "block" %>
+                <%= form.search_field :collect_point_info_maximum_elevation_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_maximum_elevation_lteq">
+                <%= form.label '最高標高(指定メートル以下)', class: "block" %>
+                <%= form.search_field :collect_point_info_maximum_elevation_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_minimum_depth_eq">
+                <%= form.label '最小水深(指定メートル完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_minimum_depth_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_minimum_depth_gteq">
+                <%= form.label '最小水深(指定メートル以上)', class: "block" %>
+                <%= form.search_field :collect_point_info_minimum_depth_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_minimum_depth_lteq">
+                <%= form.label '最小水深(指定メートル以下)', class: "block" %>
+                <%= form.search_field :collect_point_info_minimum_depth_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_maximum_depth_eq">
+                <%= form.label '最大水深(指定メートル完全一致)', class: "block" %>
+                <%= form.search_field :collect_point_info_maximum_depth_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_maximum_depth_gteq">
+                <%= form.label '最大水深(指定メートル以上)', class: "block" %>
+                <%= form.search_field :collect_point_info_maximum_depth_gteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+              <div class="w-[200px] hidden" data-filter-choice-field id="collect_point_info_maximum_depth_lteq">
+                <%= form.label '最大水深(指定メートル以下)', class: "block" %>
+                <%= form.search_field :collect_point_info_maximum_depth_lteq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[150px] hidden" data-filter-choice-field id="date_last_modified_date_eq">
+                <%= form.label '作成日時(日付一致)', class: "block" %>
+                <%= form.date_field :date_last_modified_date_eq, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+
+              <div class="w-[200px] hidden" data-filter-choice-field id="note_cont">
+                <%= form.label '備考(部分一致)', class: "block" %>
+                <%= form.search_field :note_cont, class: "text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div data-controller="bulk-action" data-bulk-action-model-name-value="specimen">
+      <div data-controller="validation">
+        <div
+          data-controller="bulk-update-choice"
+          data-bulk-update-choice-model-name-value="specimen"
+          data-default-bulk-update-choice-fields="<%= [].to_json %>"
+        >
+          <div class="border border-gray-300 rounded-lg mb-4 p-2 text-sm shadow-lg rounded-lg">
+            <div class="text-xs">
+              <p class="text-sm text-red-600 font-medium">⚠一括操作は危険です。</p>
+              <p>旧システムでは複数ページの一括選択が可能でしたが、この新システムでは安全確保のため、現在のページに表示されているデータのみを選択可能としました。</p>
+              <p>ページの移動や検索によって選択はリセットされます。</p>
+              <p>データを選択するまで一括更新/一括削除ボタンは有効になりません。また、一括更新ボタンの場合は、選択した更新対象項目への入力が検証に合格するまで有効になりません。
+            </div>
+
+            <p class="m-2">現在の選択件数: <span data-bulk-action-target="selectRowCount">0</span></p>
+
+            <hr class="border border-gray-300">
+
+            <%= form_with(
+              url: bulk_delete_specimens_path,
+              method: :delete,
+              data: {
+                action: "submit->bulk-action#bulkDelete",
+                turbo_frame: "data_table",
+                turbo_action: "advance"
+              }
+            ) do |form| %>
+              <%= form.submit(
+                "選択データを一括削除",
+                class: "text-sm rounded-lg my-2 py-1 px-2 denger text-white inline-block cursor-pointer",
+                data: {
+                  bulk_action_target: "bulkDeleteButton",
+                  turbo_action: "advance",
+                  action: "submit->bulk-action#bulkDelete",
+                  turbo_confirm: "一括削除は危険な操作です！\n本当に実行しますか？"
+                }
+              )%>
+              <%= form.hidden_field :bulk_ids, value: "", data: { bulk_action_target: "bulkDeleteIds" } %>
+            <% end %>
+
+            <hr class="mb-2 border border-gray-300">
+
+            <div class="relative inline-block">
+              <!-- ボタンをクリックでドロップダウンをトグル -->
+              <button class="normal-button text-sm px-2 py-1 rounded-md border border-gray" data-action="click->bulk-update-choice#toggleDropdown" data-bulk-update-choice-target="toggleButton">
+                一括更新項目を選択 ▼
+              </button>
+              <!-- ドロップダウンメニュー -->
+              <div class="text-xs absolute top-full left-0 normal-button shadow-lg border p-2 hidden bg-[#E9F5F8] z-50 whitespace-nowrap"
+                   data-bulk-update-choice-target="dropdown"
+                   data-action="click->bulk-update-choice#keepDropdownOpen"
+              >
+              <% columns = {
+                 collect_point_info_contient: '大陸',
+                 collect_point_info_island_group: '島群',
+                 collect_point_info_island: '島',
+                 collect_point_info_country: '国名コード',
+                 collect_point_info_state_provice: '州・県',
+                 collect_point_info_county: '海外における郡・区',
+                 collect_point_info_municipality: '市名以下の詳細地名',
+                 collect_point_info_japanese_place_name: '日本語地名ラベル用',
+                 collect_point_info_japanese_place_name_detail: '日本語地名詳細',
+                 collect_point_info_verbatim_locality: '採集地の説明',
+                 collect_point_info_coordinate_precision: '半径',
+                 collect_point_info_minimum_elevation: '最低標高',
+                 collect_point_info_maximum_elevation: '最高標高',
+                 collect_point_info_minimum_depth: '最小水深',
+                 collect_point_info_maximum_depth: '最大水深',
+                 note: '備考'
+              } %>
+                <% columns.each do |col, name| %>
+                  <div>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="bulk-update-fields[]"
+                        data-action="change->bulk-update-choice#updateChoice change->validation#toggleSubmitButton"
+                        class="m-1"
+                        value="<%= col %>"
+                      >
+                      <%= name %>
+                    </label>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <%= form_with(
+              url: bulk_update_specimens_path,
+              method: :patch,
+              data: {
+                action: "submit->bulk-action#bulkUpdate input->bulk-action#zeroSelectDisabledBulkUpdate",
+                turbo_frame: "data_table",
+                turbo_action: "advance"
+              }
+            ) do |form| %>
+              <%= form.submit(
+                "選択データを一括更新",
+                class: "text-sm rounded-lg my-2 py-1 px-2 submit-button text-white cursor-pointer",
+                data: {
+                  bulk_action_target: "bulkUpdateButton",
+                  validation_target: "submit",
+                  turbo_action: "advance",
+                  action: "submit->bulk-action#bulkUpdate",
+                  turbo_confirm: "一括更新は危険な操作です！\n本当に実行しますか？"
+                }
+              )%>
+              <%= form.hidden_field :bulk_ids, value: "", data: { bulk_action_target: "bulkIds" } %>
+              <%= form.hidden_field :bulk_columns, value: "", data: { bulk_action_target: "bulkColumns" } %>
+              <div class="flex flex-wrap gap-4">
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_contient">
+                  <%= form.label '大陸', class: "block" %>
+                  <%= form.text_field(
+                    :collect_point_info_contient,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "collect_point_info_contient",
+                      validation_required: "false",
+                      validation_regex: "^[!-~ ]*$",
+                      validation_message_regex: "半角英数記号のみにしてください",
+                      validation_min_length: "0",
+                      validation_max_length: "20",
+                      validation_message_length: "20文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_island_group">
+                  <%= form.label '島群', class: "block" %>
+                  <%= form.text_field(
+                    :collect_point_info_island_group,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "collect_point_info_island_group",
+                      validation_required: "false",
+                      validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+                      validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
+                      validation_min_length: "0",
+                      validation_max_length: "30",
+                      validation_message_length: "30文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_island">
+                  <%= form.label '島', class: "block" %>
+                  <%= form.text_field(
+                    :collect_point_info_island,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "collect_point_info_island",
+                      validation_required: "false",
+                      validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+                      validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
+                      validation_min_length: "0",
+                      validation_max_length: "24",
+                      validation_message_length: "24文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-controller="collect_point_info_country-code-selector" data-bulk-update-choice-field id="collect_point_info_country">
+                  <%= form.label '国名（ISO 3166-1準拠の半角英字2字の国名コード）', class: "block" %>
+                  <p class="text-sm">下のリストから国名を選択すると自動で反映されます</p>
+                  <select
+                    data-collect_point_info_country-code-selector-target="select"
+                    data-action="change->collect_point_info_country-code-selector#updateCode"
+                    class="text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full">
+                  </select>
+
+                  <%= form.text_field(
+                    :collect_point_info_country,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      collect_point_info_country_code_selector_target: "input",
+                      validation_target: "input",
+                      validation_type: "collect_point_info_countryCode",
+                      name: "collect_point_info_country",
+                      validation_required: "true",
+                      validation_message_required: "国名コードは必須です",
+                      validation_min_length: "2",
+                      validation_max_length: "2",
+                      validation_message_length: "2文字(ISO 3166-1準拠)にしてください"
+                    }
+                  ) %>
+
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_state_provice">
+                  <%= form.label '州・県', class: "block" %>
+                  <%= form.text_field(
+                    :collect_point_info_state_provice,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "collect_point_info_state_provice",
+                      validation_required: "false",
+                      validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+                      validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
+                      validation_min_length: "0",
+                      validation_max_length: "30",
+                      validation_message_length: "30文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_county">
+                  <%= form.label '海外における郡・区', class: "block" %>
+                  <%= form.text_field(
+                    :collect_point_info_county,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "collect_point_info_county",
+                      validation_required: "false",
+                      validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+                      validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
+                      validation_min_length: "0",
+                      validation_max_length: "30",
+                      validation_message_length: "30文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_municipality">
+                  <%= form.label '市名以下の詳細地名', class: "block" %>
+                  <%= form.text_field(
+                    :collect_point_info_municipality,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "collect_point_info_municipality",
+                      validation_required: "false",
+                      validation_regex: "^[!-~ À-ÖØ-öø-ÿāīūēōȳĀĪŪĒŌȲ]*$",
+                      validation_message_regex: "半角英数記号およびアクセント記号付き文字のみにしてください",
+                      validation_min_length: "0",
+                      validation_max_length: "50",
+                      validation_message_length: "50文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_japanese_place_name">
+                  <%= form.label '日本語地名ラベル用', class: "block" %>
+                  <%= form.text_field(
+                    :collect_point_info_japanese_place_name,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "collect_point_info_japanese_place_name",
+                      validation_required: "false",
+                      validation_min_length: "0",
+                      validation_max_length: "14",
+                      validation_message_length: "14文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_japanese_place_name_detail">
+                  <%= form.label '日本語地名詳細', class: "block" %>
+                  <%= form.text_field(
+                    :collect_point_info_japanese_place_name_detail,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "collect_point_info_japanese_place_name_detail",
+                      validation_required: "false",
+                      validation_min_length: "0",
+                      validation_max_length: "50",
+                      validation_message_length: "50文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_verbatim_locality">
+                  <%= form.label '採集地の説明', class: "block" %>
+                  <%= form.text_field(
+                    :collect_point_info_verbatim_locality,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "string",
+                      name: "collect_point_info_verbatim_locality",
+                      validation_required: "false",
+                      validation_min_length: "0",
+                      validation_max_length: "200",
+                      validation_message_length: "200文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_coordinate_precision">
+                  <%= form.label '半径(m)', class: "block" %>
+                  <%= form.number_field(
+                    :collect_point_info_coordinate_precision,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "decimal",
+                      name: "collect_point_info_coordinate_precision",
+                      validation_required: "true",
+                      validation_message_required: "半径は必須です",
+                      validation_min_value: 0,
+                      validation_message_integer: "0.0以上の数(小数可)で入力してください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_minimum_elevation">
+                  <%= form.label '最低標高(m)', class: "block" %>
+                  <%= form.number_field(
+                    :collect_point_info_minimum_elevation,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "decimal",
+                      name: "collect_point_info_minimum_elevation",
+                      validation_required: "true",
+                      validation_message_required: "最低標高は必須です",
+                      validation_min_value: 0,
+                      validation_message_integer: "0.0以上の数(小数可)で入力してください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_maximum_elevation">
+                  <%= form.label '最高標高(m)', class: "block" %>
+                  <%= form.number_field(
+                    :collect_point_info_maximum_elevation,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "decimal",
+                      name: "collect_point_info_maximum_elevation",
+                      validation_required: "true",
+                      validation_message_required: "最高標高は必須です",
+                      validation_min_value: 0,
+                      validation_message_integer: "0.0以上の数(小数可)で入力してください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_minimum_depth">
+                  <%= form.label '最小水深(m)', class: "block" %>
+                  <%= form.number_field(
+                    :collect_point_info_minimum_depth,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "decimal",
+                      name: "collect_point_info_minimum_depth",
+                      validation_required: "true",
+                      validation_message_required: "最小水深は必須です",
+                      validation_min_value: 0,
+                      validation_message_integer: "0.0以上の数(小数可)で入力してください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="collect_point_info_maximum_depth">
+                  <%= form.label '最大水深(m)', class: "block" %>
+                  <%= form.number_field(
+                    :collect_point_info_maximum_depth,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {
+                      validation_target: "input",
+                      validation_type: "decimal",
+                      name: "collect_point_info_maximum_depth",
+                      validation_required: "true",
+                      validation_message_required: "最大水深は必須です",
+                      validation_min_value: 0,
+                      validation_message_integer: "0.0以上の数(小数可)で入力してください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+
+                <div class="w-[200px]" data-bulk-update-choice-field id="note">
+                  <%= form.label '備考', class: "block" %>
+                  <%= form.text_area(
+                    :note,
+                    class: "form-input hidden text-sm block shadow rounded-md border border-gray-400 outline-none px-2 py-1 mt-2 w-full",
+                    data: {validation_target: "input",
+                      validation_type: "string",
+                      name: "note",
+                      validation_max_length: "200",
+                      validation_message_length: "備考は200文字以下にしてください"
+                    }
+                  ) %>
+                  <div data-validation-target="error" class="text-red-500 text-sm mt-2 hidden"></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <div
+          data-controller="table-column"
+          data-mobile-default-visible-columns="<%= ['taxon_info_scientific_and_japanese_name', 'collect_point_info_japanese_place_name_detail'].to_json %>"
+          data-default-visible-columns="<%= ['taxon_info_scientific_and_japanese_name', 'collect_point_info_japanese_place_name_detail'].to_json %>"
+          data-table-column-model-name-value="specimen"
+        >
+          <div>
+            <div class="relative inline-block">
+              <!-- ボタンをクリックでドロップダウンをトグル -->
+              <button class="normal-button text-sm px-2 py-1 rounded-md border border-gray" data-action="click->table-column#toggleDropdown" data-table-column-target="toggleButton">
+                表示項目を選択 ▼
+              </button>
+              <span class="text-sm px-2">列名クリックで並べ替え</span>
+
+              <!-- ドロップダウンメニュー -->
+              <div class="text-xs absolute top-full left-0 normal-button shadow-lg border p-2 hidden bg-[#E9F5F8] z-50 whitespace-nowrap"
+                   data-table-column-target="dropdown"
+                   data-action="click->table-column#keepDropdownOpen">
+                  <% columns = {
+                     taxon_info_scientific_and_japanese_name: '学名 + 和名',
+                     collect_point_info_contient: '大陸',
+                     collect_point_info_island_group: '島群',
+                     collect_point_info_island: '島',
+                     collect_point_info_country: '国名コード',
+                     collect_point_info_state_provice: '州・県',
+                     collect_point_info_county: '海外における郡・区',
+                     collect_point_info_municipality: '市名以下の詳細地名',
+                     collect_point_info_japanese_place_name: '日本語地名ラベル用',
+                     collect_point_info_japanese_place_name_detail: '日本語地名詳細',
+                     collect_point_info_verbatim_locality: '採集地の説明',
+                     collect_point_info_latitude: '緯度',
+                     collect_point_info_longitude: '経度',
+                     collect_point_info_coordinate_precision: '半径(m)',
+                     collect_point_info_minimum_elevation: '最低標高(m)',
+                     collect_point_info_maximum_elevation: '最高標高(m)',
+                     collect_point_info_minimum_depth: '最小水深(m)',
+                     collect_point_info_maximum_depth: '最大水深(m)',
+                     taxon_info_kingdom: '界',
+                     taxon_info_phylum: '門',
+                     taxon_info_class_name: '鋼',
+                     taxon_info_order: '目',
+                     taxon_info_suborder: '亜目',
+                     taxon_info_family: '科',
+                     taxon_info_subfamily: '亜科',
+                     taxon_info_tribe: '族',
+                     taxon_info_subtribe: '亜族',
+                     taxon_info_genus: '属',
+                     taxon_info_subgenus: '亜属',
+                     taxon_info_species: '種',
+                     taxon_info_subspecies: '亜種',
+                     taxon_info_scientific_name_author: '記載者',
+                     taxon_info_name_publishedin_year: '記載年',
+                     taxon_info_actual_dist_year: '記載実流通年',
+                     taxon_info_japanese_name: '和名',
+                     taxon_info_distribution: '分布',
+                     taxon_info_note: '備考',
+                     taxon_info_date_last_modified: '作成日時'
+                  } %>
+                  <% columns.each do |col, name| %>
+                    <div>
+                      <label>
+                        <input
+                          type="checkbox"
+                          name="columns[]"
+                          class="m-1"
+                          data-action="change->table-column#updateColumn"
+                          value="<%= col %>"
+                        >
+                        <%= name %>
+                      </label>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <%= turbo_frame_tag "data_table", data: {action: "turbo:frame-load->bulk-action#resetSelectDisplay"} do %>
+              <%= paginate @specimens %>
+              <div class="overflow-x-auto shadow-lg rounded-lg">
+                <table class="text-sm min-w-full table-auto border-collapse">
+                  <thead data-table-column-target="tableHead" style="display: none">
+                    <tr class="column-names">
+                      <th class="text-sm px-4 py-2 border border-gray-300 text-center w-8">
+                        <input
+                          type="checkbox"
+                          name="selectRows[]"
+                          data-action="change->bulk-action#updateAllRow change->validation#toggleSubmitButton change->bulk-action#zeroSelectDisabledBulkUpdate"
+                          data-bulk-action-target="selectAllRow"
+                          id="selectAllRow"
+                        >
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_kingdom">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_kingdom', direction: toggle_direction('taxon_info_kingdom')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          界
+                          <%= sort_icon('taxon_info_kingdom') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_phylum">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_phylum', direction: toggle_direction('taxon_info_phylum')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          門
+                          <%= sort_icon('taxon_info_phylum') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_class_name">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_class_name', direction: toggle_direction('taxon_info_class_name')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          鋼
+                          <%= sort_icon('taxon_info_class_name') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_order">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_order', direction: toggle_direction('taxon_info_order')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          目
+                          <%= sort_icon('taxon_info_order') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_suborder">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_suborder', direction: toggle_direction('taxon_info_suborder')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          亜目
+                          <%= sort_icon('taxon_info_suborder') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_family">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_family', direction: toggle_direction('taxon_info_family')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          科
+                          <%= sort_icon('taxon_info_family') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_subfamily">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_subfamily', direction: toggle_direction('taxon_info_subfamily')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          亜科
+                          <%= sort_icon('taxon_info_subfamily') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_tribe">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_tribe', direction: toggle_direction('taxon_info_tribe')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          族
+                          <%= sort_icon('taxon_info_tribe') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_subtribe">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_subtribe', direction: toggle_direction('taxon_info_subtribe')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          亜族
+                          <%= sort_icon('taxon_info_subtribe') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_genus">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_genus', direction: toggle_direction('taxon_info_genus')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          属
+                          <%= sort_icon('taxon_info_genus') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_subgenus">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_subgenus', direction: toggle_direction('taxon_info_subgenus')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          亜属
+                          <%= sort_icon('taxon_info_subgenus') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_species">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_species', direction: toggle_direction('taxon_info_species')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          種
+                          <%= sort_icon('taxon_info_species') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_subspecies">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_subspecies', direction: toggle_direction('taxon_info_subspecies')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          亜種
+                          <%= sort_icon('taxon_info_subspecies') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_scientific_name_author">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_scientific_name_author', direction: toggle_direction('taxon_info_scientific_name_author')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          記載者
+                          <%= sort_icon('taxon_info_scientific_name_author') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_name_publishedin_year">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_name_publishedin_year', direction: toggle_direction('taxon_info_name_publishedin_year')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          記載年
+                          <%= sort_icon('taxon_info_name_publishedin_year') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_actrual_dist_year">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_actrual_dist_year', direction: toggle_direction('taxon_info_actrual_dist_year')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          記載実流通年
+                          <%= sort_icon('taxon_info_actrual_dist_year') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_japanese_name">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_japanese_name', direction: toggle_direction('taxon_info_japanese_name')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          和名
+                          <%= sort_icon('taxon_info_japanese_name') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_scientific_and_japanese_name">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_scientific_and_japanese_name', direction: toggle_direction('taxon_info_scientific_and_japanese_name')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          学名 + 和名
+                          <%= sort_icon('taxon_info_scientific_and_japanese_name') %>
+                        <% end %>
+                      </th>
+
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="taxon_info_distribution">
+                        <%= link_to custom_taxa_url_with_ranmemory(sort: 'taxon_info_distribution', direction: toggle_direction('taxon_info_distribution')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          分布
+                          <%= sort_icon('taxon_info_distribution') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_contient">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_contient', direction: toggle_direction('collect_point_info_contient')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          大陸
+                          <%= sort_icon('collect_point_info_contient') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_island_group">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_island_group', direction: toggle_direction('collect_point_info_island_group')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          島群
+                          <%= sort_icon('collect_point_info_island_group') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_island">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_island', direction: toggle_direction('collect_point_info_island')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          島
+                          <%= sort_icon('collect_point_info_island') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_country">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_country', direction: toggle_direction('collect_point_info_country')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          国名コード
+                          <%= sort_icon('collect_point_info_country') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_state_provice">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_state_provice', direction: toggle_direction('collect_point_info_state_provice')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          州・県
+                          <%= sort_icon('collect_point_info_state_provice') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_county">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_county', direction: toggle_direction('collect_point_info_county')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          海外における郡・区
+                          <%= sort_icon('collect_point_info_county') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_municipality">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_municipality', direction: toggle_direction('collect_point_info_municipality')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          市名以下の詳細地名
+                          <%= sort_icon('collect_point_info_municipality') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_japanese_place_name">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_japanese_place_name', direction: toggle_direction('collect_point_info_japanese_place_name')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          日本語地名(ラベル用)
+                          <%= sort_icon('collect_point_info_japanese_place_name') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_japanese_place_name_detail">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_japanese_place_name_detail', direction: toggle_direction('collect_point_info_japanese_place_name_detail')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          日本語地名(詳細)
+                          <%= sort_icon('collect_point_info_japanese_place_name_detail') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_verbatim_locality">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_verbatim_locality', direction: toggle_direction('collect_point_info_verbatim_locality')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          採集地の説明
+                          <%= sort_icon('collect_point_info_verbatim_locality') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_latitude">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_latitude', direction: toggle_direction('collect_point_info_latitude')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          緯度(10進)
+                          <%= sort_icon('collect_point_info_latitude') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_longitude">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_longitude', direction: toggle_direction('collect_point_info_longitude')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          経度(10進)
+                          <%= sort_icon('collect_point_info_longitude') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_coordinate_precision">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_coordinate_precision', direction: toggle_direction('collect_point_info_coordinate_precision')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          半径(m)
+                          <%= sort_icon('collect_point_info_coordinate_precision') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_minimum_elevation">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_minimum_elevation', direction: toggle_direction('collect_point_info_minimum_elevation')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          最低標高(m)
+                          <%= sort_icon('collect_point_info_minimum_elevation') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_maximum_elevation">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_maximum_elevation', direction: toggle_direction('collect_point_info_maximum_elevation')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          最高標高(m)
+                          <%= sort_icon('collect_point_info_maximum_elevation') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_minimum_depth">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_minimum_depth', direction: toggle_direction('collect_point_info_minimum_depth')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          最小水深(m)
+                          <%= sort_icon('collect_point_info_minimum_depth') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left" data-table-column-visible-columns id="collect_point_info_maximum_depth">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'collect_point_info_maximum_depth', direction: toggle_direction('collect_point_info_maximum_depth')), class: "font-bold flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          最大水深(m)
+                          <%= sort_icon('collect_point_info_maximum_depth') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left hidden" data-table-column-visible-columns id="date_last_modified">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'date_last_modified', direction: toggle_direction('date_last_modified')), class: "font-bold  flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          作成日時
+                          <%= sort_icon('date_last_modified') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left hidden" data-table-column-visible-columns id="note">
+                        <%= link_to specimens_url_with_ranmemory(sort: 'note', direction: toggle_direction('note')), class: "font-bold  flex items-center", data: {turbo_action: "advance", turbo_prefetch: false} do %>
+                          備考
+                          <%= sort_icon('note') %>
+                        <% end %>
+                      </th>
+                      <th class="px-4 py-2 border border-gray-300 text-left">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody data-table-column-target="tableBody" style="display: none">
+                    <% @specimens.each do |specimen| %>
+                      <tr id="specimen_<%= specimen.id %>" class="row-hover">
+                        <!-- turbo_stream_from で削除対象の行を監視 -->
+                        <%= turbo_stream_from "specimen_#{specimen.id}" %>
+                        <td class="text-sm px-4 py-1 border border-gray-300 text-center w-8">
+                          <input
+                            type="checkbox"
+                            name="selectRows[]"
+                            value="<%= specimen.id %>"
+                            data-bulk-action-target="selectRow"
+                            data-action="change->bulk-action#updateSelectRow change->validation#toggleSubmitButton change->bulk-action#zeroSelectDisabledBulkUpdate"
+                            id="bulk-action-select-row-<%= specimen.id %>"
+                          >
+                        </td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_kingdom"><%= specimen.taxon_info_kingdom %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_phylum"><%= specimen.taxon_info_phylum %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_class_name"><%= specimen.taxon_info_class_name %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_order"><%= specimen.taxon_info_order %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_suborder"><%= specimen.taxon_info_suborder %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_family"><%= specimen.taxon_info_family %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_subfamily"><%= specimen.taxon_info_subfamily %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_tribe"><%= specimen.taxon_info_tribe %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_subtribe"><%= specimen.taxon_info_subtribe %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_genus"><%= specimen.taxon_info_genus %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_subgenus"><%= specimen.taxon_info_subgenus %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_species"><%= specimen.taxon_info_species %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_subspecies"><%= specimen.taxon_info_subspecies %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_scientific_name_author"><%= specimen.taxon_info_scientific_name_author %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_name_publishedin_year"><%= specimen.taxon_info_name_publishedin_year %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_actual_dist_year"><%= specimen.taxon_info_actual_dist_year %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_japanese_name"><%= specimen.taxon_info_japanese_name %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_scientific_and_japanese_name"><%= specimen.taxon_info_scientific_and_japanese_name %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="taxon_info_distribution"><%= specimen.taxon_info_distribution %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_contient"><%= specimen.collect_point_info&.contient %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_island_group"><%= specimen.collect_point_info&.island_group %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_island"><%= specimen.collect_point_info&.island %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_country"><%= specimen.collect_point_info&.country %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_state_provice"><%= specimen.collect_point_info&.state_provice %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_county"><%= specimen.collect_point_info&.county %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_municipality"><%= specimen.collect_point_info&.municipality %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_japanese_place_name"><%= specimen.collect_point_info&.japanese_place_name %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_japanese_place_name_detail"><%= specimen.collect_point_info&.japanese_place_name_detail %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_verbatim_locality"><%= specimen.collect_point_info&.verbatim_locality %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_latitude"><%= specimen.collect_point_info&.latitude %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_longitude"><%= specimen.collect_point_info&.longitude %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_coordinate_precision"><%= specimen.collect_point_info&.coordinate_precision %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_minimum_elevation"><%= specimen.collect_point_info&.minimum_elevation %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_maximum_elevation"><%= specimen.collect_point_info&.maximum_elevation %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_minimum_depth"><%= specimen.collect_point_info&.minimum_depth %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300" data-table-column-visible-columns id="collect_point_info_maximum_depth"><%= specimen.collect_point_info&.maximum_depth %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300 hidden" data-table-column-visible-columns id="date_last_modified"><%= specimen.date_last_modified.strftime("%Y-%m-%d %H:%M:%S") %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300 hidden" data-table-column-visible-columns id="note"><%= specimen.note %></td>
+                        <td class="text-sm px-4 py-1 border border-gray-300">
+                          <div class="flex gap-3 flex-col sm:flex-row">
+                            <!-- 詳細リンク (ページ遷移) -->
+                            <%= link_to "詳細", specimen, class: "rounded-lg py-1 px-3 text-sm normal-button text-center",
+                              data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
+
+                            <!-- 編集リンク (ページ遷移) -->
+                            <%= link_to "編集", edit_specimen_path(specimen), class: "rounded-lg py-1 px-3 text-sm normal-button text-center",
+                              data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
+
+                            <!-- 複製リンク (ページ遷移) -->
+                            <%= link_to "複製", new_specimen_path(base_id: specimen.id), class: "rounded-lg py-1 px-3 text-sm normal-button text-center",
+                              data: { turbo_frame: "content-zone", turbo_action: "advance" } %>
+                            <!-- 削除リンク (Turbo Stream で削除) -->
+                            <%= link_to "削除", specimen_path(specimen), method: :delete, class: "rounded-lg py-1 px-3 denger text-white text-sm text-center",
+                              data: { turbo_confirm: "本当に削除しますか?", turbo_method: :delete, turbo_stream: "specimen_#{specimen.id}" } %>
+                          </div>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+              <% if @specimens.empty? %>
+                <div class="m-12">
+                  データが見つかりませんでした
+                </div>
+              <% end %>
+              <div data-table-column-target="paginate" class="hidden">
+                <%= paginate @specimens %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+<% end %>

@@ -100,4 +100,20 @@ module ApplicationHelper
 
     default_taxa_url(options.merge(ranmemory_state))
   end
+
+  def specimens_url_with_ranmemory(options = {})
+    ranmemory_state = session[:ranmemory_specimens_index_html] || {}
+
+    sort = options[:sort] || session[:specimens_index_sort]
+    direction = options[:direction] || session[:specimens_index_direction]
+    page = options[:page] || session[:specimens_index_page]
+
+    options = options.merge({
+      sort: sort,
+      direction: direction,
+      page: page
+    })
+
+    specimens_url(options.merge(ranmemory_state))
+  end
 end
